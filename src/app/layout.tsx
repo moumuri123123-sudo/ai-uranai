@@ -35,6 +35,9 @@ export const metadata: Metadata = {
       "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。",
     images: ["https://ai-uranai-ochre.vercel.app/og-image.svg"],
   },
+  verification: {
+    google: "hfq3il8cfvpzkX_2NtHGNIwa_IZRmjgExGh9C-1Btcw",
+  },
 };
 
 export default function RootLayout({
