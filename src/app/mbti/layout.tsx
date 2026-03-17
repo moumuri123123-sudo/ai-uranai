@@ -1,0 +1,16 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "MBTI性格診断",
+  description:
+    "16タイプの性格診断をAIが分析。MBTIタイプに基づいた恋愛・仕事・人間関係のアドバイスをお届けします。",
+  openGraph: {
+    title: "MBTI性格診断 | 占処 AI占い",
+    description:
+      "16タイプの性格診断をAIが分析。あなたのMBTIタイプを発見しましょう。",
+  },
+};
+
+export default function MbtiLayout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
+}

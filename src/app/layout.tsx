@@ -4,9 +4,36 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "占処 ── AI占い師",
+  title: {
+    default: "占処 ── AI占い師",
+    template: "%s | 占処 AI占い",
+  },
   description:
     "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。タロット・星座・相性・MBTI。",
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    url: "https://ai-uranai-ochre.vercel.app",
+    siteName: "占処 AI占い",
+    title: "占処 ── AI占い師",
+    description:
+      "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。",
+    images: [
+      {
+        url: "https://ai-uranai-ochre.vercel.app/og-image.svg",
+        width: 1200,
+        height: 630,
+        alt: "占処 AI占い",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "占処 ── AI占い師",
+    description:
+      "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。",
+    images: ["https://ai-uranai-ochre.vercel.app/og-image.svg"],
+  },
 };
 
 export default function RootLayout({
@@ -23,6 +50,17 @@ export default function RootLayout({
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+      )}
+      {process.env.NEXT_PUBLIC_GA_ID && (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            strategy="afterInteractive"
+          />
+          <Script id="ga4-init" strategy="afterInteractive">
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}');`}
+          </Script>
+        </>
       )}
       <body className="antialiased">
         {/* ヘッダー */}
@@ -58,6 +96,18 @@ export default function RootLayout({
                 className="text-sm text-foreground/70 transition-colors hover:text-gold"
               >
                 MBTI診断
+              </Link>
+              <Link
+                href="/blog"
+                className="text-sm text-foreground/70 transition-colors hover:text-gold"
+              >
+                コラム
+              </Link>
+              <Link
+                href="/history"
+                className="text-sm text-foreground/70 transition-colors hover:text-gold"
+              >
+                履歴
               </Link>
             </nav>
           </div>

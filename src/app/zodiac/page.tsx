@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
+import ShareButtons from "@/components/ShareButtons";
 import { zodiacSigns } from "@/lib/fortune-data";
 
 const zodiacList = Object.entries(zodiacSigns).map(([key, sign]) => ({
@@ -92,8 +93,10 @@ export default function ZodiacPage() {
             <ChatBox
               fortuneType="zodiac"
               zodiacSign={selectedSign}
+              historyLabel={`星座占い - ${selected.name}`}
               initialMessage={`${selected.name}（${selected.period}）のあなたですね。${selected.element}のエレメントに属し、${selected.traits}とされています。\n\nどのようなことが気になりますか？ 今日の運勢、恋愛運、仕事運など、何でもお聞きください。`}
             />
+            <ShareButtons title="星座占い結果" />
           </div>
         )}
         {/* 広告 */}

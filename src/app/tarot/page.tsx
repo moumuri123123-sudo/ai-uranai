@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
+import ShareButtons from "@/components/ShareButtons";
 import { tarotCards } from "@/lib/fortune-data";
 
 const CARD_BACK = "\u{1F0CF}";
@@ -110,8 +111,10 @@ export default function TarotPage() {
 
             <ChatBox
               fortuneType="tarot"
+              historyLabel={`タロット占い - ${drawnCard.name} ${drawnCard.reversed ? "逆位置" : "正位置"}`}
               initialMessage={`あなたが引いたカードは『${drawnCard.name}』の${drawnCard.reversed ? "逆位置" : "正位置"}です。\n\nどのようなことについて占いましょうか？ 恋愛、仕事、人間関係など、気になることを自由にお聞きください。`}
             />
+            <ShareButtons title="タロット占い結果" />
           </div>
         )}
         {/* 広告 */}

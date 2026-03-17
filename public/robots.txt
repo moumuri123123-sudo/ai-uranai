@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ai-uranai-ochre.vercel.app/sitemap.xml

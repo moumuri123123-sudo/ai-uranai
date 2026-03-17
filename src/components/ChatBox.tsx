@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import ChatMessage from "./ChatMessage";
+import { addHistory } from "@/lib/history";
 
 type Message = {
   role: "user" | "assistant";
@@ -15,9 +16,10 @@ type ChatBoxProps = {
   person1?: string;
   person2?: string;
   mbtiType?: string;
+  historyLabel?: string;
 };
 
-export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType }: ChatBoxProps) {
+export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, historyLabel }: ChatBoxProps) {
   const [messages, setMessages] = useState<Message[]>(() => {
     if (initialMessage) {
       return [{ role: "assistant", content: initialMessage }];
@@ -28,6 +30,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const historySavedRef = useRef(false);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -101,6 +104,15 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
           };
           return next;
         });
+      }
+
+      if (!historySavedRef.current && assistantContent && historyLabel) {
+        addHistory({
+          fortuneType,
+          label: historyLabel,
+          firstResponse: assistantContent,
+        });
+        historySavedRef.current = true;
       }
     } catch {
       setMessages((prev) => [

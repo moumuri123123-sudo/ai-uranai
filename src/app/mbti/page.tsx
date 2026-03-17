@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
+import ShareButtons from "@/components/ShareButtons";
 import { mbtiTypes, mbtiQuestions } from "@/lib/fortune-data";
 
 type Phase = "select" | "quiz" | "chat";
@@ -225,8 +226,10 @@ export default function MbtiPage() {
             <ChatBox
               fortuneType="mbti"
               mbtiType={selectedType}
+              historyLabel={`MBTI診断 - ${typeData.code}（${typeData.name}）`}
               initialMessage={`あなたのMBTIタイプは ${typeData.code}（${typeData.name}）だね！\n\n${typeData.traits}っていう特徴があるよ。\n\n何でも聞いてね！恋愛、仕事、人間関係...${typeData.code}タイプの視点からアドバイスするよ。`}
             />
+            <ShareButtons title="MBTI診断結果" />
 
             <button
               onClick={() => {

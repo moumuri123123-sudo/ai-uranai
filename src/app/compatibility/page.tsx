@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
+import ShareButtons from "@/components/ShareButtons";
 
 export default function CompatibilityPage() {
   const [phase, setPhase] = useState<"input" | "chat">("input");
@@ -131,8 +132,10 @@ export default function CompatibilityPage() {
               fortuneType="compatibility"
               person1={submittedNames.p1}
               person2={submittedNames.p2}
+              historyLabel={`相性占い - ${submittedNames.p1} & ${submittedNames.p2}`}
               initialMessage={`${submittedNames.p1}さんと${submittedNames.p2}さんの相性占いですね。\n\n二人について、もう少し教えていただけますか？ 例えば：\n- どんな関係ですか？（恋人、友人、同僚など）\n- 気になっていることはありますか？\n\n自由にお話しください。星が二人の相性を読み解きます。`}
             />
+            <ShareButtons title="相性占い結果" />
           </div>
         )}
         {/* 広告 */}
