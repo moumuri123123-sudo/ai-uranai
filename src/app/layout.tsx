@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import Header from "@/components/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -63,55 +64,7 @@ export default function RootLayout({
         </>
       )}
       <body className="antialiased">
-        {/* ヘッダー */}
-        <header className="sticky top-0 z-50 border-b border-border bg-[#0a0408]/90 backdrop-blur-md">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-            <Link
-              href="/"
-              className="font-yuji text-2xl tracking-widest text-neon-red animate-neon-pulse"
-            >
-              占処
-            </Link>
-            <nav className="flex items-center gap-6">
-              <Link
-                href="/tarot"
-                className="text-sm text-foreground/70 transition-colors hover:text-gold"
-              >
-                タロット
-              </Link>
-              <Link
-                href="/zodiac"
-                className="text-sm text-foreground/70 transition-colors hover:text-gold"
-              >
-                星座占い
-              </Link>
-              <Link
-                href="/compatibility"
-                className="text-sm text-foreground/70 transition-colors hover:text-gold"
-              >
-                相性占い
-              </Link>
-              <Link
-                href="/mbti"
-                className="text-sm text-foreground/70 transition-colors hover:text-gold"
-              >
-                MBTI診断
-              </Link>
-              <Link
-                href="/blog"
-                className="text-sm text-foreground/70 transition-colors hover:text-gold"
-              >
-                コラム
-              </Link>
-              <Link
-                href="/history"
-                className="text-sm text-foreground/70 transition-colors hover:text-gold"
-              >
-                履歴
-              </Link>
-            </nav>
-          </div>
-        </header>
+        <Header />
 
         {/* メインコンテンツ */}
         <main className="min-h-screen">{children}</main>

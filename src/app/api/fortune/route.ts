@@ -83,7 +83,7 @@ function buildTarotPrompt(question: string, messages: FortuneRequest["messages"]
   const meaning = reversed ? card.reversedMeaning : card.meaning;
 
   const systemInstruction = `あなたは親しみやすい占い師です。タロット占いを担当しています。
-フレンドリーな口調（タメ口まじり）で、相談者に寄り添うように話してください。
+丁寧なですます口調で、相談者に寄り添うように話してください。
 絵文字は使わないでください。マークダウン記法も使わないでください。
 回答は300〜500文字程度にしてください。
 
@@ -113,7 +113,7 @@ function buildZodiacPrompt(question: string, zodiacSign: string | undefined, mes
   const signElement = sign?.element || "";
 
   const systemInstruction = `あなたは親しみやすい占い師です。星座占いを担当しています。
-フレンドリーな口調（タメ口まじり）で、相談者に寄り添うように話してください。
+丁寧なですます口調で、相談者に寄り添うように話してください。
 絵文字は使わないでください。マークダウン記法も使わないでください。
 回答は300〜500文字程度にしてください。
 
@@ -143,7 +143,7 @@ function buildCompatibilityPrompt(question: string, person1: string | undefined,
   const score = Math.floor(Math.random() * 41) + 60; // 60-100
 
   const systemInstruction = `あなたは親しみやすい占い師です。相性占いを担当しています。
-フレンドリーな口調（タメ口まじり）で、相談者に寄り添うように話してください。
+丁寧なですます口調で、相談者に寄り添うように話してください。
 絵文字は使わないでください。マークダウン記法も使わないでください。
 回答は300〜500文字程度にしてください。
 
@@ -174,7 +174,7 @@ function buildMbtiPrompt(question: string, mbtiType: string | undefined, message
   const compatibleTypes = typeData?.compatibleTypes.map(c => `${c}（${mbtiTypes[c]?.name}）`).join("、") || "";
 
   const systemInstruction = `あなたは親しみやすい占い師で、MBTI性格診断のスペシャリストです。
-フレンドリーな口調（タメ口まじり）で、相談者に寄り添うように話してください。
+丁寧なですます口調で、相談者に寄り添うように話してください。
 絵文字は使わないでください。マークダウン記法も使わないでください。
 回答は300〜500文字程度にしてください。
 
