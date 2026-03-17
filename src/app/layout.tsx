@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ai-uranai-ochre.vercel.app"),
   title: {
     default: "占処 ── AI占い師",
     template: "%s | 占処 AI占い",
@@ -19,21 +20,12 @@ export const metadata: Metadata = {
     title: "占処 ── AI占い師",
     description:
       "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。",
-    images: [
-      {
-        url: "https://ai-uranai-ochre.vercel.app/og-image.svg",
-        width: 1200,
-        height: 630,
-        alt: "占処 AI占い",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "占処 ── AI占い師",
     description:
       "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。",
-    images: ["https://ai-uranai-ochre.vercel.app/og-image.svg"],
   },
   verification: {
     google: "hfq3il8cfvpzkX_2NtHGNIwa_IZRmjgExGh9C-1Btcw",
