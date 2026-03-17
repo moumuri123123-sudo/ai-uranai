@@ -276,14 +276,35 @@ export async function POST(req: Request) {
       );
     }
 
+    // 会話履歴のバリデーション（最大20件、各メッセージ1000文字以内）
+    const rawMessages = Array.isArray(body.messages) ? body.messages : [];
+    const validatedMessages = rawMessages
+      .slice(-20)
+      .filter(
+        (m: Record<string, unknown>) =>
+          (m.role === "user" || m.role === "assistant") &&
+          typeof m.content === "string" &&
+          m.content.length <= 1000
+      )
+      .map((m: Record<string, unknown>) => ({
+        role: m.role as "user" | "assistant",
+        content: (m.content as string).slice(0, 1000),
+      }));
+
+    // person1/person2/zodiacSign/mbtiTypeの長さ制限
+    const sanitize = (val: unknown, maxLen: number): string | undefined => {
+      if (typeof val !== "string") return undefined;
+      return val.slice(0, maxLen);
+    };
+
     const request: FortuneRequest = {
       type: body.type,
       question: body.question.trim(),
-      messages: Array.isArray(body.messages) ? body.messages : [],
-      zodiacSign: body.zodiacSign,
-      person1: body.person1,
-      person2: body.person2,
-      mbtiType: body.mbtiType,
+      messages: validatedMessages,
+      zodiacSign: sanitize(body.zodiacSign, 20),
+      person1: sanitize(body.person1, 50),
+      person2: sanitize(body.person2, 50),
+      mbtiType: sanitize(body.mbtiType, 10),
     };
 
     // Gemini APIが使えない場合はモックにフォールバック
