@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { blogArticles, getArticleBySlug } from "@/lib/blog-data";
 import AdBanner from "@/components/AdBanner";
+import FortuneIcon from "@/components/FortuneIcon";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -59,7 +60,11 @@ export default async function BlogDetailPage({ params }: Props) {
 
         <article>
           <div className="mb-8 text-center">
-            <span className="text-5xl">{article.emoji}</span>
+            {article.category !== "general" ? (
+              <FortuneIcon type={article.category} size="lg" />
+            ) : (
+              <FortuneIcon type="ai" size="lg" />
+            )}
             <h1 className="font-mincho mt-4 text-2xl font-bold text-gold sm:text-3xl">
               {article.title}
             </h1>

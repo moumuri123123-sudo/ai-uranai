@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AdBanner from "@/components/AdBanner";
+import FortuneIcon from "@/components/FortuneIcon";
 
 export default function Home() {
   return (
@@ -40,7 +41,7 @@ export default function Home() {
           {/* タロットカード */}
           <Link href="/tarot" className="group">
             <div className="card-mystical card-glow-red flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4 text-5xl">&#x1F0CF;</div>
+              <div className="mb-4"><FortuneIcon type="tarot" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-neon-red transition-colors group-hover:brightness-125">
                 タロット占い
               </h3>
@@ -59,7 +60,7 @@ export default function Home() {
           {/* 星座占いカード */}
           <Link href="/zodiac" className="group">
             <div className="card-mystical card-glow-gold flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4 text-5xl">&#x2B50;</div>
+              <div className="mb-4"><FortuneIcon type="zodiac" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-gold transition-colors group-hover:brightness-125">
                 星座占い
               </h3>
@@ -78,7 +79,7 @@ export default function Home() {
           {/* 相性占いカード */}
           <Link href="/compatibility" className="group">
             <div className="card-mystical card-glow-pink flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4 text-5xl">&#x1F491;</div>
+              <div className="mb-4"><FortuneIcon type="compatibility" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-neon-pink transition-colors group-hover:brightness-125">
                 相性占い
               </h3>
@@ -97,7 +98,7 @@ export default function Home() {
           {/* MBTI診断カード */}
           <Link href="/mbti" className="group">
             <div className="card-mystical card-glow-cyan flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4 text-5xl">&#x1F9E0;</div>
+              <div className="mb-4"><FortuneIcon type="mbti" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-neon-cyan transition-colors group-hover:brightness-125">
                 MBTI診断
               </h3>
@@ -127,27 +128,21 @@ export default function Home() {
 
           <div className="grid gap-8 sm:grid-cols-3">
             <div className="text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-border bg-surface text-2xl">
-                &#x1F916;
-              </div>
+              <FortuneIcon type="ai" size="md" className="mb-4" />
               <h3 className="mb-2 text-base font-semibold text-gold">高精度AI鑑定</h3>
               <p className="text-sm leading-relaxed text-muted">
                 最新のAI技術を活用し、あなただけのパーソナルな鑑定結果をお届けします。
               </p>
             </div>
             <div className="text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-border bg-surface text-2xl">
-                &#x23F0;
-              </div>
+              <FortuneIcon type="clock" size="md" className="mb-4" />
               <h3 className="mb-2 text-base font-semibold text-gold">24時間いつでも</h3>
               <p className="text-sm leading-relaxed text-muted">
                 AIだから深夜でも早朝でも、いつでもあなたの相談に応じます。
               </p>
             </div>
             <div className="text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-border bg-surface text-2xl">
-                &#x1F512;
-              </div>
+              <FortuneIcon type="lock" size="md" className="mb-4" />
               <h3 className="mb-2 text-base font-semibold text-gold">完全プライベート</h3>
               <p className="text-sm leading-relaxed text-muted">
                 あなたの相談内容は他の誰にも見られません。安心してご利用ください。

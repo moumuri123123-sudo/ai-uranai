@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { blogArticles } from "@/lib/blog-data";
 import AdBanner from "@/components/AdBanner";
+import FortuneIcon from "@/components/FortuneIcon";
 
 export const metadata: Metadata = {
   title: "コラム",
@@ -30,7 +31,13 @@ export default function BlogPage() {
               className="group"
             >
               <div className="card-mystical flex h-full flex-col rounded-2xl border border-border bg-surface p-6">
-                <div className="mb-3 text-4xl">{article.emoji}</div>
+                <div className="mb-3">
+                  {article.category !== "general" ? (
+                    <FortuneIcon type={article.category} size="md" />
+                  ) : (
+                    <FortuneIcon type="ai" size="md" />
+                  )}
+                </div>
                 <h2 className="mb-2 text-lg font-bold text-foreground transition-colors group-hover:text-gold">
                   {article.title}
                 </h2>

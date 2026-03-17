@@ -4,6 +4,7 @@ import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
+import FortuneIcon from "@/components/FortuneIcon";
 import { zodiacSigns } from "@/lib/fortune-data";
 
 const zodiacList = Object.entries(zodiacSigns).map(([key, sign]) => ({
@@ -36,7 +37,7 @@ export default function ZodiacPage() {
       <div className="mx-auto max-w-4xl px-4 py-12">
         {/* ヘッダー */}
         <div className="mb-10 text-center">
-          <div className="mb-4 text-5xl">{"\u2B50"}</div>
+          <div className="mb-4"><FortuneIcon type="zodiac" size="lg" /></div>
           <h1 className="font-mincho mb-3 text-2xl font-bold sm:text-3xl">
             <span className="text-gold animate-gold-pulse">
               星座占い

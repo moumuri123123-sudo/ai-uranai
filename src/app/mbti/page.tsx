@@ -4,6 +4,7 @@ import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
+import FortuneIcon from "@/components/FortuneIcon";
 import { mbtiTypes, mbtiQuestions } from "@/lib/fortune-data";
 
 type Phase = "select" | "quiz" | "chat";
@@ -69,7 +70,7 @@ export default function MbtiPage() {
       <div className="mx-auto max-w-4xl px-4 py-12">
         {/* タイトル */}
         <div className="mb-10 text-center">
-          <div className="mb-4 text-5xl">&#x1F9E0;</div>
+          <div className="mb-4"><FortuneIcon type="mbti" size="lg" /></div>
           <h1 className="font-mincho mb-2 text-2xl font-bold sm:text-3xl">
             <span className="text-neon-cyan" style={{ textShadow: "0 0 12px rgba(0,221,255,0.4)" }}>
               MBTI性格診断
@@ -88,7 +89,7 @@ export default function MbtiPage() {
                 onClick={() => setPhase("quiz")}
                 className="group rounded-2xl border border-border bg-surface p-8 text-left transition-all hover:border-neon-cyan/40 hover:shadow-lg hover:shadow-neon-cyan/10"
               >
-                <div className="mb-3 text-3xl">&#x1F4DD;</div>
+                <div className="mb-3 font-yuji text-3xl text-neon-cyan">問</div>
                 <h3 className="mb-2 text-lg font-bold text-neon-cyan transition-colors group-hover:brightness-125">
                   診断する
                 </h3>
@@ -104,7 +105,7 @@ export default function MbtiPage() {
                 }}
                 className="group rounded-2xl border border-border bg-surface p-8 text-left transition-all hover:border-gold/40 hover:shadow-lg hover:shadow-gold/10"
               >
-                <div className="mb-3 text-3xl">&#x1F3AF;</div>
+                <div className="mb-3 font-yuji text-3xl text-gold">選</div>
                 <h3 className="mb-2 text-lg font-bold text-gold transition-colors group-hover:brightness-125">
                   タイプを選ぶ
                 </h3>

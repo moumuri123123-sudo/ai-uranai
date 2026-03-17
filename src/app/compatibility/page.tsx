@@ -4,6 +4,7 @@ import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
+import FortuneIcon from "@/components/FortuneIcon";
 
 export default function CompatibilityPage() {
   const [phase, setPhase] = useState<"input" | "chat">("input");
@@ -24,7 +25,7 @@ export default function CompatibilityPage() {
       <div className="mx-auto max-w-4xl px-4 py-12">
         {/* ヘッダー */}
         <div className="mb-10 text-center">
-          <div className="mb-4 text-5xl">{"\u{1F491}"}</div>
+          <div className="mb-4"><FortuneIcon type="compatibility" size="lg" /></div>
           <h1 className="font-mincho mb-3 text-2xl font-bold sm:text-3xl">
             <span className="text-neon-pink" style={{ textShadow: "0 0 12px rgba(255,105,180,0.4)" }}>
               相性占い
@@ -62,8 +63,8 @@ export default function CompatibilityPage() {
                 {/* ハートの装飾 */}
                 <div className="my-4 flex items-center justify-center">
                   <div className="h-px flex-1 bg-border" />
-                  <span className="mx-4 text-2xl text-neon-pink animate-pulse">
-                    {"\u2764"}
+                  <span className="mx-4 text-2xl font-yuji text-neon-pink animate-pulse">
+                    縁
                   </span>
                   <div className="h-px flex-1 bg-border" />
                 </div>
@@ -112,7 +113,7 @@ export default function CompatibilityPage() {
                     {submittedNames.p1}
                   </p>
                 </div>
-                <span className="text-2xl text-neon-pink">{"\u2764"}</span>
+                <span className="text-2xl font-yuji text-neon-pink">縁</span>
                 <div>
                   <p className="text-xs text-muted">2人目</p>
                   <p className="text-lg font-bold text-gold">

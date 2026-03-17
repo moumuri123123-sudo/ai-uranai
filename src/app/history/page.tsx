@@ -8,15 +8,16 @@ import {
   clearAllHistory,
   type HistoryEntry,
 } from "@/lib/history";
+import FortuneIcon from "@/components/FortuneIcon";
 
 const fortuneTypeMeta: Record<
   string,
-  { emoji: string; path: string }
+  { type: "tarot" | "zodiac" | "compatibility" | "mbti"; path: string }
 > = {
-  tarot: { emoji: "\u{1F0CF}", path: "/tarot" },
-  zodiac: { emoji: "\u2B50", path: "/zodiac" },
-  compatibility: { emoji: "\u{1F491}", path: "/compatibility" },
-  mbti: { emoji: "\u{1F9E0}", path: "/mbti" },
+  tarot: { type: "tarot", path: "/tarot" },
+  zodiac: { type: "zodiac", path: "/zodiac" },
+  compatibility: { type: "compatibility", path: "/compatibility" },
+  mbti: { type: "mbti", path: "/mbti" },
 };
 
 export default function HistoryPage() {
@@ -86,7 +87,7 @@ export default function HistoryPage() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="mb-2 flex items-center gap-2">
-                          <span className="text-xl">{meta?.emoji}</span>
+                          {meta && <FortuneIcon type={meta.type} size="sm" />}
                           <h2 className="text-sm font-bold text-foreground">
                             {entry.label}
                           </h2>

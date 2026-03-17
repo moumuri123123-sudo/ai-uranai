@@ -4,9 +4,10 @@ import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
+import FortuneIcon from "@/components/FortuneIcon";
 import { tarotCards } from "@/lib/fortune-data";
 
-const CARD_BACK = "\u{1F0CF}";
+const CARD_BACK = "占";
 
 type DrawnCard = {
   name: string;
@@ -33,7 +34,7 @@ export default function TarotPage() {
       <div className="mx-auto max-w-4xl px-4 py-12">
         {/* ヘッダー */}
         <div className="mb-10 text-center">
-          <div className="mb-4 text-5xl">{CARD_BACK}</div>
+          <div className="mb-4"><FortuneIcon type="tarot" size="lg" /></div>
           <h1 className="font-mincho mb-3 text-2xl font-bold sm:text-3xl">
             <span className="text-neon-red animate-neon-pulse">
               タロット占い
@@ -56,7 +57,7 @@ export default function TarotPage() {
                   style={{ animationDelay: `${i * 0.1}s` }}
                   onClick={handleDrawCard}
                 >
-                  <div className="flex h-full w-full items-center justify-center text-3xl opacity-60 sm:text-4xl">
+                  <div className="flex h-full w-full items-center justify-center font-yuji text-3xl text-neon-red/60 sm:text-4xl">
                     {CARD_BACK}
                   </div>
                 </div>
@@ -84,7 +85,7 @@ export default function TarotPage() {
               <div
                 className="h-40 w-28 rounded-lg border-2 border-neon-red/50 bg-surface shadow-2xl shadow-neon-red/20 sm:h-48 sm:w-32 animate-fade-slide-up"
               >
-                <div className="flex h-full w-full items-center justify-center text-4xl sm:text-5xl">
+                <div className="flex h-full w-full items-center justify-center font-yuji text-4xl text-neon-red/60 sm:text-5xl">
                   {CARD_BACK}
                 </div>
               </div>
