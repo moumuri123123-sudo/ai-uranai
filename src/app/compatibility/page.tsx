@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
+import AdBanner from "@/components/AdBanner";
 
 export default function CompatibilityPage() {
   const [phase, setPhase] = useState<"input" | "chat">("input");
@@ -134,6 +135,8 @@ export default function CompatibilityPage() {
             />
           </div>
         )}
+        {/* 広告 */}
+        <AdBanner slot="compatibility-1" />
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
+import AdBanner from "@/components/AdBanner";
 import { tarotCards } from "@/lib/fortune-data";
 
 const CARD_BACK = "\u{1F0CF}";
@@ -113,6 +114,8 @@ export default function TarotPage() {
             />
           </div>
         )}
+        {/* 広告 */}
+        <AdBanner slot="tarot-1" />
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
+import AdBanner from "@/components/AdBanner";
 import { mbtiTypes, mbtiQuestions } from "@/lib/fortune-data";
 
 type Phase = "select" | "quiz" | "chat";
@@ -247,6 +248,8 @@ export default function MbtiPage() {
             ※ この診断は簡易的なものであり、公式のMBTI診断ではありません。MBTI（Myers-Briggs Type Indicator）はThe Myers-Briggs Companyの商標です。正式な診断は認定プラクティショナーのもとで受けることをおすすめします。本診断はエンターテインメント目的であり、結果を過度に信頼しないようご注意ください。
           </p>
         </div>
+        {/* 広告 */}
+        <AdBanner slot="mbti-1" />
       </div>
     </div>
   );

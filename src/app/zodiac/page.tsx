@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
+import AdBanner from "@/components/AdBanner";
 import { zodiacSigns } from "@/lib/fortune-data";
 
 const zodiacList = Object.entries(zodiacSigns).map(([key, sign]) => ({
@@ -95,6 +96,8 @@ export default function ZodiacPage() {
             />
           </div>
         )}
+        {/* 広告 */}
+        <AdBanner slot="zodiac-1" />
       </div>
     </div>
   );

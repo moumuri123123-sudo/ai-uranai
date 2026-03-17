@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import Link from "next/link";
 import "./globals.css";
 
@@ -15,6 +16,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      {process.env.NEXT_PUBLIC_ADSENSE_ID && (
+        <Script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      )}
       <body className="antialiased">
         {/* ヘッダー */}
         <header className="sticky top-0 z-50 border-b border-border bg-[#0a0408]/90 backdrop-blur-md">

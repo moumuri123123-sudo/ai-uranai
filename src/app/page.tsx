@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AdBanner from "@/components/AdBanner";
 
 export default function Home() {
   return (
@@ -115,11 +116,7 @@ export default function Home() {
       </section>
 
       {/* 広告スペース */}
-      <section className="mx-auto max-w-6xl px-4 pb-8">
-        <div className="flex items-center justify-center rounded-xl border border-dashed border-border bg-surface/50 px-4 py-12 text-sm text-muted">
-          広告スペース
-        </div>
-      </section>
+      <AdBanner slot="top-1" format="horizontal" />
 
       {/* 特徴セクション */}
       <section className="border-t border-border bg-[#0a0408] px-4 py-16 sm:py-24">
@@ -161,11 +158,7 @@ export default function Home() {
       </section>
 
       {/* 下部広告スペース */}
-      <section className="mx-auto max-w-6xl px-4 py-8">
-        <div className="flex items-center justify-center rounded-xl border border-dashed border-border bg-surface/50 px-4 py-12 text-sm text-muted">
-          広告スペース
-        </div>
-      </section>
+      <AdBanner slot="top-2" format="horizontal" />
     </div>
   );
 }
