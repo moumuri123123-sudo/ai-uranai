@@ -1,10 +1,16 @@
 import Link from "next/link";
 import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
+import DailyFortune from "@/components/DailyFortune";
+import { websiteJsonLd } from "@/lib/jsonld";
 
 export default function Home() {
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
+      />
       {/* ヒーローセクション */}
       <section className="relative overflow-hidden bg-[#0a0408] px-4 py-24 text-center sm:py-32">
         {/* ビネット背景 */}
@@ -28,6 +34,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 今日の運勢 */}
+      <DailyFortune />
+
       {/* 占いメニューカード */}
       <section
         id="fortune-menu"
@@ -37,7 +46,7 @@ export default function Home() {
           ━━━━ 占いの館 ━━━━
         </h2>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {/* タロットカード */}
           <Link href="/tarot" className="group">
             <div className="card-mystical card-glow-red flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
@@ -107,6 +116,44 @@ export default function Home() {
               </p>
               <div className="flex items-center gap-2 text-sm font-medium text-neon-cyan/80 transition-colors group-hover:text-neon-cyan">
                 <span>診断してみる</span>
+                <span className="transition-transform group-hover:translate-x-1">
+                  &rarr;
+                </span>
+              </div>
+            </div>
+          </Link>
+
+          {/* 夢占いカード */}
+          <Link href="/dream" className="group">
+            <div className="card-mystical card-glow-purple flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
+              <div className="mb-4"><FortuneIcon type="dream" size="lg" /></div>
+              <h3 className="mb-2 text-xl font-bold text-neon-purple transition-colors group-hover:brightness-125">
+                夢占い
+              </h3>
+              <p className="mb-6 flex-1 text-sm leading-relaxed text-muted">
+                あなたが見た夢に隠されたメッセージをAIが読み解きます。深層心理と運命のヒントを探りましょう。
+              </p>
+              <div className="flex items-center gap-2 text-sm font-medium text-neon-purple/80 transition-colors group-hover:text-neon-purple">
+                <span>占ってみる</span>
+                <span className="transition-transform group-hover:translate-x-1">
+                  &rarr;
+                </span>
+              </div>
+            </div>
+          </Link>
+
+          {/* 数秘術カード */}
+          <Link href="/numerology" className="group">
+            <div className="card-mystical card-glow-amber flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
+              <div className="mb-4"><FortuneIcon type="numerology" size="lg" /></div>
+              <h3 className="mb-2 text-xl font-bold text-neon-amber transition-colors group-hover:brightness-125">
+                数秘術
+              </h3>
+              <p className="mb-6 flex-1 text-sm leading-relaxed text-muted">
+                生年月日からライフパスナンバーを算出。AIがあなたの性格・使命・運命を数字で鑑定します。
+              </p>
+              <div className="flex items-center gap-2 text-sm font-medium text-neon-amber/80 transition-colors group-hover:text-neon-amber">
+                <span>鑑定してみる</span>
                 <span className="transition-transform group-hover:translate-x-1">
                   &rarr;
                 </span>

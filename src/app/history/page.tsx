@@ -12,12 +12,14 @@ import FortuneIcon from "@/components/FortuneIcon";
 
 const fortuneTypeMeta: Record<
   string,
-  { type: "tarot" | "zodiac" | "compatibility" | "mbti"; path: string }
+  { type: "tarot" | "zodiac" | "compatibility" | "mbti" | "dream" | "numerology"; path: string }
 > = {
   tarot: { type: "tarot", path: "/tarot" },
   zodiac: { type: "zodiac", path: "/zodiac" },
   compatibility: { type: "compatibility", path: "/compatibility" },
   mbti: { type: "mbti", path: "/mbti" },
+  dream: { type: "dream", path: "/dream" },
+  numerology: { type: "numerology", path: "/numerology" },
 };
 
 export default function HistoryPage() {

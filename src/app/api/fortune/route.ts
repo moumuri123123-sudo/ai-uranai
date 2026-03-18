@@ -11,6 +11,8 @@ import {
   generateZodiacReading,
   generateCompatibilityReading,
   generateMbtiReading,
+  generateDreamReading,
+  generateNumerologyReading,
 } from "@/lib/fortune-data";
 
 // Gemini クライアント（APIキーが設定されている場合のみ有効）
@@ -73,7 +75,7 @@ function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
 
 // ===== プロンプト構築 =====
 
-function buildTarotPrompt(question: string, messages: FortuneRequest["messages"]): {
+function buildTarotPrompt(question: string, messages: FortuneRequest["messages"], tarotTheme?: string): {
   systemInstruction: string;
   userMessage: string;
 } {
@@ -81,6 +83,7 @@ function buildTarotPrompt(question: string, messages: FortuneRequest["messages"]
   const reversed = isReversed();
   const position = reversed ? "逆位置" : "正位置";
   const meaning = reversed ? card.reversedMeaning : card.meaning;
+  const themeLabel = tarotTheme || "総合";
 
   const systemInstruction = `あなたは親しみやすい占い師です。タロット占いを担当しています。
 丁寧なですます口調で、相談者に寄り添うように話してください。
@@ -89,8 +92,9 @@ function buildTarotPrompt(question: string, messages: FortuneRequest["messages"]
 
 今回引いたカード：「${card.name}」の${position}
 キーワード：${meaning}
+占いのテーマ：${themeLabel}
 
-このカードの意味を踏まえて、相談者の質問に対して占い結果を伝えてください。
+このカードの意味を踏まえて、特に「${themeLabel}」の観点から相談者の質問に対して占い結果を伝えてください。
 カード名と正逆位置、キーワードは必ず回答に含めてください。
 最後に前向きな一言を添えてください。`;
 
@@ -195,6 +199,78 @@ ${compatibleTypes ? `相性の良いタイプ：${compatibleTypes}` : ""}
   return { systemInstruction, userMessage };
 }
 
+function buildDreamPrompt(question: string, dreamKeyword: string | undefined, messages: FortuneRequest["messages"]): {
+  systemInstruction: string;
+  userMessage: string;
+} {
+  const keyword = dreamKeyword || "不思議な夢";
+
+  const systemInstruction = `あなたは親しみやすい占い師で、夢占いのスペシャリストです。
+丁寧なですます口調で、相談者に寄り添うように話してください。
+絵文字は使わないでください。マークダウン記法も使わないでください。
+回答は300〜500文字程度にしてください。
+
+相談者が見た夢のキーワード：「${keyword}」
+
+この夢のキーワードから、夢が象徴する意味を読み解いてください。
+心理学的な観点と伝統的な夢占いの両方を織り交ぜて解釈してください。
+夢が示す深層心理や、現在の生活との関連についても触れてください。
+最後に前向きなアドバイスを添えてください。`;
+
+  const conversationContext = messages.length > 0
+    ? "\n\n【これまでの会話】\n" + messages.map(m => `${m.role === "user" ? "相談者" : "占い師"}: ${m.content}`).join("\n")
+    : "";
+
+  const userMessage = `${conversationContext}\n\n相談者の質問: ${question}`;
+
+  return { systemInstruction, userMessage };
+}
+
+function buildNumerologyPrompt(question: string, birthDate: string | undefined, messages: FortuneRequest["messages"]): {
+  systemInstruction: string;
+  userMessage: string;
+} {
+  let lifePathInfo = "";
+  if (birthDate) {
+    // ライフパスナンバーを計算
+    const digits = birthDate.replace(/\D/g, "");
+    let sum = 0;
+    for (const d of digits) {
+      sum += parseInt(d, 10);
+    }
+    // マスターナンバー（11, 22, 33）をチェックしながら1桁にする
+    while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
+      let newSum = 0;
+      while (sum > 0) {
+        newSum += sum % 10;
+        sum = Math.floor(sum / 10);
+      }
+      sum = newSum;
+    }
+    lifePathInfo = `生年月日：${birthDate}\nライフパスナンバー：${sum}`;
+  }
+
+  const systemInstruction = `あなたは親しみやすい占い師で、数秘術のスペシャリストです。
+丁寧なですます口調で、相談者に寄り添うように話してください。
+絵文字は使わないでください。マークダウン記法も使わないでください。
+回答は300〜500文字程度にしてください。
+
+${lifePathInfo}
+
+ライフパスナンバーの意味を詳しく解説してください。
+この数字が示す性格の特徴、人生の使命、才能について占い結果を伝えてください。
+恋愛・仕事・人間関係について具体的なアドバイスも入れてください。
+最後に前向きな一言を添えてください。`;
+
+  const conversationContext = messages.length > 0
+    ? "\n\n【これまでの会話】\n" + messages.map(m => `${m.role === "user" ? "相談者" : "占い師"}: ${m.content}`).join("\n")
+    : "";
+
+  const userMessage = `${conversationContext}\n\n相談者の質問: ${question}`;
+
+  return { systemInstruction, userMessage };
+}
+
 // ===== フォールバック用モック生成 =====
 
 function generateFallbackText(request: FortuneRequest): string {
@@ -207,6 +283,10 @@ function generateFallbackText(request: FortuneRequest): string {
       return generateCompatibilityReading(request.question, request.person1, request.person2);
     case "mbti":
       return generateMbtiReading(request.question, request.mbtiType);
+    case "dream":
+      return generateDreamReading(request.question, request.dreamKeyword);
+    case "numerology":
+      return generateNumerologyReading(request.question, request.birthDate);
     default:
       return "申し訳ございません。対応していない占いの種類です。";
   }
@@ -232,7 +312,7 @@ function createMockStream(text: string): ReadableStream<Uint8Array> {
 // ===== バリデーション =====
 
 function isValidFortuneType(type: string): type is FortuneType {
-  return ["tarot", "zodiac", "compatibility", "mbti"].includes(type);
+  return ["tarot", "zodiac", "compatibility", "mbti", "dream", "numerology"].includes(type);
 }
 
 // ===== メインハンドラー =====
@@ -257,7 +337,7 @@ export async function POST(req: Request) {
     // バリデーション
     if (!body.type || !isValidFortuneType(body.type)) {
       return Response.json(
-        { error: "占いの種類（tarot / zodiac / compatibility / mbti）を指定してください。" },
+        { error: "占いの種類を指定してください。" },
         { status: 400 },
       );
     }
@@ -305,6 +385,9 @@ export async function POST(req: Request) {
       person1: sanitize(body.person1, 50),
       person2: sanitize(body.person2, 50),
       mbtiType: sanitize(body.mbtiType, 10),
+      dreamKeyword: sanitize(body.dreamKeyword, 100),
+      birthDate: sanitize(body.birthDate, 20),
+      tarotTheme: sanitize(body.tarotTheme, 20),
     };
 
     // Gemini APIが使えない場合はモックにフォールバック
@@ -325,7 +408,7 @@ export async function POST(req: Request) {
 
     switch (request.type) {
       case "tarot": {
-        const prompt = buildTarotPrompt(request.question, request.messages);
+        const prompt = buildTarotPrompt(request.question, request.messages, request.tarotTheme);
         systemInstruction = prompt.systemInstruction;
         userMessage = prompt.userMessage;
         break;
@@ -344,6 +427,18 @@ export async function POST(req: Request) {
       }
       case "mbti": {
         const prompt = buildMbtiPrompt(request.question, request.mbtiType, request.messages);
+        systemInstruction = prompt.systemInstruction;
+        userMessage = prompt.userMessage;
+        break;
+      }
+      case "dream": {
+        const prompt = buildDreamPrompt(request.question, request.dreamKeyword, request.messages);
+        systemInstruction = prompt.systemInstruction;
+        userMessage = prompt.userMessage;
+        break;
+      }
+      case "numerology": {
+        const prompt = buildNumerologyPrompt(request.question, request.birthDate, request.messages);
         systemInstruction = prompt.systemInstruction;
         userMessage = prompt.userMessage;
         break;

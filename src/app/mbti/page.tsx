@@ -6,6 +6,7 @@ import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { mbtiTypes, mbtiQuestions } from "@/lib/fortune-data";
+import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 
 type Phase = "select" | "quiz" | "chat";
 
@@ -14,6 +15,7 @@ export default function MbtiPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<("A" | "B")[]>([]);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [resultSummary, setResultSummary] = useState("");
 
   function calculateMbtiType(ans: ("A" | "B")[]): string {
     const scores = { EI: 0, SN: 0, TF: 0, JP: 0 };
@@ -67,6 +69,13 @@ export default function MbtiPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0408]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([
+          webApplicationJsonLd({ name: "MBTI性格診断", description: "16タイプの性格診断であなたをAIが分析しアドバイスします", path: "/mbti" }),
+          breadcrumbJsonLd([{ name: "MBTI診断", path: "/mbti" }]),
+        ]) }}
+      />
       <div className="mx-auto max-w-4xl px-4 py-12">
         {/* タイトル */}
         <div className="mb-10 text-center">
@@ -229,8 +238,16 @@ export default function MbtiPage() {
               mbtiType={selectedType}
               historyLabel={`MBTI診断 - ${typeData.code}（${typeData.name}）`}
               initialMessage={`あなたのMBTIタイプは ${typeData.code}（${typeData.name}）ですね！\n\n${typeData.traits}という特徴があります。\n\n何でもお聞きください。恋愛、仕事、人間関係...${typeData.code}タイプの視点からアドバイスいたします。`}
+              onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
             />
-            <ShareButtons title="MBTI診断結果" />
+            <ShareButtons
+              title="MBTI診断結果"
+              resultData={resultSummary ? {
+                fortuneType: "mbti",
+                label: `${typeData.code} ${typeData.name}`,
+                summary: resultSummary,
+              } : undefined}
+            />
 
             <button
               onClick={() => {

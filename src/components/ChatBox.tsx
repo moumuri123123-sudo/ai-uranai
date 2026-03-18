@@ -10,16 +10,20 @@ type Message = {
 };
 
 type ChatBoxProps = {
-  fortuneType: "tarot" | "zodiac" | "compatibility" | "mbti";
+  fortuneType: "tarot" | "zodiac" | "compatibility" | "mbti" | "dream" | "numerology";
   initialMessage?: string;
   zodiacSign?: string;
   person1?: string;
   person2?: string;
   mbtiType?: string;
+  dreamKeyword?: string;
+  birthDate?: string;
+  tarotTheme?: string;
   historyLabel?: string;
+  onFirstResponse?: (response: string) => void;
 };
 
-export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, historyLabel }: ChatBoxProps) {
+export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, historyLabel, onFirstResponse }: ChatBoxProps) {
   const [messages, setMessages] = useState<Message[]>(() => {
     if (initialMessage) {
       return [{ role: "assistant", content: initialMessage }];
@@ -72,6 +76,9 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
           person1,
           person2,
           mbtiType,
+          dreamKeyword,
+          birthDate,
+          tarotTheme,
         }),
       });
 
@@ -113,6 +120,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
           firstResponse: assistantContent,
         });
         historySavedRef.current = true;
+        onFirstResponse?.(assistantContent);
       }
     } catch {
       setMessages((prev) => [

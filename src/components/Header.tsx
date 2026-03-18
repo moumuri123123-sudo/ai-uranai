@@ -9,6 +9,8 @@ const navLinks = [
   { href: "/zodiac", label: "星座占い" },
   { href: "/compatibility", label: "相性占い" },
   { href: "/mbti", label: "MBTI診断" },
+  { href: "/dream", label: "夢占い" },
+  { href: "/numerology", label: "数秘術" },
   { href: "/blog", label: "コラム" },
   { href: "/history", label: "履歴" },
 ];

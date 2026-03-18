@@ -1,6 +1,6 @@
 export interface HistoryEntry {
   id: string;
-  fortuneType: "tarot" | "zodiac" | "compatibility" | "mbti";
+  fortuneType: "tarot" | "zodiac" | "compatibility" | "mbti" | "dream" | "numerology";
   label: string;
   firstResponse: string;
   timestamp: string;

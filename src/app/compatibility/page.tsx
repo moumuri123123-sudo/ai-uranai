@@ -5,12 +5,14 @@ import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
+import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 
 export default function CompatibilityPage() {
   const [phase, setPhase] = useState<"input" | "chat">("input");
   const [person1, setPerson1] = useState("");
   const [person2, setPerson2] = useState("");
   const [submittedNames, setSubmittedNames] = useState({ p1: "", p2: "" });
+  const [resultSummary, setResultSummary] = useState("");
 
   const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +24,13 @@ export default function CompatibilityPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0408]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([
+          webApplicationJsonLd({ name: "相性占い", description: "気になるあの人との相性をAIが占います", path: "/compatibility" }),
+          breadcrumbJsonLd([{ name: "相性占い", path: "/compatibility" }]),
+        ]) }}
+      />
       <div className="mx-auto max-w-4xl px-4 py-12">
         {/* ヘッダー */}
         <div className="mb-10 text-center">
@@ -135,8 +144,16 @@ export default function CompatibilityPage() {
               person2={submittedNames.p2}
               historyLabel={`相性占い - ${submittedNames.p1} & ${submittedNames.p2}`}
               initialMessage={`${submittedNames.p1}さんと${submittedNames.p2}さんの相性占いですね。\n\n二人について、もう少し教えていただけますか？ 例えば：\n- どんな関係ですか？（恋人、友人、同僚など）\n- 気になっていることはありますか？\n\n自由にお話しください。星が二人の相性を読み解きます。`}
+              onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
             />
-            <ShareButtons title="相性占い結果" />
+            <ShareButtons
+              title="相性占い結果"
+              resultData={resultSummary ? {
+                fortuneType: "compatibility",
+                label: `${submittedNames.p1} & ${submittedNames.p2}`,
+                summary: resultSummary,
+              } : undefined}
+            />
           </div>
         )}
         {/* 広告 */}

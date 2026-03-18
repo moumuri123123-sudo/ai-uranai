@@ -1,5 +1,5 @@
 type FortuneIconProps = {
-  type: "tarot" | "zodiac" | "compatibility" | "mbti" | "ai" | "clock" | "lock";
+  type: "tarot" | "zodiac" | "compatibility" | "mbti" | "dream" | "numerology" | "ai" | "clock" | "lock";
   size?: "sm" | "md" | "lg";
   className?: string;
 };
@@ -9,6 +9,8 @@ const icons: Record<string, { char: string; color: string; glow: string }> = {
   zodiac: { char: "星", color: "text-gold", glow: "shadow-gold/30" },
   compatibility: { char: "縁", color: "text-neon-pink", glow: "shadow-neon-pink/30" },
   mbti: { char: "心", color: "text-neon-cyan", glow: "shadow-neon-cyan/30" },
+  dream: { char: "夢", color: "text-neon-purple", glow: "shadow-neon-purple/30" },
+  numerology: { char: "数", color: "text-neon-amber", glow: "shadow-neon-amber/30" },
   ai: { char: "智", color: "text-gold", glow: "shadow-gold/30" },
   clock: { char: "刻", color: "text-gold", glow: "shadow-gold/30" },
   lock: { char: "秘", color: "text-gold", glow: "shadow-gold/30" },

@@ -6,6 +6,7 @@ import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { zodiacSigns } from "@/lib/fortune-data";
+import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 
 const zodiacList = Object.entries(zodiacSigns).map(([key, sign]) => ({
   key,
@@ -29,11 +30,19 @@ const zodiacEmojis: Record<string, string> = {
 
 export default function ZodiacPage() {
   const [selectedSign, setSelectedSign] = useState<string | null>(null);
+  const [resultSummary, setResultSummary] = useState("");
 
   const selected = selectedSign ? zodiacSigns[selectedSign] : null;
 
   return (
     <div className="min-h-screen bg-[#0a0408]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([
+          webApplicationJsonLd({ name: "星座占い", description: "12星座から今日の運勢をAIが詳しく鑑定します", path: "/zodiac" }),
+          breadcrumbJsonLd([{ name: "星座占い", path: "/zodiac" }]),
+        ]) }}
+      />
       <div className="mx-auto max-w-4xl px-4 py-12">
         {/* ヘッダー */}
         <div className="mb-10 text-center">
@@ -96,8 +105,16 @@ export default function ZodiacPage() {
               zodiacSign={selectedSign}
               historyLabel={`星座占い - ${selected.name}`}
               initialMessage={`${selected.name}（${selected.period}）のあなたですね。${selected.element}のエレメントに属し、${selected.traits}とされています。\n\nどのようなことが気になりますか？ 今日の運勢、恋愛運、仕事運など、何でもお聞きください。`}
+              onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
             />
-            <ShareButtons title="星座占い結果" />
+            <ShareButtons
+              title="星座占い結果"
+              resultData={resultSummary ? {
+                fortuneType: "zodiac",
+                label: selected.name,
+                summary: resultSummary,
+              } : undefined}
+            />
           </div>
         )}
         {/* 広告 */}

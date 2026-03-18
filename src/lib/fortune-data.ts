@@ -1,6 +1,6 @@
 // ===== 型定義 =====
 
-export type FortuneType = "tarot" | "zodiac" | "compatibility" | "mbti";
+export type FortuneType = "tarot" | "zodiac" | "compatibility" | "mbti" | "dream" | "numerology";
 
 export interface FortuneRequest {
   type: FortuneType;
@@ -10,6 +10,9 @@ export interface FortuneRequest {
   person1?: string;
   person2?: string;
   mbtiType?: string;
+  dreamKeyword?: string;
+  birthDate?: string;
+  tarotTheme?: string;
 }
 
 export interface TarotCard {
@@ -196,6 +199,24 @@ export function generateMbtiReading(question: string, mbtiType?: string): string
     `${typeData.code}（${typeData.name}）さん、こんにちは！\n\n${typeData.traits}というのがあなたの持ち味だね。\n\n「${question}」についてなんだけど...\n\n自分のタイプを知っているのは大きなアドバンテージだよ。${typeData.code}ならではの視点や感性を大切にして進んでいこう！\n\nちなみに、${compatible} との相性がバッチリだから、周りにいたら仲良くなってみて！`,
   ];
 
+  return pickRandom(readings);
+}
+
+export function generateDreamReading(question: string, dreamKeyword?: string): string {
+  const keyword = dreamKeyword || "不思議な夢";
+  const readings = [
+    `「${keyword}」の夢を見たんだね。\n\nこの夢にはあなたの深層心理が映し出されていますよ。${keyword}は、心の中で変化を求めているサインかもしれません。\n\n「${question}」についてですが、この夢は前向きな変化の前触れです。自分の直感を信じて、新しい一歩を踏み出してみてください。きっといい方向に進みますよ。`,
+    `「${keyword}」の夢ですか、興味深いですね。\n\nこの夢は、あなたの心が何か大切なことを伝えようとしている証拠です。${keyword}には自己成長や内面の声というメッセージが込められています。\n\n「${question}」についてですが、今は自分と向き合う時期です。焦らずに、心の声に耳を傾けてみてくださいね。`,
+  ];
+  return pickRandom(readings);
+}
+
+export function generateNumerologyReading(question: string, birthDate?: string): string {
+  const date = birthDate || "不明";
+  const readings = [
+    `生年月日${date}から導き出されたあなたの運命の数字を見てみましょう。\n\nあなたには独自の才能と使命があります。この数字はあなたの人生の道しるべとなるものです。\n\n「${question}」についてですが、数秘術が示すのは「自分らしさを大切に」ということ。周りに流されず、あなた自身のペースで進むことが幸運を引き寄せます。`,
+    `${date}生まれのあなたの数秘を読み解きますね。\n\nあなたの持つエネルギーはとてもユニークです。この数字が示す特性を活かすことで、人生がより豊かになりますよ。\n\n「${question}」についてですが、今のあなたに必要なのは自分への信頼です。数秘が教えてくれるのは、あなたにはすでに答えが備わっているということ。自信を持って進んでください。`,
+  ];
   return pickRandom(readings);
 }
 

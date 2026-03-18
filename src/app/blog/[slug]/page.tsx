@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { blogArticles, getArticleBySlug } from "@/lib/blog-data";
 import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -34,6 +35,8 @@ const categoryLinks: Record<string, { label: string; path: string }> = {
   zodiac: { label: "星座占いをする", path: "/zodiac" },
   compatibility: { label: "相性占いをする", path: "/compatibility" },
   mbti: { label: "MBTI診断をする", path: "/mbti" },
+  dream: { label: "夢占いをする", path: "/dream" },
+  numerology: { label: "数秘術をする", path: "/numerology" },
   general: { label: "占いを始める", path: "/" },
 };
 
@@ -46,6 +49,22 @@ export default async function BlogDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#0a0408]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([
+          articleJsonLd({
+            title: article.title,
+            description: article.description,
+            slug: article.slug,
+            publishedAt: article.publishedAt,
+            updatedAt: article.publishedAt,
+          }),
+          breadcrumbJsonLd([
+            { name: "コラム", path: "/blog" },
+            { name: article.title, path: `/blog/${article.slug}` },
+          ]),
+        ]) }}
+      />
       <div className="mx-auto max-w-3xl px-4 py-12">
         <div className="mb-6 text-sm text-muted">
           <Link
