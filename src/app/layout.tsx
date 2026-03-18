@@ -28,7 +28,7 @@ export const metadata: Metadata = {
       "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。",
   },
   verification: {
-    google: "hfq3il8cfvpzkX_2NtHGNIwa_IZRmjgExGh9C-1Btcw",
+    google: "pvyTPNU65t3trS8CreAG65RLQMR_luDhgPBpWUbYTIk",
   },
 };
 
