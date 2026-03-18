@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ai-uranai-ochre.vercel.app"),
+  metadataBase: new URL("https://uranaidokoro.com"),
   title: {
     default: "占処 ── AI占い師",
     template: "%s | 占処 AI占い",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ja_JP",
-    url: "https://ai-uranai-ochre.vercel.app",
+    url: "https://uranaidokoro.com",
     siteName: "占処 AI占い",
     title: "占処 ── AI占い師",
     description:

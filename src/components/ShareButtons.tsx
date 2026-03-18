@@ -17,7 +17,7 @@ export default function ShareButtons({ title, resultData }: ShareButtonsProps) {
   const baseUrl =
     typeof window !== "undefined"
       ? window.location.origin
-      : "https://ai-uranai-ochre.vercel.app";
+      : "https://uranaidokoro.com";
 
   const shareUrl = resultData
     ? buildShareUrl(baseUrl, resultData)

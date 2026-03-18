@@ -1,4 +1,4 @@
-const BASE_URL = "https://ai-uranai-ochre.vercel.app";
+const BASE_URL = "https://uranaidokoro.com";
 const SITE_NAME = "占処 AI占い";
 
 export function websiteJsonLd() {
