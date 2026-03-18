@@ -117,6 +117,12 @@ export default function ZodiacPage() {
             />
           </div>
         )}
+        {/* 注意書き */}
+        <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
+          <p className="text-xs leading-relaxed text-muted/70">
+            ※ この占い結果はAIが生成したエンターテインメントであり、科学的根拠はありません。医療・健康・法律・金銭に関する重大な判断は、必ず専門家にご相談ください。結果を過度に信頼したり、依存しないようご注意ください。
+          </p>
+        </div>
         {/* 広告 */}
         <AdBanner slot="zodiac-1" />
       </div>

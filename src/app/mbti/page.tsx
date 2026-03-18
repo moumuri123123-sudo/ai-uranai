@@ -266,7 +266,7 @@ export default function MbtiPage() {
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
           <p className="text-xs leading-relaxed text-muted/70">
-            ※ この診断は簡易的なものであり、公式のMBTI診断ではありません。MBTI（Myers-Briggs Type Indicator）はThe Myers-Briggs Companyの商標です。正式な診断は認定プラクティショナーのもとで受けることをおすすめします。本診断はエンターテインメント目的であり、結果を過度に信頼しないようご注意ください。
+            ※ この診断は簡易的なものであり、公式のMBTI&reg;診断ではありません。MBTI&reg;（Myers-Briggs Type Indicator）はThe Myers-Briggs Companyの登録商標です。正式な診断は認定プラクティショナーのもとで受けることをおすすめします。本診断はAIが生成したエンターテインメントであり、科学的根拠はありません。結果を過度に信頼したり、依存しないようご注意ください。
           </p>
         </div>
         {/* 広告 */}

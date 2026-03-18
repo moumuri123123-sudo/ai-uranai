@@ -40,6 +40,9 @@ export default function AdBanner({ slot, format = "auto" }: AdBannerProps) {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-8">
+      <p className="mb-1 text-center text-[10px] tracking-widest text-muted/50">
+        スポンサーリンク
+      </p>
       <div ref={adRef}>
         <ins
           className="adsbygoogle"

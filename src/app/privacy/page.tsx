@@ -87,7 +87,12 @@ export default function PrivacyPage() {
                 <span className="font-semibold text-foreground">AI占い結果の生成:</span>{" "}
                 本サービスは占い結果の生成にGoogle Gemini APIを使用しています。
                 ユーザーが入力したチャット内容は、AI による回答生成のため Google LLC のサーバーに送信されます。
-                Google のデータ取扱いについては、Google のプライバシーポリシーをご参照ください。
+                Google のデータ取扱いについては、
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">Google プライバシーポリシー</a>
+                および
+                <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">Gemini API 利用規約</a>
+                をご参照ください。
+                センシティブな個人情報の入力はお控えください。
               </li>
               <li>法令に基づく開示が求められた場合</li>
               <li>人の生命、身体または財産の保護のために必要がある場合</li>
@@ -185,7 +190,7 @@ export default function PrivacyPage() {
 
           {/* フッター情報 */}
           <div className="border-t border-border pt-6 text-center">
-            <p className="text-muted">最終更新日: 2025年1月1日</p>
+            <p className="text-muted">最終更新日: 2026年3月18日</p>
             <p className="mt-4">
               <Link
                 href="/terms"
