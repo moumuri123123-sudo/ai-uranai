@@ -3,6 +3,7 @@ import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
 import DailyFortune from "@/components/DailyFortune";
 import { websiteJsonLd } from "@/lib/jsonld";
+import { blogArticles } from "@/lib/blog-data";
 
 export default function Home() {
   return (
@@ -165,6 +166,59 @@ export default function Home() {
 
       {/* 広告スペース */}
       <AdBanner slot="top-1" format="horizontal" />
+
+      {/* 新着コラム */}
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:py-24">
+        <h2 className="font-yuji mb-12 text-center text-2xl tracking-widest text-warm sm:text-3xl">
+          ━━ 新着コラム ━━
+        </h2>
+
+        <div className="grid gap-6 sm:grid-cols-3">
+          {[...blogArticles]
+            .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+            .slice(0, 3)
+            .map((article) => (
+              <Link
+                key={article.slug}
+                href={`/blog/${article.slug}`}
+                className="group"
+              >
+                <div className="card-mystical flex h-full flex-col rounded-2xl border border-border bg-surface p-6">
+                  <div className="mb-3">
+                    {article.category !== "general" ? (
+                      <FortuneIcon type={article.category} size="md" />
+                    ) : (
+                      <FortuneIcon type="ai" size="md" />
+                    )}
+                  </div>
+                  <h3 className="mb-2 text-base font-bold text-foreground transition-colors group-hover:text-gold line-clamp-2">
+                    {article.title}
+                  </h3>
+                  <p className="mb-4 flex-1 text-sm text-muted line-clamp-2">
+                    {article.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted">
+                      {article.publishedAt}
+                    </span>
+                    <span className="text-sm text-gold/70 group-hover:text-gold">
+                      読む &rarr;
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link
+            href="/blog"
+            className="inline-block rounded-full border-2 border-gold/50 bg-transparent px-6 py-2 text-sm text-gold/80 transition-all hover:border-gold hover:text-gold hover:bg-gold/5"
+          >
+            コラム一覧を見る &rarr;
+          </Link>
+        </div>
+      </section>
 
       {/* 特徴セクション */}
       <section className="border-t border-border bg-[#0a0408] px-4 py-16 sm:py-24">
