@@ -1,8 +1,27 @@
-import { getDailyFortune } from "@/lib/daily-fortune";
+"use client";
+
+import { useState, useEffect } from "react";
+import { getDailyFortune, type DailyFortuneData } from "@/lib/daily-fortune";
 import DailyFortuneShare from "./DailyFortuneShare";
 
 export default function DailyFortune() {
-  const fortune = getDailyFortune();
+  const [fortune, setFortune] = useState<DailyFortuneData | null>(null);
+
+  useEffect(() => {
+    setFortune(getDailyFortune());
+  }, []);
+
+  if (!fortune) {
+    return (
+      <section className="mx-auto max-w-2xl px-4 py-12 sm:py-16">
+        <div className="rounded-2xl border border-gold/30 bg-surface p-6 sm:p-8 text-center shadow-lg shadow-gold/10">
+          <p className="text-xs text-muted mb-1">本日の運勢</p>
+          <div className="h-8 w-32 mx-auto mb-6 rounded bg-gold/10 animate-pulse" />
+          <div className="h-4 w-48 mx-auto mb-4 rounded bg-gold/10 animate-pulse" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="mx-auto max-w-2xl px-4 py-12 sm:py-16">
