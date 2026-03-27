@@ -76,7 +76,19 @@ export default function RootLayout({
                   ※ 占い結果はエンターテインメント目的です。重要な判断は専門家にご相談ください。
                 </p>
               </div>
-              <div className="flex gap-6">
+              <div className="flex flex-wrap justify-center gap-6">
+                <Link
+                  href="/about"
+                  className="text-sm text-muted transition-colors hover:text-gold"
+                >
+                  このサイトについて
+                </Link>
+                <Link
+                  href="/contact"
+                  className="text-sm text-muted transition-colors hover:text-gold"
+                >
+                  お問い合わせ
+                </Link>
                 <Link
                   href="/terms"
                   className="text-sm text-muted transition-colors hover:text-gold"
