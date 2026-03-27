@@ -15,7 +15,7 @@ export default function ContactPage() {
         </h1>
 
         <div className="space-y-8 text-sm leading-relaxed text-foreground/80">
-          <section className="rounded-xl border border-border bg-surface p-6">
+          <section className="rounded-xl border border-border bg-surface p-6 text-center">
             <p>
               「占処 AI占い」に関するご質問・ご意見・不具合のご報告など、
               お気軽にお問い合わせください。
@@ -45,11 +45,11 @@ export default function ContactPage() {
             </p>
           </section>
 
-          <section className="rounded-xl border border-border bg-surface p-6">
+          <section className="rounded-xl border border-border bg-surface p-6 text-center">
             <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
               お問い合わせの前に
             </h2>
-            <ul className="list-disc space-y-3 pl-5">
+            <ul className="space-y-3 text-left mx-auto max-w-lg list-disc pl-5">
               <li>
                 占い結果の内容に関するご質問は、AIによる自動生成のため個別の回答が難しい場合がございます。
               </li>
