@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
 import DailyFortune from "@/components/DailyFortune";
@@ -14,6 +15,14 @@ export default function Home() {
       />
       {/* ヒーローセクション */}
       <section className="relative overflow-hidden bg-[#0a0408] px-4 py-24 text-center sm:py-32">
+        {/* 背景画像 */}
+        <Image
+          src="/images/hero-bg.png"
+          alt=""
+          fill
+          className="object-cover opacity-30"
+          priority
+        />
         {/* ビネット背景 */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#0a0408_80%)]" />
 
@@ -50,8 +59,12 @@ export default function Home() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {/* タロットカード */}
           <Link href="/tarot" className="group">
-            <div className="card-mystical card-glow-red flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4"><FortuneIcon type="tarot" size="lg" /></div>
+            <div className="card-mystical card-glow-red flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
+              <div className="relative h-36 w-full">
+                <Image src="/images/tarot.png" alt="タロット占い" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+              </div>
+              <div className="flex flex-1 flex-col p-6 pt-4">
+              <div className="mb-3"><FortuneIcon type="tarot" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-neon-red transition-colors group-hover:brightness-125">
                 タロット占い
               </h3>
@@ -64,13 +77,18 @@ export default function Home() {
                   &rarr;
                 </span>
               </div>
+              </div>
             </div>
           </Link>
 
           {/* 星座占いカード */}
           <Link href="/zodiac" className="group">
-            <div className="card-mystical card-glow-gold flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4"><FortuneIcon type="zodiac" size="lg" /></div>
+            <div className="card-mystical card-glow-gold flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
+              <div className="relative h-36 w-full">
+                <Image src="/images/zodiac.png" alt="星座占い" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+              </div>
+              <div className="flex flex-1 flex-col p-6 pt-4">
+              <div className="mb-3"><FortuneIcon type="zodiac" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-gold transition-colors group-hover:brightness-125">
                 星座占い
               </h3>
@@ -83,13 +101,18 @@ export default function Home() {
                   &rarr;
                 </span>
               </div>
+              </div>
             </div>
           </Link>
 
           {/* 相性占いカード */}
           <Link href="/compatibility" className="group">
-            <div className="card-mystical card-glow-pink flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4"><FortuneIcon type="compatibility" size="lg" /></div>
+            <div className="card-mystical card-glow-pink flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
+              <div className="relative h-36 w-full">
+                <Image src="/images/compatibility.png" alt="相性占い" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+              </div>
+              <div className="flex flex-1 flex-col p-6 pt-4">
+              <div className="mb-3"><FortuneIcon type="compatibility" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-neon-pink transition-colors group-hover:brightness-125">
                 相性占い
               </h3>
@@ -102,13 +125,18 @@ export default function Home() {
                   &rarr;
                 </span>
               </div>
+              </div>
             </div>
           </Link>
 
           {/* MBTI診断カード */}
           <Link href="/mbti" className="group">
-            <div className="card-mystical card-glow-cyan flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4"><FortuneIcon type="mbti" size="lg" /></div>
+            <div className="card-mystical card-glow-cyan flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
+              <div className="relative h-36 w-full">
+                <Image src="/images/mbti.png" alt="MBTI診断" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+              </div>
+              <div className="flex flex-1 flex-col p-6 pt-4">
+              <div className="mb-3"><FortuneIcon type="mbti" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-neon-cyan transition-colors group-hover:brightness-125">
                 MBTI診断
               </h3>
@@ -121,13 +149,18 @@ export default function Home() {
                   &rarr;
                 </span>
               </div>
+              </div>
             </div>
           </Link>
 
           {/* 夢占いカード */}
           <Link href="/dream" className="group">
-            <div className="card-mystical card-glow-purple flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4"><FortuneIcon type="dream" size="lg" /></div>
+            <div className="card-mystical card-glow-purple flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
+              <div className="relative h-36 w-full">
+                <Image src="/images/dream.png" alt="夢占い" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+              </div>
+              <div className="flex flex-1 flex-col p-6 pt-4">
+              <div className="mb-3"><FortuneIcon type="dream" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-neon-purple transition-colors group-hover:brightness-125">
                 夢占い
               </h3>
@@ -140,13 +173,18 @@ export default function Home() {
                   &rarr;
                 </span>
               </div>
+              </div>
             </div>
           </Link>
 
           {/* 数秘術カード */}
           <Link href="/numerology" className="group">
-            <div className="card-mystical card-glow-amber flex h-full flex-col rounded-2xl border border-border bg-surface p-8">
-              <div className="mb-4"><FortuneIcon type="numerology" size="lg" /></div>
+            <div className="card-mystical card-glow-amber flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
+              <div className="relative h-36 w-full">
+                <Image src="/images/numerology.png" alt="数秘術" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+              </div>
+              <div className="flex flex-1 flex-col p-6 pt-4">
+              <div className="mb-3"><FortuneIcon type="numerology" size="lg" /></div>
               <h3 className="mb-2 text-xl font-bold text-neon-amber transition-colors group-hover:brightness-125">
                 数秘術
               </h3>
@@ -158,6 +196,7 @@ export default function Home() {
                 <span className="transition-transform group-hover:translate-x-1">
                   &rarr;
                 </span>
+              </div>
               </div>
             </div>
           </Link>
