@@ -33,10 +33,10 @@ export default function ContactPage() {
             <p className="text-base text-foreground">
               メール：
               <a
-                href="mailto:uranaidokoro.contact@gmail.com"
+                href="mailto:oyasumi6964@gmail.com"
                 className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
               >
-                uranaidokoro.contact@gmail.com
+                oyasumi6964@gmail.com
               </a>
             </p>
             <p className="mt-4 text-xs text-muted">

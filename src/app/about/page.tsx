@@ -84,8 +84,8 @@ export default function AboutPage() {
               </div>
               <div className="flex">
                 <span className="w-28 shrink-0 text-muted">お問い合わせ</span>
-                <a href="mailto:uranaidokoro.contact@gmail.com" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">
-                  uranaidokoro.contact@gmail.com
+                <a href="mailto:oyasumi6964@gmail.com" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">
+                  oyasumi6964@gmail.com
                 </a>
               </div>
               <div className="flex">
