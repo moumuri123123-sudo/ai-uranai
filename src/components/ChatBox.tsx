@@ -19,11 +19,14 @@ type ChatBoxProps = {
   dreamKeyword?: string;
   birthDate?: string;
   tarotTheme?: string;
+  tarotCard?: string;
+  tarotReversed?: boolean;
   historyLabel?: string;
   onFirstResponse?: (response: string) => void;
+  autoStart?: boolean;
 };
 
-export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, historyLabel, onFirstResponse }: ChatBoxProps) {
+export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, tarotCard, tarotReversed, historyLabel, onFirstResponse, autoStart }: ChatBoxProps) {
   const [messages, setMessages] = useState<Message[]>(() => {
     if (initialMessage) {
       return [{ role: "assistant", content: initialMessage }];
@@ -52,6 +55,63 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
     }
   }, [input]);
 
+  // 自動鑑定：マウント時にAPIを呼んで結果をストリーミング表示
+  const autoStartedRef = useRef(false);
+  useEffect(() => {
+    if (!autoStart || autoStartedRef.current) return;
+    autoStartedRef.current = true;
+
+    const runAutoReading = async () => {
+      setIsLoading(true);
+      setMessages([{ role: "assistant", content: "" }]);
+
+      try {
+        const res = await fetch("/api/fortune", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: fortuneType,
+            question: "__auto__",
+            messages: [],
+            tarotTheme,
+            tarotCard,
+            tarotReversed,
+          }),
+        });
+
+        if (!res.ok) throw new Error("APIエラー");
+
+        const reader = res.body?.getReader();
+        if (!reader) throw new Error("ストリーミング非対応");
+
+        const decoder = new TextDecoder();
+        let content = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          content += decoder.decode(value, { stream: true });
+          setMessages([{ role: "assistant", content }]);
+        }
+
+        if (content && historyLabel) {
+          addHistory({ fortuneType, label: historyLabel, firstResponse: content });
+          historySavedRef.current = true;
+          onFirstResponse?.(content);
+        }
+      } catch {
+        setMessages([{
+          role: "assistant",
+          content: "申し訳ございません。占いの途中でエラーが発生しました。もう一度お試しください。",
+        }]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    runAutoReading();
+  }, [autoStart, fortuneType, tarotTheme, tarotCard, tarotReversed, historyLabel, onFirstResponse]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -79,6 +139,8 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
           dreamKeyword,
           birthDate,
           tarotTheme,
+          tarotCard,
+          tarotReversed,
         }),
       });
 

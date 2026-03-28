@@ -198,8 +198,10 @@ export default function TarotPage() {
             <ChatBox
               fortuneType="tarot"
               tarotTheme={selectedTheme || undefined}
+              tarotCard={drawnCard.name}
+              tarotReversed={drawnCard.reversed}
               historyLabel={`タロット占い - ${drawnCard.name} ${drawnCard.reversed ? "逆位置" : "正位置"}${selectedTheme ? ` (${selectedTheme})` : ""}`}
-              initialMessage={`あなたが引いたカードは『${drawnCard.name}』の${drawnCard.reversed ? "逆位置" : "正位置"}です。${selectedTheme ? `\n\nテーマ「${selectedTheme}」について占います。` : ""}\n\nどのようなことが気になりますか？ 詳しくお聞かせください。`}
+              autoStart
               onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
             />
             <ShareButtons

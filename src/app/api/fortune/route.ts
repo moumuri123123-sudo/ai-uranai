@@ -75,34 +75,59 @@ function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
 
 // ===== プロンプト構築 =====
 
-function buildTarotPrompt(question: string, messages: FortuneRequest["messages"], tarotTheme?: string): {
+function buildTarotPrompt(question: string, messages: FortuneRequest["messages"], tarotTheme?: string, tarotCard?: string, tarotReversed?: boolean): {
   systemInstruction: string;
   userMessage: string;
 } {
-  const card = pickRandom(tarotCards);
-  const reversed = isReversed();
-  const position = reversed ? "逆位置" : "正位置";
-  const meaning = reversed ? card.reversedMeaning : card.meaning;
+  // 画面から送られたカード情報を使う。なければランダムに引く
+  let cardName: string;
+  let position: string;
+  let meaning: string;
+
+  if (tarotCard) {
+    const foundCard = tarotCards.find(c => c.name === tarotCard);
+    const reversed = tarotReversed ?? false;
+    cardName = tarotCard;
+    position = reversed ? "逆位置" : "正位置";
+    meaning = foundCard
+      ? (reversed ? foundCard.reversedMeaning : foundCard.meaning)
+      : "";
+  } else {
+    const card = pickRandom(tarotCards);
+    const reversed = isReversed();
+    cardName = card.name;
+    position = reversed ? "逆位置" : "正位置";
+    meaning = reversed ? card.reversedMeaning : card.meaning;
+  }
+
   const themeLabel = tarotTheme || "総合";
+  const isAutoReading = messages.length === 0;
 
-  const systemInstruction = `あなたは親しみやすい占い師です。タロット占いを担当しています。
+  const systemInstruction = `あ��たは親しみやすい占い師です。タロット占い���担当しています。
 丁寧なですます口調で、相談者に寄り添うように話してください。
-絵文字は使わないでください。マークダウン記法も使わないでください。
-回答は300〜500文字程度にしてください。
+絵文字は使わないでください。マーク���ウン記法も使わないでく��さい。
+回答は300〜500文字程度にし���ください。
 
-今回引いたカード：「${card.name}」の${position}
+今���引いたカード：「${cardName}」の${position}
 キーワード：${meaning}
-占いのテーマ：${themeLabel}
+��いのテーマ：${themeLabel}
 
-このカードの意味を踏まえて、特に「${themeLabel}」の観点から相談者の質問に対して占い結果を伝えてください。
+${isAutoReading
+    ? `相談者がカードを引きました。このカードの意味を読み解き、「${themeLabel}」の観点から占い結果を伝えてください。
+まず「${cardName}」の${position}がどのようなカードかを説明し、それが「${themeLabel}」に���いて何を意味するか詳しく鑑定してください。
 カード名と正逆位置、キーワードは必ず回答に含めてください。
-最後に前向きな一言を添えてください。`;
+��後に前向きな���言を添えてください。`
+    : `このカードの意味を踏まえて���特に「${themeLabel}」の観点から相談者の質問に対し���占い結果を伝えてください。
+カード名と正逆位置、キーワードは必ず回答に含めてく��さい。
+最後に前向きな一言を添えてください。`}`;
 
   const conversationContext = messages.length > 0
     ? "\n\n【これまでの会話】\n" + messages.map(m => `${m.role === "user" ? "相談者" : "占い師"}: ${m.content}`).join("\n")
     : "";
 
-  const userMessage = `${conversationContext}\n\n相談者の質問: ${question}`;
+  const userMessage = isAutoReading
+    ? `カードを引きました。「${cardName}」の${position}です。「${themeLabel}」について占ってください。`
+    : `${conversationContext}\n\n相談者の質問: ${question}`;
 
   return { systemInstruction, userMessage };
 }
@@ -342,6 +367,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // tarotの自動鑑定時はquestionが"__auto__"で送られる
     if (!body.question || typeof body.question !== "string" || body.question.trim() === "") {
       return Response.json(
         { error: "質問を入力してください。" },
@@ -388,6 +414,8 @@ export async function POST(req: Request) {
       dreamKeyword: sanitize(body.dreamKeyword, 100),
       birthDate: sanitize(body.birthDate, 20),
       tarotTheme: sanitize(body.tarotTheme, 20),
+      tarotCard: sanitize(body.tarotCard, 20),
+      tarotReversed: typeof body.tarotReversed === "boolean" ? body.tarotReversed : undefined,
     };
 
     // Gemini APIが使えない場合はモックにフォールバック
@@ -408,7 +436,7 @@ export async function POST(req: Request) {
 
     switch (request.type) {
       case "tarot": {
-        const prompt = buildTarotPrompt(request.question, request.messages, request.tarotTheme);
+        const prompt = buildTarotPrompt(request.question, request.messages, request.tarotTheme, request.tarotCard, request.tarotReversed);
         systemInstruction = prompt.systemInstruction;
         userMessage = prompt.userMessage;
         break;

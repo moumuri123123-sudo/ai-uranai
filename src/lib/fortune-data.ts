@@ -13,6 +13,8 @@ export interface FortuneRequest {
   dreamKeyword?: string;
   birthDate?: string;
   tarotTheme?: string;
+  tarotCard?: string;
+  tarotReversed?: boolean;
 }
 
 export interface TarotCard {
