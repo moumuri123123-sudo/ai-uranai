@@ -185,6 +185,45 @@ body {
   font-family: "Yuji Syuku", serif;
 }
 
+/* シャッフルアニメーション */
+@keyframes shuffleCard {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(calc(var(--shuffle-x, 30px) * 1), calc(var(--shuffle-y, -20px) * 1)) rotate(calc(var(--shuffle-r, 8deg) * 1)); }
+  40% { transform: translate(calc(var(--shuffle-x, 30px) * -0.7), calc(var(--shuffle-y, -20px) * -0.5)) rotate(calc(var(--shuffle-r, 8deg) * -0.6)); }
+  60% { transform: translate(calc(var(--shuffle-x, 30px) * 0.4), calc(var(--shuffle-y, -20px) * 0.8)) rotate(calc(var(--shuffle-r, 8deg) * 0.3)); }
+  80% { transform: translate(calc(var(--shuffle-x, 30px) * -0.2), calc(var(--shuffle-y, -20px) * -0.3)) rotate(calc(var(--shuffle-r, 8deg) * -0.1)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.animate-shuffle {
+  animation: shuffleCard 1.2s ease-in-out infinite;
+}
+
+/* フェードイン */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* スプレッドカード配置用（スリーカード） */
+.card-flip-container-sm {
+  position: relative;
+  width: 5.5rem;
+  height: 8rem;
+  perspective: 800px;
+}
+
+@media (min-width: 640px) {
+  .card-flip-container-sm {
+    width: 7rem;
+    height: 10rem;
+  }
+}
+
 /* スクロールバー */
 .scrollbar-thin::-webkit-scrollbar {
   width: 4px;

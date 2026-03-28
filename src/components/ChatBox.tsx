@@ -21,12 +21,15 @@ type ChatBoxProps = {
   tarotTheme?: string;
   tarotCard?: string;
   tarotReversed?: boolean;
+  tarotCards?: Array<{ name: string; reversed: boolean; position: string }>;
+  tarotSpread?: string;
+  tarotQuestion?: string;
   historyLabel?: string;
   onFirstResponse?: (response: string) => void;
   autoStart?: boolean;
 };
 
-export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, tarotCard, tarotReversed, historyLabel, onFirstResponse, autoStart }: ChatBoxProps) {
+export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, tarotCard, tarotReversed, tarotCards, tarotSpread, tarotQuestion, historyLabel, onFirstResponse, autoStart }: ChatBoxProps) {
   const [messages, setMessages] = useState<Message[]>(() => {
     if (initialMessage) {
       return [{ role: "assistant", content: initialMessage }];
@@ -76,6 +79,9 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
             tarotTheme,
             tarotCard,
             tarotReversed,
+            tarotCards,
+            tarotSpread,
+            tarotQuestion,
           }),
         });
 
@@ -110,7 +116,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
     };
 
     runAutoReading();
-  }, [autoStart, fortuneType, tarotTheme, tarotCard, tarotReversed, historyLabel, onFirstResponse]);
+  }, [autoStart, fortuneType, tarotTheme, tarotCard, tarotReversed, tarotCards, tarotSpread, tarotQuestion, historyLabel, onFirstResponse]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,6 +147,9 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
           tarotTheme,
           tarotCard,
           tarotReversed,
+          tarotCards,
+          tarotSpread,
+          tarotQuestion,
         }),
       });
 

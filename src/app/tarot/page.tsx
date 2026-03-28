@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
@@ -13,194 +13,413 @@ const CARD_BACK = "占";
 type DrawnCard = {
   name: string;
   reversed: boolean;
+  position: string;
 };
 
+type Phase = "intro" | "question" | "spread" | "shuffle" | "draw" | "reading";
+type SpreadType = "one" | "three";
+
 const THEMES = [
-  { key: "総合運", icon: "運", description: "全体の運勢", text: "text-neon-red", border: "hover:border-neon-red/50", shadow: "hover:shadow-neon-red/10" },
-  { key: "恋愛運", icon: "恋", description: "恋愛・出会い", text: "text-neon-pink", border: "hover:border-neon-pink/50", shadow: "hover:shadow-neon-pink/10" },
-  { key: "仕事運", icon: "業", description: "仕事・キャリア", text: "text-neon-cyan", border: "hover:border-neon-cyan/50", shadow: "hover:shadow-neon-cyan/10" },
-  { key: "金運", icon: "財", description: "お金・財運", text: "text-gold", border: "hover:border-gold/50", shadow: "hover:shadow-gold/10" },
-  { key: "人間関係", icon: "縁", description: "友人・家族", text: "text-neon-purple", border: "hover:border-neon-purple/50", shadow: "hover:shadow-neon-purple/10" },
-  { key: "健康運", icon: "体", description: "体調・メンタル", text: "text-neon-amber", border: "hover:border-neon-amber/50", shadow: "hover:shadow-neon-amber/10" },
+  { key: "総合運", icon: "運" },
+  { key: "恋愛運", icon: "恋" },
+  { key: "仕事運", icon: "業" },
+  { key: "金運", icon: "財" },
+  { key: "人間関係", icon: "縁" },
+  { key: "健康運", icon: "体" },
 ];
 
+// JSON-LDは静的なデータのみで構成（XSSリスクなし）
+const jsonLdData = JSON.stringify([
+  webApplicationJsonLd({ name: "タロット占い", description: "78枚のタロットカードからAIがあなたの運命を読み解きます", path: "/tarot" }),
+  breadcrumbJsonLd([{ name: "タロット占い", path: "/tarot" }]),
+]);
+
 export default function TarotPage() {
-  const [phase, setPhase] = useState<"theme" | "select" | "flip" | "chat">("theme");
+  const [phase, setPhase] = useState<Phase>("intro");
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
-  const [drawnCard, setDrawnCard] = useState<DrawnCard | null>(null);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [userQuestion, setUserQuestion] = useState("");
+  const [spreadType, setSpreadType] = useState<SpreadType>("one");
+  const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([]);
+  const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   const [resultSummary, setResultSummary] = useState("");
 
-  const handleDrawCard = () => {
-    const card = tarotCards[Math.floor(Math.random() * tarotCards.length)];
-    const reversed = Math.random() < 0.35;
-    setDrawnCard({ name: card.name, reversed });
-    setIsFlipped(false);
-    setPhase("flip");
+  // ===== シャッフル → カード引きへ自動遷移 =====
+  useEffect(() => {
+    if (phase !== "shuffle") return;
+    const timer = setTimeout(() => {
+      const count = spreadType === "three" ? 3 : 1;
+      const positions = spreadType === "three" ? ["過去", "現在", "未来"] : [""];
+      const drawn: DrawnCard[] = [];
+      const usedIndices = new Set<number>();
 
-    setTimeout(() => {
-      setIsFlipped(true);
-    }, 300);
+      for (let i = 0; i < count; i++) {
+        let idx: number;
+        do {
+          idx = Math.floor(Math.random() * tarotCards.length);
+        } while (usedIndices.has(idx));
+        usedIndices.add(idx);
+        drawn.push({
+          name: tarotCards[idx].name,
+          reversed: Math.random() < 0.35,
+          position: positions[i],
+        });
+      }
 
-    setTimeout(() => {
-      setPhase("chat");
-    }, 2500);
+      setDrawnCards(drawn);
+      setFlippedIndices([]);
+      setPhase("draw");
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [phase, spreadType]);
+
+  // ===== カードを1枚ずつめくる =====
+  const flipCard = useCallback((index: number) => {
+    setFlippedIndices((prev) => {
+      if (prev.includes(index)) return prev;
+      return [...prev, index];
+    });
+  }, []);
+
+  // 全カードめくったらリーディングへ
+  useEffect(() => {
+    if (phase !== "draw" || drawnCards.length === 0) return;
+    if (flippedIndices.length === drawnCards.length) {
+      const timer = setTimeout(() => setPhase("reading"), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [phase, flippedIndices, drawnCards]);
+
+  // ===== リセット =====
+  const resetAll = () => {
+    setPhase("intro");
+    setSelectedTheme(null);
+    setUserQuestion("");
+    setSpreadType("one");
+    setDrawnCards([]);
+    setFlippedIndices([]);
+    setResultSummary("");
   };
+
+  // 履歴ラベル
+  const historyLabel = drawnCards.length > 0
+    ? spreadType === "three"
+      ? `タロット占い（スリーカード） - ${drawnCards.map(c => `${c.name}${c.reversed ? "逆" : "正"}`).join(" / ")}${selectedTheme ? ` (${selectedTheme})` : ""}`
+      : `タロット占い - ${drawnCards[0].name} ${drawnCards[0].reversed ? "逆位置" : "正位置"}${selectedTheme ? ` (${selectedTheme})` : ""}`
+    : "";
 
   return (
     <div className="min-h-screen bg-[#0a0408]">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([
-          webApplicationJsonLd({ name: "タロット占い", description: "78枚のタロットカードからAIがあなたの運命を読み解きます", path: "/tarot" }),
-          breadcrumbJsonLd([{ name: "タロット占い", path: "/tarot" }]),
-        ]) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdData }}
       />
       <div className="mx-auto max-w-4xl px-4 py-12">
-        {/* ヘッダー */}
-        <div className="mb-10 text-center">
-          <div className="mb-4"><FortuneIcon type="tarot" size="lg" /></div>
-          <h1 className="font-mincho mb-3 text-2xl font-bold sm:text-3xl">
-            <span className="text-neon-red animate-neon-pulse">
-              タロット占い
-            </span>
-          </h1>
-          <p className="mx-auto max-w-md text-sm leading-relaxed text-muted">
-            タロットカードが、あなたの過去・現在・未来を映し出します。
-            心を落ち着けて、カードを引いてみましょう。
-          </p>
-        </div>
 
-        {/* ===== テーマ選択フェーズ ===== */}
-        {phase === "theme" && (
-          <div className="mx-auto max-w-lg">
-            <h2 className="mb-6 text-center text-sm font-medium text-warm">
-              占いたいテーマを選んでください
-            </h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              {THEMES.map((theme) => (
+        {/* ===== 1. 心を落ち着ける ===== */}
+        {phase === "intro" && (
+          <div className="flex min-h-[60vh] flex-col items-center justify-center text-center animate-fade-in">
+            <div className="mb-6"><FortuneIcon type="tarot" size="lg" /></div>
+            <h1 className="font-mincho mb-4 text-2xl font-bold sm:text-3xl">
+              <span className="text-neon-red animate-neon-pulse">タロット占い</span>
+            </h1>
+            <div className="mx-auto max-w-sm space-y-4">
+              <p className="text-sm leading-relaxed text-warm">
+                タロットカードが、あなたの過去・現在・未来を映し出します。
+              </p>
+              <p className="text-sm leading-relaxed text-muted">
+                まずは深呼吸をして、心を落ち着けましょう。
+                <br />
+                占いたいことを思い浮かべながら、準備ができたら始めてください。
+              </p>
+              <div className="pt-4">
                 <button
-                  key={theme.key}
-                  onClick={() => {
-                    setSelectedTheme(theme.key);
-                    setPhase("select");
-                  }}
-                  className={`group flex flex-col items-center gap-2 rounded-xl border border-border bg-surface p-5 transition-all ${theme.border} hover:bg-surface-hover hover:shadow-lg ${theme.shadow} active:scale-95`}
+                  onClick={() => setPhase("question")}
+                  className="rounded-full border-2 border-neon-red bg-transparent px-10 py-3 text-sm font-semibold text-neon-red transition-all hover:bg-neon-red/10 hover:shadow-lg hover:shadow-neon-red/20 active:scale-95"
                 >
-                  <span className={`flex h-12 w-12 items-center justify-center rounded-full border border-border bg-[#0a0408] font-yuji text-xl ${theme.text}`}>
-                    {theme.icon}
-                  </span>
-                  <span className="text-sm font-medium text-foreground/90">
-                    {theme.key}
-                  </span>
-                  <span className="text-[10px] text-muted">{theme.description}</span>
+                  占いを始める
                 </button>
-              ))}
+              </div>
             </div>
           </div>
         )}
 
-        {/* ===== カード選択フェーズ ===== */}
-        {phase === "select" && (
-          <div className="mx-auto max-w-md">
-            {/* 選んだテーマ表示 */}
-            <div className="mb-6 text-center">
-              <span className="inline-block rounded-full border border-neon-red/30 bg-surface px-4 py-1.5 text-xs text-neon-red">
-                テーマ: {selectedTheme}
-              </span>
-              <button
-                onClick={() => { setPhase("theme"); setSelectedTheme(null); }}
-                className="ml-3 text-xs text-muted underline underline-offset-2 hover:text-warm transition-colors"
-              >
-                変更
-              </button>
+        {/* ===== 2. 質問の設定 ===== */}
+        {phase === "question" && (
+          <div className="mx-auto max-w-lg animate-fade-in">
+            <div className="mb-4 text-center">
+              <div className="mb-3"><FortuneIcon type="tarot" size="lg" /></div>
+              <h2 className="font-mincho mb-2 text-xl font-bold text-warm sm:text-2xl">
+                占いたいことを教えてください
+              </h2>
+              <p className="text-xs text-muted">
+                心に浮かぶ悩みや聞きたいことを、自由に入力してください
+              </p>
             </div>
 
-            <div className="mb-10 flex items-center justify-center gap-2">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-28 w-20 rounded-lg border border-neon-red/30 bg-surface shadow-lg transition-transform hover:-translate-y-2 hover:border-neon-red/60 hover:shadow-neon-red/20 cursor-pointer sm:h-36 sm:w-24"
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                  onClick={handleDrawCard}
-                >
-                  <div className="flex h-full w-full items-center justify-center font-yuji text-3xl text-neon-red/60 sm:text-4xl">
-                    {CARD_BACK}
-                  </div>
-                </div>
-              ))}
+            {/* テーマ選択（任意） */}
+            <div className="mb-6">
+              <p className="mb-3 text-center text-xs text-muted">テーマを選ぶ（任意）</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {THEMES.map((theme) => (
+                  <button
+                    key={theme.key}
+                    onClick={() => setSelectedTheme(selectedTheme === theme.key ? null : theme.key)}
+                    className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs transition-all active:scale-95 ${
+                      selectedTheme === theme.key
+                        ? "border-neon-red bg-neon-red/10 text-neon-red"
+                        : "border-border bg-surface text-muted hover:border-neon-red/30 hover:text-warm"
+                    }`}
+                  >
+                    <span className="font-yuji">{theme.icon}</span>
+                    {theme.key}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 自由記述 */}
+            <div className="mb-6">
+              <textarea
+                value={userQuestion}
+                onChange={(e) => {
+                  if (e.target.value.length <= 200) setUserQuestion(e.target.value);
+                }}
+                placeholder="例：転職を考えているのですが、今動くべきでしょうか..."
+                rows={3}
+                className="w-full resize-none rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder-muted/50 focus:border-neon-red/50 focus:outline-none focus:ring-1 focus:ring-neon-red/30 transition-colors"
+              />
+              <div className="mt-1 flex justify-between text-xs text-muted">
+                <span>具体的な悩みがあるほど深い鑑定ができます</span>
+                {userQuestion.length > 150 && (
+                  <span className={userQuestion.length >= 200 ? "text-neon-red" : ""}>{userQuestion.length}/200</span>
+                )}
+              </div>
             </div>
 
             <div className="text-center">
               <button
-                onClick={handleDrawCard}
-                className="rounded-full border-2 border-neon-red bg-transparent px-8 py-3 text-sm font-semibold text-neon-red transition-all hover:bg-neon-red/10 hover:shadow-lg hover:shadow-neon-red/20 active:scale-95"
+                onClick={() => setPhase("spread")}
+                className="rounded-full border-2 border-neon-red bg-transparent px-10 py-3 text-sm font-semibold text-neon-red transition-all hover:bg-neon-red/10 hover:shadow-lg hover:shadow-neon-red/20 active:scale-95"
               >
-                カードを引く
+                次へ
               </button>
-              <p className="mt-4 text-xs text-muted">
-                カードをクリックするか、ボタンを押してください
-              </p>
+              <button
+                onClick={() => setPhase("intro")}
+                className="mt-3 block mx-auto text-xs text-muted hover:text-warm transition-colors"
+              >
+                &#x2190; 戻る
+              </button>
             </div>
           </div>
         )}
 
-        {/* ===== カードフリップフェーズ ===== */}
-        {phase === "flip" && drawnCard && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <div className="card-flip-container">
-              <div className={`card-flip-inner ${isFlipped ? "flipped" : ""}`}>
-                {/* 表面 = カード裏（占の文字） */}
-                <div className="card-flip-front border-2 border-neon-red/50 bg-surface shadow-2xl shadow-neon-red/20">
-                  <div className="flex h-full w-full items-center justify-center font-yuji text-4xl text-neon-red/60 sm:text-5xl">
+        {/* ===== 3. スプレッド選択 ===== */}
+        {phase === "spread" && (
+          <div className="mx-auto max-w-lg animate-fade-in">
+            <div className="mb-6 text-center">
+              <h2 className="font-mincho mb-2 text-xl font-bold text-warm sm:text-2xl">
+                展開法を選んでください
+              </h2>
+              <p className="text-xs text-muted">
+                カードの枚数と読み方が変わります
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {/* ワンオラクル */}
+              <button
+                onClick={() => { setSpreadType("one"); setPhase("shuffle"); }}
+                className="group rounded-2xl border border-border bg-surface p-6 text-left transition-all hover:border-neon-red/50 hover:shadow-lg hover:shadow-neon-red/10 active:scale-[0.98]"
+              >
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="flex h-12 w-9 items-center justify-center rounded-lg border border-neon-red/30 bg-[#0a0408] font-yuji text-lg text-neon-red">
+                    {CARD_BACK}
+                  </div>
+                  <div>
+                    <p className="font-mincho text-base font-bold text-foreground">ワンオラクル</p>
+                    <p className="text-xs text-gold">1枚引き</p>
+                  </div>
+                </div>
+                <p className="text-xs leading-relaxed text-muted">
+                  シンプルで直感的な1枚引き。今のあなたへのメッセージを端的に伝えてくれます。迷ったときや、今日のアドバイスが欲しいときに。
+                </p>
+              </button>
+
+              {/* スリーカード */}
+              <button
+                onClick={() => { setSpreadType("three"); setPhase("shuffle"); }}
+                className="group rounded-2xl border border-border bg-surface p-6 text-left transition-all hover:border-gold/50 hover:shadow-lg hover:shadow-gold/10 active:scale-[0.98]"
+              >
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="flex gap-1">
+                    {[0,1,2].map(i => (
+                      <div key={i} className="flex h-12 w-7 items-center justify-center rounded-md border border-gold/30 bg-[#0a0408] font-yuji text-sm text-gold">
+                        {CARD_BACK}
+                      </div>
+                    ))}
+                  </div>
+                  <div>
+                    <p className="font-mincho text-base font-bold text-foreground">スリーカード</p>
+                    <p className="text-xs text-gold">過去・現在・未来</p>
+                  </div>
+                </div>
+                <p className="text-xs leading-relaxed text-muted">
+                  3枚のカードで時間の流れを読みます。過去の影響、現在の状況、そして未来の展望を物語として読み解きます。
+                </p>
+              </button>
+            </div>
+
+            {/* 選んだ内容の表示 */}
+            {(selectedTheme || userQuestion) && (
+              <div className="mt-6 rounded-xl border border-border bg-surface/50 p-4">
+                {selectedTheme && (
+                  <p className="text-xs text-muted">テーマ: <span className="text-neon-red">{selectedTheme}</span></p>
+                )}
+                {userQuestion && (
+                  <p className="mt-1 text-xs text-muted">悩み: <span className="text-warm">{userQuestion}</span></p>
+                )}
+              </div>
+            )}
+
+            <button
+              onClick={() => setPhase("question")}
+              className="mt-4 block mx-auto text-xs text-muted hover:text-warm transition-colors"
+            >
+              &#x2190; 質問を変更する
+            </button>
+          </div>
+        )}
+
+        {/* ===== 4. シャッフル演出 ===== */}
+        {phase === "shuffle" && (
+          <div className="flex min-h-[50vh] flex-col items-center justify-center animate-fade-in">
+            <p className="mb-8 font-mincho text-sm text-warm">
+              心の中で悩みを念じながら...
+            </p>
+            <div className="relative flex items-center justify-center gap-3">
+              {Array.from({ length: 7 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-24 w-16 rounded-lg border border-neon-red/40 bg-surface shadow-lg animate-shuffle sm:h-32 sm:w-20"
+                  style={{
+                    ["--shuffle-x" as string]: `${(i - 3) * 15}px`,
+                    ["--shuffle-y" as string]: `${Math.sin(i) * 20}px`,
+                    ["--shuffle-r" as string]: `${(i - 3) * 5}deg`,
+                    animationDelay: `${i * 0.15}s`,
+                  }}
+                >
+                  <div className="flex h-full w-full items-center justify-center font-yuji text-2xl text-neon-red/40 sm:text-3xl">
                     {CARD_BACK}
                   </div>
                 </div>
-                {/* 裏面 = カード表（カード名 + 正逆位置） */}
-                <div className="card-flip-back border-2 border-gold/50 bg-surface shadow-2xl shadow-gold/20">
-                  <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-2">
-                    <p className="font-yuji text-lg text-gold sm:text-xl">
-                      {drawnCard.name}
-                    </p>
-                    <p className="text-xs text-neon-red">
-                      {drawnCard.reversed ? "逆位置" : "正位置"}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
-            {/* グロー効果 */}
-            <div className="mt-2 h-4 w-20 rounded-full bg-gold/10 blur-xl" />
-            <p className="mt-6 text-sm text-neon-red animate-pulse">
-              {isFlipped ? "カードが示されました..." : "カードをめくっています..."}
+            <p className="mt-8 text-xs text-muted animate-pulse">
+              カードをシャッフルしています...
             </p>
           </div>
         )}
 
-        {/* ===== チャットフェーズ ===== */}
-        {phase === "chat" && drawnCard && (
-          <div>
-            <div className="mx-auto mb-8 max-w-sm rounded-2xl border border-neon-red/30 bg-surface p-6 text-center shadow-lg shadow-neon-red/10">
-              <p className="mb-1 text-xs text-muted">あなたが引いたカード</p>
-              <p className="text-2xl font-bold text-gold">
-                {drawnCard.name}
+        {/* ===== 5. カードを引く + フリップ ===== */}
+        {phase === "draw" && drawnCards.length > 0 && (
+          <div className="flex flex-col items-center justify-center py-12 animate-fade-in">
+            <p className="mb-8 font-mincho text-sm text-warm">
+              {spreadType === "three" ? "カードをクリックして1枚ずつめくってください" : "カードをクリックしてめくってください"}
+            </p>
+
+            <div className={`flex items-end justify-center ${spreadType === "three" ? "gap-4 sm:gap-6" : ""}`}>
+              {drawnCards.map((card, i) => (
+                <div key={i} className="flex flex-col items-center">
+                  {/* ポジションラベル（スリーカード） */}
+                  {spreadType === "three" && (
+                    <p className="mb-2 text-xs font-medium text-gold">{card.position}</p>
+                  )}
+
+                  <div
+                    className={spreadType === "three" ? "card-flip-container-sm cursor-pointer" : "card-flip-container cursor-pointer"}
+                    onClick={() => flipCard(i)}
+                  >
+                    <div className={`card-flip-inner ${flippedIndices.includes(i) ? "flipped" : ""}`}>
+                      {/* 裏面（占の文字） */}
+                      <div className="card-flip-front border-2 border-neon-red/50 bg-surface shadow-2xl shadow-neon-red/20 hover:border-neon-red hover:shadow-neon-red/40 transition-all">
+                        <div className="flex h-full w-full items-center justify-center font-yuji text-3xl text-neon-red/60 sm:text-4xl">
+                          {CARD_BACK}
+                        </div>
+                      </div>
+                      {/* 表面（カード名 + 正逆） */}
+                      <div className="card-flip-back border-2 border-gold/50 bg-surface shadow-2xl shadow-gold/20">
+                        <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 px-2">
+                          <p className={`font-yuji text-gold ${spreadType === "three" ? "text-sm sm:text-base" : "text-lg sm:text-xl"}`}>
+                            {card.name}
+                          </p>
+                          <p className="text-[10px] text-neon-red sm:text-xs">
+                            {card.reversed ? "逆位置" : "正位置"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* グロー効果 */}
+            <div className="mt-4 h-4 w-32 rounded-full bg-gold/10 blur-xl" />
+
+            {flippedIndices.length === drawnCards.length && (
+              <p className="mt-6 text-sm text-neon-red animate-pulse">
+                カードが出揃いました。リーディングに入ります...
               </p>
-              <p className="mt-1 text-sm text-neon-red">
-                {drawnCard.reversed ? "逆位置" : "正位置"}
+            )}
+            {flippedIndices.length < drawnCards.length && (
+              <p className="mt-6 text-xs text-muted">
+                {drawnCards.length - flippedIndices.length}枚のカードが残っています
               </p>
+            )}
+          </div>
+        )}
+
+        {/* ===== 6. リーディング + チャット ===== */}
+        {phase === "reading" && drawnCards.length > 0 && (
+          <div className="animate-fade-in">
+            {/* カード情報表示 */}
+            <div className="mx-auto mb-8 max-w-md rounded-2xl border border-neon-red/30 bg-surface p-5 shadow-lg shadow-neon-red/10">
+              <p className="mb-3 text-center text-xs text-muted">
+                {spreadType === "three" ? "スリーカード（過去・現在・未来）" : "ワンオラクル"}
+              </p>
+              {spreadType === "three" ? (
+                <div className="grid grid-cols-3 gap-3">
+                  {drawnCards.map((card, i) => (
+                    <div key={i} className="text-center">
+                      <p className="mb-1 text-[10px] font-medium text-gold">{card.position}</p>
+                      <p className="text-sm font-bold text-foreground">{card.name}</p>
+                      <p className="text-[10px] text-neon-red">{card.reversed ? "逆位置" : "正位置"}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-gold">{drawnCards[0].name}</p>
+                  <p className="mt-1 text-sm text-neon-red">{drawnCards[0].reversed ? "逆位置" : "正位置"}</p>
+                </div>
+              )}
               {selectedTheme && (
-                <p className="mt-2 text-xs text-muted">
-                  テーマ: {selectedTheme}
-                </p>
+                <p className="mt-3 text-center text-xs text-muted">テーマ: {selectedTheme}</p>
+              )}
+              {userQuestion && (
+                <p className="mt-1 text-center text-xs text-muted">&ldquo;{userQuestion}&rdquo;</p>
               )}
             </div>
 
             <ChatBox
               fortuneType="tarot"
               tarotTheme={selectedTheme || undefined}
-              tarotCard={drawnCard.name}
-              tarotReversed={drawnCard.reversed}
-              historyLabel={`タロット占い - ${drawnCard.name} ${drawnCard.reversed ? "逆位置" : "正位置"}${selectedTheme ? ` (${selectedTheme})` : ""}`}
+              tarotCard={spreadType === "one" ? drawnCards[0].name : undefined}
+              tarotReversed={spreadType === "one" ? drawnCards[0].reversed : undefined}
+              tarotCards={spreadType === "three" ? drawnCards : undefined}
+              tarotSpread={spreadType}
+              tarotQuestion={userQuestion || undefined}
+              historyLabel={historyLabel}
               autoStart
               onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
             />
@@ -208,25 +427,22 @@ export default function TarotPage() {
               title="タロット占い結果"
               resultData={resultSummary ? {
                 fortuneType: "tarot",
-                label: `${drawnCard.name} ${drawnCard.reversed ? "逆位置" : "正位置"}`,
+                label: spreadType === "three"
+                  ? drawnCards.map(c => `${c.name}${c.reversed ? "(逆)" : ""}`).join(" / ")
+                  : `${drawnCards[0].name} ${drawnCards[0].reversed ? "逆位置" : "正位置"}`,
                 summary: resultSummary,
               } : undefined}
             />
 
             <button
-              onClick={() => {
-                setPhase("theme");
-                setSelectedTheme(null);
-                setDrawnCard(null);
-                setIsFlipped(false);
-                setResultSummary("");
-              }}
+              onClick={resetAll}
               className="mx-auto mt-4 block text-sm text-muted hover:text-warm transition-colors"
             >
               &#x2190; もう一度占う
             </button>
           </div>
         )}
+
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
           <p className="text-xs leading-relaxed text-muted/70">

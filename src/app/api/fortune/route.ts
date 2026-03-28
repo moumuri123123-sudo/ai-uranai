@@ -75,11 +75,64 @@ function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
 
 // ===== プロンプト構築 =====
 
-function buildTarotPrompt(question: string, messages: FortuneRequest["messages"], tarotTheme?: string, tarotCard?: string, tarotReversed?: boolean): {
+function buildTarotPrompt(
+  question: string,
+  messages: FortuneRequest["messages"],
+  tarotTheme?: string,
+  tarotCard?: string,
+  tarotReversed?: boolean,
+  tarotCardsArr?: Array<{ name: string; reversed: boolean; position: string }>,
+  tarotSpread?: string,
+  tarotQuestion?: string,
+): {
   systemInstruction: string;
   userMessage: string;
 } {
-  // 画面から送られたカード情報を使う。なければランダムに引く
+  const themeLabel = tarotTheme || "総合";
+  const isAutoReading = messages.length === 0;
+  const userQ = tarotQuestion || "";
+
+  // スリーカードスプレッド
+  if (tarotSpread === "three" && tarotCardsArr && tarotCardsArr.length === 3) {
+    const cardDescriptions = tarotCardsArr.map((c) => {
+      const found = tarotCards.find(tc => tc.name === c.name);
+      const pos = c.reversed ? "逆位置" : "正位置";
+      const kw = found ? (c.reversed ? found.reversedMeaning : found.meaning) : "";
+      return `${c.position}：「${c.name}」の${pos}（${kw}）`;
+    }).join("\n");
+
+    const systemInstruction = `あなたは経験豊富で親しみやすいタロット占い師です。
+丁寧なですます口調で、相談者に寄り添うように話してください。
+絵文字は使わないでください。マークダウン記法も使わないでください。
+回答は500〜800文字程度にしてください。
+
+【スプレッド】スリーカード（過去・現在・未来）
+【相談者の悩み】${userQ || themeLabel + "について"}
+【テーマ】${themeLabel}
+
+${cardDescriptions}
+
+${isAutoReading
+  ? `3枚のカードを一つの「物語」として読み解いてください。
+まず各カードの意味を簡潔に説明し、次に過去→現在→未来の流れとしてストーリーを組み立ててください。
+カード同士の関係性（共通するテーマ、対比、流れの変化）にも触れてください。
+相談者の悩みに寄り添い、具体的なアドバイスを伝えてください。
+最後に前向きな一言を添えてください。`
+  : `これまでのリーディングを踏まえて、相談者の追加の質問に答えてください。
+カードの解釈をさらに深掘りしたり、別の観点からアドバイスを加えてください。`}`;
+
+    const conversationContext = messages.length > 0
+      ? "\n\n【これまでの会話】\n" + messages.map(m => `${m.role === "user" ? "相談者" : "占い師"}: ${m.content}`).join("\n")
+      : "";
+
+    const userMessage = isAutoReading
+      ? `スリーカードスプレッドでカードを引きました。「${themeLabel}」について、${userQ ? `「${userQ}」という悩みを` : ""}占ってください。`
+      : `${conversationContext}\n\n相談者の質問: ${question}`;
+
+    return { systemInstruction, userMessage };
+  }
+
+  // ワンオラクル（1枚引き）
   let cardName: string;
   let position: string;
   let meaning: string;
@@ -89,9 +142,7 @@ function buildTarotPrompt(question: string, messages: FortuneRequest["messages"]
     const reversed = tarotReversed ?? false;
     cardName = tarotCard;
     position = reversed ? "逆位置" : "正位置";
-    meaning = foundCard
-      ? (reversed ? foundCard.reversedMeaning : foundCard.meaning)
-      : "";
+    meaning = foundCard ? (reversed ? foundCard.reversedMeaning : foundCard.meaning) : "";
   } else {
     const card = pickRandom(tarotCards);
     const reversed = isReversed();
@@ -100,33 +151,32 @@ function buildTarotPrompt(question: string, messages: FortuneRequest["messages"]
     meaning = reversed ? card.reversedMeaning : card.meaning;
   }
 
-  const themeLabel = tarotTheme || "総合";
-  const isAutoReading = messages.length === 0;
-
-  const systemInstruction = `あ��たは親しみやすい占い師です。タロット占い���担当しています。
+  const systemInstruction = `あなたは経験豊富で親しみやすいタロット占い師です。
 丁寧なですます口調で、相談者に寄り添うように話してください。
-絵文字は使わないでください。マーク���ウン記法も使わないでく��さい。
-回答は300〜500文字程度にし���ください。
+絵文字は使わないでください。マークダウン記法も使わないでください。
+回答は300〜500文字程度にしてください。
 
-今���引いたカード：「${cardName}」の${position}
+【スプレッド】ワンオラクル（1枚引き）
+【相談者の悩み】${userQ || themeLabel + "について"}
+【テーマ】${themeLabel}
+
+引いたカード：「${cardName}」の${position}
 キーワード：${meaning}
-��いのテーマ：${themeLabel}
 
 ${isAutoReading
-    ? `相談者がカードを引きました。このカードの意味を読み解き、「${themeLabel}」の観点から占い結果を伝えてください。
-まず「${cardName}」の${position}がどのようなカードかを説明し、それが「${themeLabel}」に���いて何を意味するか詳しく鑑定してください。
+    ? `相談者がカードを引きました。このカードの意味を読み解き、相談者の悩みに寄り添って占い結果を伝えてください。
+まず「${cardName}」の${position}がどのようなカードかを説明し、それが相談者の悩みに対して何を示しているか詳しく鑑定してください。
 カード名と正逆位置、キーワードは必ず回答に含めてください。
-��後に前向きな���言を添えてください。`
-    : `このカードの意味を踏まえて���特に「${themeLabel}」の観点から相談者の質問に対し���占い結果を伝えてください。
-カード名と正逆位置、キーワードは必ず回答に含めてく��さい。
-最後に前向きな一言を添えてください。`}`;
+具体的なアドバイスを伝え、最後に前向きな一言を添えてください。`
+    : `これまでのリーディングを踏まえて、相談者の追加の質問に答えてください。
+カードの解釈をさらに深掘りしたり、別の観点からアドバイスを加えてください。`}`;
 
   const conversationContext = messages.length > 0
     ? "\n\n【これまでの会話】\n" + messages.map(m => `${m.role === "user" ? "相談者" : "占い師"}: ${m.content}`).join("\n")
     : "";
 
   const userMessage = isAutoReading
-    ? `カードを引きました。「${cardName}」の${position}です。「${themeLabel}」について占ってください。`
+    ? `カードを引きました。「${cardName}」の${position}です。「${themeLabel}」について、${userQ ? `「${userQ}」という悩みを` : ""}占ってください。`
     : `${conversationContext}\n\n相談者の質問: ${question}`;
 
   return { systemInstruction, userMessage };
@@ -416,6 +466,20 @@ export async function POST(req: Request) {
       tarotTheme: sanitize(body.tarotTheme, 20),
       tarotCard: sanitize(body.tarotCard, 20),
       tarotReversed: typeof body.tarotReversed === "boolean" ? body.tarotReversed : undefined,
+      tarotSpread: sanitize(body.tarotSpread, 10),
+      tarotQuestion: sanitize(body.tarotQuestion, 500),
+      tarotCards: Array.isArray(body.tarotCards)
+        ? body.tarotCards.slice(0, 10).filter(
+            (c: Record<string, unknown>) =>
+              typeof c.name === "string" && c.name.length <= 20 &&
+              typeof c.reversed === "boolean" &&
+              typeof c.position === "string" && c.position.length <= 10
+          ).map((c: Record<string, unknown>) => ({
+            name: (c.name as string).slice(0, 20),
+            reversed: c.reversed as boolean,
+            position: (c.position as string).slice(0, 10),
+          }))
+        : undefined,
     };
 
     // Gemini APIが使えない場合はモックにフォールバック
@@ -436,7 +500,7 @@ export async function POST(req: Request) {
 
     switch (request.type) {
       case "tarot": {
-        const prompt = buildTarotPrompt(request.question, request.messages, request.tarotTheme, request.tarotCard, request.tarotReversed);
+        const prompt = buildTarotPrompt(request.question, request.messages, request.tarotTheme, request.tarotCard, request.tarotReversed, request.tarotCards, request.tarotSpread, request.tarotQuestion);
         systemInstruction = prompt.systemInstruction;
         userMessage = prompt.userMessage;
         break;
