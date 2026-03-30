@@ -1,3 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://ai-uranai-ochre.vercel.app/sitemap.xml
+Disallow: /api/
+Disallow: /share
+
+Sitemap: https://uranaidokoro.com/sitemap.xml

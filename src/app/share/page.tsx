@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const data = parseShareParams(params);
 
   if (!data) {
-    return { title: "占処 AI占い" };
+    return { title: "占処 AI占い", robots: { index: false, follow: false } };
   }
 
   const typeName = fortuneTypeNames[data.fortuneType];
@@ -46,6 +46,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       description,
       images: [ogImageUrl],
     },
+    robots: { index: false, follow: false },
   };
 }
 
