@@ -38,12 +38,15 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
   });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const historySavedRef = useRef(false);
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, []);
 
   useEffect(() => {
@@ -216,7 +219,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
   return (
     <div className="flex flex-col h-full max-h-[70vh] sm:max-h-[600px] w-full max-w-2xl mx-auto rounded-2xl border border-border bg-[#0a0408] shadow-2xl overflow-hidden">
       {/* メッセージ一覧 */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-1 scrollbar-thin">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-1 scrollbar-thin">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-muted py-12">
             <span className="text-3xl mb-3 text-gold">&#x2726;</span>
@@ -235,7 +238,6 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
             }
           />
         ))}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* 入力エリア */}
