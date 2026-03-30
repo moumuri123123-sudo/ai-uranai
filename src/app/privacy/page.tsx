@@ -116,7 +116,65 @@ export default function PrivacyPage() {
                 <span className="font-semibold text-foreground">分析Cookie:</span>{" "}
                 Google Analytics等によるアクセス解析のためのCookie
               </li>
+              <li>
+                <span className="font-semibold text-foreground">広告Cookie:</span>{" "}
+                Google AdSenseによるパーソナライズ広告の配信のためのCookie
+              </li>
             </ul>
+
+            <h3 className="font-mincho mt-5 mb-3 text-base font-semibold text-foreground">
+              Google AdSenseについて
+            </h3>
+            <p className="mb-3">
+              本サービスでは、第三者配信の広告サービス「Google
+              AdSense」を利用しています。Google等の第三者広告配信事業者は、Cookieを使用してユーザーのウェブサイトへの過去のアクセス情報に基づいて広告を配信します。
+            </p>
+            <p className="mb-3">
+              Googleによる広告Cookieの使用により、ユーザーが当サイトや他のサイトにアクセスした際の情報に基づき、適切な広告が表示されることがあります。
+            </p>
+            <p className="mb-3">
+              ユーザーは{" "}
+              <a
+                href="https://www.google.com/settings/ads"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gold underline hover:text-neon-red"
+              >
+                Google広告設定ページ
+              </a>
+              にて、パーソナライズ広告を無効にすることができます。また、
+              <a
+                href="https://www.aboutads.info/choices/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gold underline hover:text-neon-red"
+              >
+                aboutads.info
+              </a>
+              にて、第三者配信事業者のCookieを無効にすることも可能です。
+            </p>
+
+            <h3 className="font-mincho mt-5 mb-3 text-base font-semibold text-foreground">
+              Google Analyticsについて
+            </h3>
+            <p className="mb-3">
+              本サービスでは、アクセス解析のためにGoogle
+              Analyticsを利用しています。Google
+              Analyticsはデータの収集のためにCookieを使用しています。このデータは匿名で収集されており、個人を特定するものではありません。
+            </p>
+            <p className="mb-3">
+              詳しくは{" "}
+              <a
+                href="https://policies.google.com/technologies/partner-sites"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gold underline hover:text-neon-red"
+              >
+                Googleのプライバシーポリシー
+              </a>
+              をご覧ください。
+            </p>
+
             <p className="mt-3">
               ユーザーはブラウザの設定からCookieを無効にすることが可能です。
               ただし、一部の機能が正常に動作しなくなる場合があります。
