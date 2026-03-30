@@ -30,6 +30,9 @@ export const metadata: Metadata = {
   verification: {
     google: "pvyTPNU65t3trS8CreAG65RLQMR_luDhgPBpWUbYTIk",
   },
+  other: {
+    "google-adsense-account": "ca-pub-2703362176639569",
+  },
 };
 
 export default function RootLayout({
@@ -39,14 +42,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      {process.env.NEXT_PUBLIC_ADSENSE_ID && (
-        <Script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-      )}
+      <head>
+        {process.env.NEXT_PUBLIC_ADSENSE_ID && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
+            crossOrigin="anonymous"
+          />
+        )}
+      </head>
       {process.env.NEXT_PUBLIC_GA_ID && (
         <>
           <Script
