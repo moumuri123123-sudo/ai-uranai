@@ -173,7 +173,8 @@ export default function NumerologyPage() {
               fortuneType="numerology"
               birthDate={`${year}-${String(parseInt(month, 10)).padStart(2, "0")}-${String(parseInt(day, 10)).padStart(2, "0")}`}
               historyLabel={`数秘術 - ライフパスナンバー${lifePathNumber}`}
-              initialMessage={`${birthDateStr}生まれのあなたのライフパスナンバーは「${lifePathNumber}」です。\n\n${meaning}\n\n恋愛、仕事、人間関係など、何でもお聞きください。数秘術の観点からアドバイスいたします。`}
+              initialMessage={`${birthDateStr}生まれのあなたのライフパスナンバーは「${lifePathNumber}」です。\n\n${meaning}\n\nそれでは鑑定に入りますね...`}
+              autoStart
               onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
             />
             <ShareButtons

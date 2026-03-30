@@ -119,7 +119,8 @@ export default function DreamPage() {
               fortuneType="dream"
               dreamKeyword={submittedKeyword}
               historyLabel={`夢占い - ${submittedKeyword}`}
-              initialMessage={`あなたが見た夢は「${submittedKeyword}」ですね。\n\nこの夢にまつわるご質問や、夢の詳しい状況を教えてください。より深い鑑定をいたします。`}
+              initialMessage={`あなたが見た夢は「${submittedKeyword}」ですね。\n\nそれでは鑑定に入りますね...`}
+              autoStart
               onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
             />
             <ShareButtons

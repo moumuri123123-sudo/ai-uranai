@@ -237,7 +237,8 @@ export default function MbtiPage() {
               fortuneType="mbti"
               mbtiType={selectedType}
               historyLabel={`MBTI診断 - ${typeData.code}（${typeData.name}）`}
-              initialMessage={`あなたのMBTIタイプは ${typeData.code}（${typeData.name}）ですね！\n\n${typeData.traits}という特徴があります。\n\n何でもお聞きください。恋愛、仕事、人間関係...${typeData.code}タイプの視点からアドバイスいたします。`}
+              initialMessage={`あなたのMBTIタイプは ${typeData.code}（${typeData.name}）ですね！\n\n${typeData.traits}という特徴があります。\n\nそれでは鑑定に入りますね...`}
+              autoStart
               onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
             />
             <ShareButtons

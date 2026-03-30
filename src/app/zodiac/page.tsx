@@ -104,7 +104,8 @@ export default function ZodiacPage() {
               fortuneType="zodiac"
               zodiacSign={selectedSign}
               historyLabel={`星座占い - ${selected.name}`}
-              initialMessage={`${selected.name}（${selected.period}）のあなたですね。${selected.element}のエレメントに属し、${selected.traits}とされています。\n\nどのようなことが気になりますか？ 今日の運勢、恋愛運、仕事運など、何でもお聞きください。`}
+              initialMessage={`${selected.name}（${selected.period}）のあなたですね。${selected.element}のエレメントに属し、${selected.traits}とされています。\n\nそれでは鑑定に入りますね...`}
+              autoStart
               onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
             />
             <ShareButtons
