@@ -52,6 +52,8 @@ export default function Header() {
           onClick={() => setIsOpen(!isOpen)}
           className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface text-foreground/70 transition-colors hover:text-gold md:hidden"
           aria-label="メニュー"
+          aria-expanded={isOpen}
+          aria-controls="mobile-menu"
         >
           {isOpen ? (
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -67,7 +69,7 @@ export default function Header() {
 
       {/* モバイルメニュー */}
       {isOpen && (
-        <nav className="border-t border-border bg-[#0a0408]/95 px-4 pb-4 pt-2 md:hidden">
+        <nav id="mobile-menu" className="border-t border-border bg-[#0a0408]/95 px-4 pb-4 pt-2 md:hidden">
           <div className="grid grid-cols-3 gap-2">
             {navLinks.map((link) => (
               <Link

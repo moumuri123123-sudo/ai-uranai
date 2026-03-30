@@ -62,8 +62,8 @@ export default function ShareButtons({ title, resultData }: ShareButtonsProps) {
     try {
       const blob = await generateResultCardImage(resultData);
       downloadBlob(blob, `占処_${resultData.fortuneType}_${Date.now()}.png`);
-    } catch (err) {
-      console.error("画像生成エラー:", err);
+    } catch {
+      // 画像生成失敗時は何もしない（ユーザーは再試行可能）
     } finally {
       setIsGenerating(false);
     }
