@@ -6,6 +6,7 @@ import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import RelatedArticles from "@/components/RelatedArticles";
 
 function calculateLifePath(year: number, month: number, day: number): number {
   const digits = `${year}${String(month).padStart(2, "0")}${String(day).padStart(2, "0")}`;
@@ -201,6 +202,9 @@ export default function NumerologyPage() {
             </button>
           </div>
         )}
+
+        {/* 関連コラム（入力フェーズのみ） */}
+        {phase === "input" && <RelatedArticles category="numerology" />}
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">

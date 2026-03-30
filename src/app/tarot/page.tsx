@@ -7,6 +7,7 @@ import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { tarotCards } from "@/lib/fortune-data";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import RelatedArticles from "@/components/RelatedArticles";
 
 const CARD_BACK = "占";
 
@@ -442,6 +443,9 @@ export default function TarotPage() {
             </button>
           </div>
         )}
+
+        {/* 関連コラム（intro時のみ） */}
+        {phase === "intro" && <RelatedArticles category="tarot" />}
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">

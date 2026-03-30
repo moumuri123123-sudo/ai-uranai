@@ -1,3 +1,4 @@
+import type React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -93,14 +94,51 @@ export default async function BlogDetailPage({ params }: Props) {
           </div>
 
           <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
-            {article.content.split("\n\n").map((paragraph, i) => (
-              <p
-                key={i}
-                className="mb-4 text-sm leading-relaxed text-foreground/80 last:mb-0"
-              >
-                {paragraph}
-              </p>
-            ))}
+            {article.content.split("\n\n").map((paragraph, i) => {
+              const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+              const parts: React.ReactNode[] = [];
+              let lastIndex = 0;
+              let match;
+
+              while ((match = linkRegex.exec(paragraph)) !== null) {
+                if (match.index > lastIndex) {
+                  parts.push(paragraph.slice(lastIndex, match.index));
+                }
+                parts.push(
+                  <Link
+                    key={`link-${i}-${match.index}`}
+                    href={match[2]}
+                    className="inline-block font-bold text-gold underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold/80 hover:decoration-gold"
+                  >
+                    {match[1]}
+                  </Link>
+                );
+                lastIndex = match.index + match[0].length;
+              }
+
+              if (parts.length > 0) {
+                if (lastIndex < paragraph.length) {
+                  parts.push(paragraph.slice(lastIndex));
+                }
+                return (
+                  <p
+                    key={i}
+                    className="mb-4 text-sm leading-relaxed text-foreground/80 last:mb-0"
+                  >
+                    {parts}
+                  </p>
+                );
+              }
+
+              return (
+                <p
+                  key={i}
+                  className="mb-4 text-sm leading-relaxed text-foreground/80 last:mb-0"
+                >
+                  {paragraph}
+                </p>
+              );
+            })}
           </div>
         </article>
 

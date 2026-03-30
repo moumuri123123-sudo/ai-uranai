@@ -6,6 +6,7 @@ import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import RelatedArticles from "@/components/RelatedArticles";
 
 export default function CompatibilityPage() {
   const [phase, setPhase] = useState<"input" | "chat">("input");
@@ -157,6 +158,9 @@ export default function CompatibilityPage() {
             />
           </div>
         )}
+        {/* 関連コラム（入力フェーズのみ） */}
+        {phase === "input" && <RelatedArticles category="compatibility" />}
+
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
           <p className="text-xs leading-relaxed text-muted/70">

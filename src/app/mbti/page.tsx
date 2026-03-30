@@ -7,6 +7,7 @@ import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { mbtiTypes, mbtiQuestions } from "@/lib/fortune-data";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import RelatedArticles from "@/components/RelatedArticles";
 
 type Phase = "select" | "quiz" | "chat";
 
@@ -263,6 +264,9 @@ export default function MbtiPage() {
             </button>
           </div>
         )}
+
+        {/* 関連コラム（選択フェーズのみ） */}
+        {phase === "select" && <RelatedArticles category="mbti" />}
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">

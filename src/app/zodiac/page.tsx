@@ -7,6 +7,7 @@ import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { zodiacSigns } from "@/lib/fortune-data";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import RelatedArticles from "@/components/RelatedArticles";
 
 const zodiacList = Object.entries(zodiacSigns).map(([key, sign]) => ({
   key,
@@ -118,6 +119,9 @@ export default function ZodiacPage() {
             />
           </div>
         )}
+        {/* 関連コラム（星座未選択時のみ） */}
+        {!selectedSign && <RelatedArticles category="zodiac" />}
+
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
           <p className="text-xs leading-relaxed text-muted/70">
