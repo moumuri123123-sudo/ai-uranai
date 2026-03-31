@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: "相性占い | 占処 AI占い",
     description:
       "気になるあの人との相性をAI占い師が鑑定します。",
+    url: "https://uranaidokoro.com/compatibility",
   },
 };
 

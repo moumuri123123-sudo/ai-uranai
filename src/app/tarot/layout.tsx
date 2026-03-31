@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: "タロット占い | 占処 AI占い",
     description:
       "AIタロット占い師があなたのためにカードを引き、過去・現在・未来を読み解きます。",
+    url: "https://uranaidokoro.com/tarot",
   },
 };
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "このサイトについて - 占処 AI占い",
+  title: "このサイトについて",
   description: "占処 AI占いの運営者情報・サイト概要です。AI技術を活用した占いエンターテインメントサービスについてご紹介します。",
 };
 

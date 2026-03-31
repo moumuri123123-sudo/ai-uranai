@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: "MBTI性格診断 | 占処 AI占い",
     description:
       "16タイプの性格診断をAIが分析。あなたのMBTIタイプを発見しましょう。",
+    url: "https://uranaidokoro.com/mbti",
   },
 };
 
