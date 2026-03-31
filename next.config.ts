@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://*.googlesyndication.com https://*.google.com https://*.google.co.jp https://*.doubleclick.net https://*.googletagmanager.com https://*.gstatic.com",
               "connect-src 'self' https://generativelanguage.googleapis.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com https://*.google.com https://*.adtrafficquality.google",
-              "frame-src https://*.doubleclick.net https://*.googlesyndication.com https://*.google.com",
+              "frame-src https://*.doubleclick.net https://*.googlesyndication.com https://*.google.com https://*.adtrafficquality.google",
               "frame-ancestors 'none'",
             ].join("; ") + ";",
           },
