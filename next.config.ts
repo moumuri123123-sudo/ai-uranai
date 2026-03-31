@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googlesyndication.com https://*.googletagservices.com https://*.google.com https://*.google.co.jp https://*.googletagmanager.com https://*.googleadservices.com https://*.doubleclick.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googlesyndication.com https://*.googletagservices.com https://*.google.com https://*.google.co.jp https://*.googletagmanager.com https://*.googleadservices.com https://*.doubleclick.net https://*.adtrafficquality.google",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://*.googlesyndication.com https://*.google.com https://*.google.co.jp https://*.doubleclick.net https://*.googletagmanager.com https://*.gstatic.com",
