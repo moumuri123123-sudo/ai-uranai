@@ -176,6 +176,33 @@ body {
   box-shadow: 0 0 24px rgba(240, 160, 48, 0.3), 0 0 48px rgba(240, 160, 48, 0.1);
 }
 
+/* ヒーロー ネオン看板 */
+@keyframes neonSignGlow {
+  0%, 100% {
+    text-shadow:
+      0 0 10px var(--neon-red),
+      0 0 30px var(--neon-red),
+      0 0 60px var(--neon-red),
+      0 0 100px rgba(255, 45, 85, 0.4);
+  }
+  50% {
+    text-shadow:
+      0 0 6px var(--neon-red),
+      0 0 20px var(--neon-red),
+      0 0 40px var(--neon-red),
+      0 0 70px rgba(255, 45, 85, 0.25);
+  }
+}
+
+.hero-neon-sign {
+  animation: neonSignGlow 4s ease-in-out infinite;
+  -webkit-text-stroke: 1px rgba(255, 45, 85, 0.3);
+}
+
+.hero-cta-button {
+  animation: neonFlicker 6s ease-in-out infinite;
+}
+
 /* フォント指定ユーティリティ */
 .font-mincho {
   font-family: "Shippori Mincho B1", serif;

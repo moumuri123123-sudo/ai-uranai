@@ -14,30 +14,49 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
       />
       {/* ヒーローセクション */}
-      <section className="relative overflow-hidden bg-[#0a0408] px-4 py-24 text-center sm:py-32">
+      <section className="relative overflow-hidden bg-[#0a0408] px-4 py-20 text-center sm:py-28">
         {/* 背景画像 */}
         <Image
           src="/images/hero-bg.png"
           alt=""
           fill
-          className="object-cover opacity-30"
+          className="object-cover opacity-20"
           priority
         />
         {/* ビネット背景 */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#0a0408_80%)]" />
 
         <div className="relative z-10 mx-auto max-w-3xl">
-          <h1 className="font-mincho mb-6 text-3xl font-bold leading-tight tracking-wide sm:text-5xl">
-            <span className="text-gold animate-gold-pulse">
-              運命の扉を開きませんか
+          {/* ネオン看板風サイト名 */}
+          <div className="mb-2">
+            <span className="font-yuji text-sm tracking-[0.5em] text-neon-red/60 uppercase sm:text-base">
+              ── fortune telling ──
+            </span>
+          </div>
+
+          <h1 className="font-mincho mb-4 leading-none">
+            <span className="hero-neon-sign block text-[5rem] font-extrabold tracking-[0.15em] text-neon-red sm:text-[8rem]">
+              占処
             </span>
           </h1>
-          <p className="font-yuji mx-auto mb-10 max-w-xl text-base leading-relaxed text-warm sm:text-lg">
-            ── 最先端のAIが、古来の占術を紡ぐ ──
+
+          {/* サブタイトル */}
+          <div className="mb-8 flex items-center justify-center gap-4">
+            <span className="h-px w-12 bg-gradient-to-r from-transparent to-gold/50 sm:w-20" />
+            <p className="font-yuji text-lg tracking-[0.3em] text-gold sm:text-xl">
+              AI占い師
+            </p>
+            <span className="h-px w-12 bg-gradient-to-l from-transparent to-gold/50 sm:w-20" />
+          </div>
+
+          {/* 占い種類タグ */}
+          <p className="mb-10 text-xs tracking-[0.2em] text-muted sm:text-sm">
+            タロット ・ 星座 ・ 相性 ・ MBTI ・ 夢占い ・ 数秘術
           </p>
+
           <Link
             href="#fortune-menu"
-            className="inline-block rounded-full border-2 border-neon-red bg-transparent px-8 py-3 text-sm font-semibold text-neon-red animate-neon-flicker transition-all hover:bg-neon-red/10"
+            className="hero-cta-button inline-block rounded-full border-2 border-neon-red bg-transparent px-8 py-3 text-sm font-semibold tracking-wider text-neon-red transition-all hover:bg-neon-red/10 hover:shadow-[0_0_24px_rgba(255,45,85,0.4)]"
           >
             占いを始める
           </Link>
