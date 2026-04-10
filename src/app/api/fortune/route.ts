@@ -25,13 +25,20 @@ const MODEL = "gemini-2.5-flash";
 
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1分
 const RATE_LIMIT_MAX = 10; // 1分間に最大10リクエスト
+const DAILY_LIMIT_MAX = 50; // 1日最大50リクエスト
 
 type RateLimitEntry = {
   count: number;
   resetTime: number;
 };
 
+type DailyLimitEntry = {
+  count: number;
+  resetTime: number;
+};
+
 const rateLimitMap = new Map<string, RateLimitEntry>();
+const dailyLimitMap = new Map<string, DailyLimitEntry>();
 
 // 古いエントリを定期的にクリーンアップ（メモリリーク防止）
 setInterval(() => {
@@ -39,6 +46,11 @@ setInterval(() => {
   for (const [key, entry] of rateLimitMap) {
     if (now > entry.resetTime) {
       rateLimitMap.delete(key);
+    }
+  }
+  for (const [key, entry] of dailyLimitMap) {
+    if (now > entry.resetTime) {
+      dailyLimitMap.delete(key);
     }
   }
 }, 60 * 1000);
@@ -55,21 +67,38 @@ function getClientIp(req: Request): string {
   return "unknown";
 }
 
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
+function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number; daily?: boolean } {
   const now = Date.now();
+
+  // 1日の制限チェック
+  const dailyEntry = dailyLimitMap.get(ip);
+  if (dailyEntry && now <= dailyEntry.resetTime) {
+    if (dailyEntry.count >= DAILY_LIMIT_MAX) {
+      const retryAfter = Math.ceil((dailyEntry.resetTime - now) / 1000);
+      return { allowed: false, retryAfter, daily: true };
+    }
+  }
+
+  // 1分の制限チェック
   const entry = rateLimitMap.get(ip);
 
   if (!entry || now > entry.resetTime) {
     rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
-    return { allowed: true };
-  }
-
-  if (entry.count >= RATE_LIMIT_MAX) {
+  } else if (entry.count >= RATE_LIMIT_MAX) {
     const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
     return { allowed: false, retryAfter };
+  } else {
+    entry.count++;
   }
 
-  entry.count++;
+  // 1日のカウントを更新
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
+  if (!dailyEntry || now > dailyEntry.resetTime) {
+    dailyLimitMap.set(ip, { count: 1, resetTime: now + MS_PER_DAY });
+  } else {
+    dailyEntry.count++;
+  }
+
   return { allowed: true };
 }
 
@@ -432,8 +461,11 @@ export async function POST(req: Request) {
     const clientIp = getClientIp(req);
     const rateCheck = checkRateLimit(clientIp);
     if (!rateCheck.allowed) {
+      const message = rateCheck.daily
+        ? "本日の占い回数の上限（50回）に達しました。明日またお越しください。"
+        : "リクエストが多すぎます。しばらくしてからお試しください。";
       return Response.json(
-        { error: "リクエストが多すぎます。しばらくしてからお試しください。" },
+        { error: message },
         {
           status: 429,
           headers: { "Retry-After": String(rateCheck.retryAfter) },
