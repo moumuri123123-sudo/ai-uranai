@@ -150,9 +150,21 @@ https://uranaidokoro.com`;
     });
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    console.error("投稿エラー:", errorMessage, e);
+    const errorData = (e as { data?: unknown })?.data;
+    console.error("投稿エラー:", errorMessage, errorData);
     return NextResponse.json(
-      { error: "Failed to post tweet", detail: errorMessage },
+      { error: "Failed to post tweet", detail: errorMessage, data: errorData,
+        debug: {
+          hasApiKey: !!process.env.X_API_KEY,
+          apiKeyLen: process.env.X_API_KEY?.length,
+          hasApiSecret: !!process.env.X_API_SECRET,
+          apiSecretLen: process.env.X_API_SECRET?.length,
+          hasAccessToken: !!process.env.X_ACCESS_TOKEN,
+          accessTokenLen: process.env.X_ACCESS_TOKEN?.length,
+          hasAccessTokenSecret: !!process.env.X_ACCESS_TOKEN_SECRET,
+          accessTokenSecretLen: process.env.X_ACCESS_TOKEN_SECRET?.length,
+        }
+      },
       { status: 500 },
     );
   }
