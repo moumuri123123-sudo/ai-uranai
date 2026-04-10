@@ -149,9 +149,10 @@ https://uranaidokoro.com`;
       text: fortuneText,
     });
   } catch (e) {
-    console.error("投稿エラー:", e);
+    const errorMessage = e instanceof Error ? e.message : String(e);
+    console.error("投稿エラー:", errorMessage, e);
     return NextResponse.json(
-      { error: "Failed to post tweet" },
+      { error: "Failed to post tweet", detail: errorMessage },
       { status: 500 },
     );
   }
