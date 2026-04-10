@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&family=Yuji+Syuku&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -40,7 +39,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Zen Maru Gothic", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
 }
 
 /* ネオンフリッカー（ネオン管の点滅） */
@@ -203,13 +201,13 @@ body {
   animation: neonFlicker 6s ease-in-out infinite;
 }
 
-/* フォント指定ユーティリティ */
+/* フォント指定ユーティリティ（next/fontのCSS変数から参照） */
 .font-mincho {
-  font-family: "Shippori Mincho B1", serif;
+  font-family: var(--font-mincho), serif;
 }
 
 .font-yuji {
-  font-family: "Yuji Syuku", serif;
+  font-family: var(--font-yuji), serif;
 }
 
 /* シャッフルアニメーション */

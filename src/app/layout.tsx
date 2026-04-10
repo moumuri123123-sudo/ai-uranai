@@ -1,8 +1,30 @@
 import type { Metadata } from "next";
+import { Shippori_Mincho_B1, Zen_Maru_Gothic, Yuji_Syuku } from "next/font/google";
 import Script from "next/script";
 import Link from "next/link";
 import Header from "@/components/Header";
 import "./globals.css";
+
+const zenMaruGothic = Zen_Maru_Gothic({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  variable: "--font-body",
+});
+
+const shipporiMincho = Shippori_Mincho_B1({
+  subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-mincho",
+});
+
+const yujiSyuku = Yuji_Syuku({
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+  variable: "--font-yuji",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://uranaidokoro.com"),
@@ -33,6 +55,12 @@ export const metadata: Metadata = {
   other: {
     "google-adsense-account": "ca-pub-2703362176639569",
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "占処",
+  },
 };
 
 export default function RootLayout({
@@ -41,8 +69,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="ja" className={`${zenMaruGothic.variable} ${shipporiMincho.variable} ${yujiSyuku.variable}`}>
       <head>
+        <meta name="theme-color" content="#ff2d55" />
+        <link rel="alternate" type="application/rss+xml" title="占処コラム" href="/feed.xml" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
         {process.env.NEXT_PUBLIC_ADSENSE_ID && (
           <script
             async
@@ -62,7 +93,10 @@ export default function RootLayout({
           </Script>
         </>
       )}
-      <body className="antialiased">
+      <body className={`antialiased ${zenMaruGothic.className}`}>
+        <Script id="sw-register" strategy="afterInteractive">
+          {`if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}`}
+        </Script>
         <Header />
 
         {/* メインコンテンツ */}
