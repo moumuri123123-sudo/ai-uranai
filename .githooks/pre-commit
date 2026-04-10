@@ -1,0 +1,43 @@
+#!/bin/bash
+# APIキー・秘密情報の漏洩を防ぐpre-commitフック
+
+echo "セキュリティチェック中..."
+
+# ステージされたファイルの差分をチェック（フックスクリプト自身を除外）
+DIFF=$(git diff --cached --diff-filter=ACMR -- ':!.githooks/')
+
+# チェックするパターン（実際のキーのプレフィックスや一般的なパターン）
+PATTERNS=(
+  "AIzaSy"
+  "sk-[a-zA-Z0-9]{20,}"
+  "GEMINI_API_KEY=[^y]"
+  "X_API_KEY=[^y]"
+  "X_API_SECRET=[^y]"
+  "X_ACCESS_TOKEN=[^y]"
+  "X_ACCESS_TOKEN_SECRET=[^y]"
+  "CRON_SECRET=[^y]"
+  "password\s*=\s*['\"][^'\"]+['\"]"
+)
+
+FOUND=0
+for pattern in "${PATTERNS[@]}"; do
+  if echo "$DIFF" | grep -qE "$pattern"; then
+    echo "!! 秘密情報が含まれている可能性があります: $pattern"
+    FOUND=1
+  fi
+done
+
+# .envファイルがステージされていないかチェック
+if git diff --cached --name-only | grep -qE '\.env\.local$|\.env\.production$|\.env\.development$'; then
+  echo "!! .envファイルがコミットに含まれています！"
+  FOUND=1
+fi
+
+if [ $FOUND -eq 1 ]; then
+  echo ""
+  echo "コミットをブロックしました。秘密情報を除外してからコミットしてください。"
+  exit 1
+fi
+
+echo "セキュリティチェック OK"
+exit 0
