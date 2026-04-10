@@ -80,16 +80,26 @@ async function main() {
 https://uranaidokoro.com`;
 
   let tweetResult;
-  if (imageBuffer) {
-    const mediaId = await twitter.v1.uploadMedia(imageBuffer, {
-      mimeType: "image/png",
-    });
-    tweetResult = await twitter.v2.tweet({
-      text: tweetText,
-      media: { media_ids: [mediaId] },
-    });
-  } else {
-    tweetResult = await twitter.v2.tweet({ text: tweetText });
+  try {
+    if (imageBuffer) {
+      const mediaId = await twitter.v1.uploadMedia(imageBuffer, {
+        mimeType: "image/png",
+      });
+      tweetResult = await twitter.v2.tweet({
+        text: tweetText,
+        media: { media_ids: [mediaId] },
+      });
+    } else {
+      tweetResult = await twitter.v2.tweet({ text: tweetText });
+    }
+  } catch (e) {
+    // 画像付きで失敗した場合、テキストのみで再試行
+    if (imageBuffer) {
+      console.log("画像付き投稿失敗、テキストのみで再試行:", e.message);
+      tweetResult = await twitter.v2.tweet({ text: tweetText });
+    } else {
+      throw e;
+    }
   }
 
   console.log("投稿成功! Tweet ID:", tweetResult.data.id);
