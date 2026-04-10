@@ -11,10 +11,10 @@ const ai = geminiApiKey ? new GoogleGenAI({ apiKey: geminiApiKey }) : null;
 
 // X (Twitter) クライアント
 function getTwitterClient() {
-  const apiKey = process.env.X_API_KEY;
-  const apiSecret = process.env.X_API_SECRET;
-  const accessToken = process.env.X_ACCESS_TOKEN;
-  const accessTokenSecret = process.env.X_ACCESS_TOKEN_SECRET;
+  const apiKey = (process.env.X_API_KEY || "").trim();
+  const apiSecret = (process.env.X_API_SECRET || "").trim();
+  const accessToken = (process.env.X_ACCESS_TOKEN || "").trim();
+  const accessTokenSecret = (process.env.X_ACCESS_TOKEN_SECRET || "").trim();
 
   if (!apiKey || !apiSecret || !accessToken || !accessTokenSecret) {
     return null;
