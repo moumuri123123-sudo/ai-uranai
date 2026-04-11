@@ -66,6 +66,27 @@ export default function Home() {
       {/* 今日の運勢 */}
       <DailyFortune />
 
+      {/* 今日の運勢ランキング */}
+      <section className="mx-auto max-w-2xl px-4 py-8">
+        <Link href="/daily-ranking" className="group block">
+          <div className="rounded-2xl border border-gold/30 bg-surface p-6 text-center transition-all hover:border-gold/60 hover:bg-surface-hover hover:shadow-[0_0_20px_rgba(255,215,0,0.1)]">
+            <p className="mb-1 text-xs tracking-widest text-muted">
+              毎朝7時更新
+            </p>
+            <h2 className="font-mincho mb-2 text-xl font-bold tracking-wider text-gold sm:text-2xl">
+              今日の運勢ランキング
+            </h2>
+            <p className="mb-3 text-sm text-muted">
+              12星座の今日の運勢をランキングで発表。あなたの星座は何位？
+            </p>
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-gold/80 transition-colors group-hover:text-gold">
+              ランキングを見る
+              <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
+            </span>
+          </div>
+        </Link>
+      </section>
+
       {/* 占いメニューカード */}
       <section
         id="fortune-menu"

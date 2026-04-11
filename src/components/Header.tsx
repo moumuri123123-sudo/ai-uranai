@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
+  { href: "/daily-ranking", label: "今日の運勢" },
   { href: "/tarot", label: "タロット" },
   { href: "/zodiac", label: "星座占い" },
   { href: "/compatibility", label: "相性占い" },
