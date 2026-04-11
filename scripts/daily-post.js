@@ -1,8 +1,40 @@
 const { GoogleGenAI } = require("@google/genai");
 const { TwitterApi } = require("twitter-api-v2");
 
+function getTodayZodiac() {
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const zodiacs = [
+    { name: "やぎ座", period: "12/22-1/19" },
+    { name: "みずがめ座", period: "1/20-2/18" },
+    { name: "うお座", period: "2/19-3/20" },
+    { name: "おひつじ座", period: "3/21-4/19" },
+    { name: "おうし座", period: "4/20-5/20" },
+    { name: "ふたご座", period: "5/21-6/21" },
+    { name: "かに座", period: "6/22-7/22" },
+    { name: "しし座", period: "7/23-8/22" },
+    { name: "おとめ座", period: "8/23-9/22" },
+    { name: "てんびん座", period: "9/23-10/23" },
+    { name: "さそり座", period: "10/24-11/22" },
+    { name: "いて座", period: "11/23-12/21" },
+  ];
+  const md = month * 100 + day;
+  if (md >= 1222 || md <= 119) return zodiacs[0];
+  if (md <= 218) return zodiacs[1];
+  if (md <= 320) return zodiacs[2];
+  if (md <= 419) return zodiacs[3];
+  if (md <= 520) return zodiacs[4];
+  if (md <= 621) return zodiacs[5];
+  if (md <= 722) return zodiacs[6];
+  if (md <= 822) return zodiacs[7];
+  if (md <= 922) return zodiacs[8];
+  if (md <= 1023) return zodiacs[9];
+  if (md <= 1122) return zodiacs[10];
+  return zodiacs[11];
+}
+
 async function main() {
-  // Geminiでお告げテキスト生成
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   const today = new Date().toLocaleDateString("ja-JP", {
     year: "numeric",
@@ -11,28 +43,29 @@ async function main() {
     weekday: "long",
     timeZone: "Asia/Tokyo",
   });
+  const zodiac = getTodayZodiac();
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `今日は${today}です。「今日のお告げ」として、占い師の口調で今日の運勢メッセージを書いてください。`,
+    contents: `今日は${today}です。今日の星座は${zodiac.name}（${zodiac.period}）です。この星座の人に向けた、ひとこと星占いを書いてください。`,
     config: {
       systemInstruction: `あなたは占処（うらないどころ）の占い師です。
-毎朝Xに投稿する「今日のお告げ」を書いてください。
+毎朝Xに投稿する「ひとこと星占い」を書いてください。
 
 【ルール】
-- 140文字以内（ハッシュタグ・URL除く）
+- 全体で140文字以内（ハッシュタグ・URL除く）
+- 「○○座さん、」で始める（○○は今日の星座）
+- 友達に話しかけるようなカジュアルで親しみやすい口調
 - 絵文字は使わない
 - マークダウンは使わない
-- 具体的なアドバイスを1つ含める
-- ラッキーカラーまたはラッキーアイテムを1つ含める
-- 前向きで温かみのある口調
-- 「今日のお告げ」で始める`,
+- 具体的で実践しやすいアドバイスを1つ含める
+- 前向きで元気が出る内容にする`,
     },
   });
 
   const fortuneText =
-    response.text?.trim() || "今日も素敵な一日になりますように。";
-  console.log("お告げ:", fortuneText);
+    response.text?.trim() || "おひつじ座さん、今日は直感を信じて。きっといいことがあるよ。";
+  console.log("ひとこと星占い:", fortuneText);
 
   // 画像生成
   let imageBuffer = null;
@@ -76,7 +109,7 @@ async function main() {
 
   const tweetText = `${fortuneText}
 
-#占い #今日の運勢 #占処
+#${zodiac.name} #今日の運勢 #占い #占処
 https://uranaidokoro.com`;
 
   let tweetResult;
