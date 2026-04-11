@@ -77,18 +77,42 @@ export function getDailyRanking(): {
   };
 }
 
-// X投稿用のテキストを生成（上位3位のみ）
-export function formatRankingForTweet(): string {
+// 1位の一言コメント候補（Geminiが使えない場合のフォールバック）
+const FALLBACK_COMMENTS = [
+  "最高の一日になりそう！",
+  "直感が冴える一日！",
+  "チャンスが巡ってくる日！",
+  "笑顔が幸運を呼ぶ日！",
+  "新しい出会いに期待！",
+  "行動力が運を引き寄せる！",
+  "やりたいことに挑戦して！",
+];
+
+// X投稿用のテキストを生成（上位3位 + 1位に一言）
+export async function formatRankingForTweet(
+  generateComment?: (zodiacName: string) => Promise<string | null>,
+): Promise<string> {
   const { rankings, month, day } = getDailyRanking();
   const top3 = rankings.slice(0, 3);
-  const medals = ["🥇", "🥈", "🥉"];
+  const medals = ["\u{1F947}", "\u{1F948}", "\u{1F949}"];
 
-  return `＼ ${month}/${day} 今日の運勢ランキング ／
+  // 1位の一言コメントを取得
+  let comment: string;
+  if (generateComment) {
+    const aiComment = await generateComment(top3[0].name);
+    comment = aiComment || FALLBACK_COMMENTS[day % FALLBACK_COMMENTS.length];
+  } else {
+    comment = FALLBACK_COMMENTS[day % FALLBACK_COMMENTS.length];
+  }
 
-${top3.map((z, i) => `${medals[i]} ${z.name}`).join("\n")}
+  return `\uFF3C ${month}/${day} 今日の運勢ランキング \uFF0F
 
-4位〜12位はこちら
-→ https://uranaidokoro.com/daily-ranking
+${medals[0]} ${top3[0].name} \u2500\u2500 ${comment}
+${medals[1]} ${top3[1].name}
+${medals[2]} ${top3[2].name}
+
+あなたは何位？全順位はこちら
+\u2192 https://uranaidokoro.com/daily-ranking
 
 #今日の運勢 #星座占い`;
 }

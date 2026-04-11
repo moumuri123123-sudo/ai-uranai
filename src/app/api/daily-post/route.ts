@@ -1,8 +1,16 @@
+import { GoogleGenAI } from "@google/genai";
 import { TwitterApi } from "twitter-api-v2";
 import { NextResponse } from "next/server";
 import { formatRankingForTweet } from "@/lib/daily-ranking";
 
+// Gemini生成に時間がかかる場合に備えて
+export const maxDuration = 30;
+
 const CRON_SECRET = process.env.CRON_SECRET;
+
+// Gemini クライアント（1位の一言コメント生成用）
+const geminiApiKey = process.env.GEMINI_API_KEY;
+const ai = geminiApiKey ? new GoogleGenAI({ apiKey: geminiApiKey }) : null;
 
 function getTwitterClient() {
   const apiKey = (process.env.X_API_KEY || "").trim();
@@ -20,6 +28,38 @@ function getTwitterClient() {
     accessToken,
     accessSecret: accessTokenSecret,
   });
+}
+
+// Geminiで1位の一言コメントを生成
+async function generateFirstPlaceComment(
+  zodiacName: string,
+): Promise<string | null> {
+  if (!ai) return null;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `${zodiacName}が1位の日の一言コメントを書いてください。`,
+      config: {
+        systemInstruction: `あなたは占処（うらないどころ）の占い師です。
+星座占いランキング1位の星座に添える一言コメントを書いてください。
+
+【ルール】
+- 15文字以内
+- 「！」で終える
+- 絵文字は使わない
+- マークダウンは使わない
+- 前向きでワクワクする内容
+- 例：「直感が冴える一日！」「最高のツキが到来！」「恋に追い風の日！」`,
+      },
+    });
+
+    const text = response.text?.trim();
+    if (text && text.length <= 20) return text;
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 // Vercel CronはGETリクエストを送る
@@ -47,7 +87,7 @@ async function handleDailyPost(req: Request) {
   }
 
   try {
-    const tweetText = formatRankingForTweet();
+    const tweetText = await formatRankingForTweet(generateFirstPlaceComment);
     const tweetResult = await twitter.v2.tweet({ text: tweetText });
 
     return NextResponse.json({
