@@ -77,7 +77,7 @@ export default function RankingList({ items }: Props) {
               onClick={() =>
                 setOpenKey(isOpen ? null : zodiac.key)
               }
-              className="flex w-full items-center gap-4 p-4 text-left hover:bg-surface-hover"
+              className="flex w-full items-center gap-3 p-3 text-left hover:bg-surface-hover sm:gap-4 sm:p-4"
               aria-expanded={isOpen}
               aria-controls={`detail-${zodiac.key}`}
             >
@@ -98,7 +98,9 @@ export default function RankingList({ items }: Props) {
 
               {/* 星座名と期間 */}
               <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold">{zodiac.name}</p>
+                <p className="whitespace-nowrap text-lg font-bold">
+                  {zodiac.name}
+                </p>
                 {signData && (
                   <p className="truncate text-xs text-muted">
                     {signData.period} / {signData.element}の星座
