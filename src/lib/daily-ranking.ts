@@ -77,7 +77,12 @@ export function getDailyRanking(): {
   };
 }
 
-// 1位の一言コメント候補（Geminiが使えない場合のフォールバック）
+// フォールバックコメントを順位に基づいて取得
+export function getFallbackComment(rank: number, day: number): string {
+  return FALLBACK_COMMENTS[(day + rank) % FALLBACK_COMMENTS.length];
+}
+
+// 一言コメント候補（Geminiが使えない場合のフォールバック）
 const FALLBACK_COMMENTS = [
   "最高の一日になりそう！",
   "直感が冴える一日！",
@@ -86,6 +91,11 @@ const FALLBACK_COMMENTS = [
   "新しい出会いに期待！",
   "行動力が運を引き寄せる！",
   "やりたいことに挑戦して！",
+  "自分を信じて進もう！",
+  "小さな幸せに気づく日！",
+  "人との絆が深まる日！",
+  "創造力が輝く一日！",
+  "心が穏やかに過ごせる日！",
 ];
 
 // X投稿用のテキストを生成（上位3位 + 1位に一言）
