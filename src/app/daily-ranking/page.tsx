@@ -117,36 +117,34 @@ export default async function DailyRankingPage() {
           return (
             <div
               key={zodiac.key}
-              className={`rounded-xl border p-4 transition-colors hover:bg-surface-hover ${borderStyle}`}
+              className={`flex items-center gap-4 rounded-xl border p-4 transition-colors hover:bg-surface-hover ${borderStyle}`}
             >
-              <div className="flex items-center gap-4">
-                {/* 順位 */}
-                <div className="flex w-12 shrink-0 items-center justify-center text-center">
-                  {isTop3 ? (
-                    <span className="text-2xl">{RANK_LABELS[i]}</span>
-                  ) : (
-                    <span className="text-lg font-bold text-muted">
-                      {i + 1}位
-                    </span>
-                  )}
-                </div>
+              {/* 順位 */}
+              <div className="flex w-12 shrink-0 items-center justify-center text-center">
+                {isTop3 ? (
+                  <span className="text-2xl">{RANK_LABELS[i]}</span>
+                ) : (
+                  <span className="text-lg font-bold text-muted">
+                    {i + 1}位
+                  </span>
+                )}
+              </div>
 
-                {/* 星座記号 */}
-                <span className="text-2xl">{zodiac.emoji}</span>
+              {/* 星座記号 */}
+              <span className="text-2xl">{zodiac.emoji}</span>
 
-                {/* 星座名と期間 */}
-                <div className="min-w-0 flex-1">
-                  <p className="text-lg font-bold">{zodiac.name}</p>
-                  {signData && (
-                    <p className="truncate text-xs text-muted">
-                      {signData.period} / {signData.element}の星座
-                    </p>
-                  )}
-                </div>
+              {/* 星座名と期間 */}
+              <div className="min-w-0 flex-1">
+                <p className="text-lg font-bold">{zodiac.name}</p>
+                {signData && (
+                  <p className="truncate text-xs text-muted">
+                    {signData.period} / {signData.element}の星座
+                  </p>
+                )}
               </div>
 
               {/* 一言コメント */}
-              <p className="mt-2 pl-16 text-sm text-muted">
+              <p className="shrink-0 text-sm text-muted">
                 {comment}
               </p>
             </div>
