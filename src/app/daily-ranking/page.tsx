@@ -1,35 +1,34 @@
-import { getDailyRanking, getFallbackComment } from "@/lib/daily-ranking";
-import { zodiacSigns } from "@/lib/fortune-data";
+import {
+  getDailyRanking,
+  getFallbackComment,
+  getRankingDiff,
+} from "@/lib/daily-ranking";
+import { generateAllDetails } from "@/lib/ranking-details";
+import { rankingJsonLd } from "@/lib/jsonld";
 import { GoogleGenAI } from "@google/genai";
 import Link from "next/link";
 import AdBanner from "@/components/AdBanner";
+import RankingList from "./RankingList";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "今日の運勢ランキング | 占処",
-  description:
-    "12星座の今日の運勢ランキングを毎朝更新。あなたの星座は何位？",
-  openGraph: {
-    title: "今日の運勢ランキング | 占処",
-    description:
-      "12星座の今日の運勢ランキングを毎朝更新。あなたの星座は何位？",
-    url: "https://uranaidokoro.com/daily-ranking",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { month, day, rankings } = getDailyRanking();
+  const topName = rankings[0]?.name || "";
+  const title = `今日の星座占いランキング【${month}月${day}日】| 占処`;
+  const description = `${month}月${day}日の12星座ランキング。今日の1位は${topName}！仕事運・恋愛運・金運やラッキーアイテムも毎朝更新。`;
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: "https://uranaidokoro.com/daily-ranking",
+    },
+  };
+}
 
 // 毎日更新（ISR: 1時間ごとに再生成）
 export const revalidate = 3600;
-
-const RANK_STYLES = [
-  // 1位
-  "border-gold bg-gold/10 text-gold",
-  // 2位
-  "border-warm/60 bg-warm/10 text-warm",
-  // 3位
-  "border-neon-amber/50 bg-neon-amber/10 text-neon-amber",
-];
-
-const RANK_LABELS = ["🥇", "🥈", "🥉"];
 
 // Geminiで全星座の一言コメントを生成
 async function generateAllComments(
@@ -85,10 +84,34 @@ async function generateAllComments(
 
 export default async function DailyRankingPage() {
   const { rankings, month, day } = getDailyRanking();
-  const comments = await generateAllComments(rankings);
+  const diff = getRankingDiff();
+
+  // 一言コメントと詳細運勢を並列で取得
+  const [comments, details] = await Promise.all([
+    generateAllComments(rankings),
+    generateAllDetails(rankings),
+  ]);
+
+  const items = rankings.map((z, i) => ({
+    ...z,
+    oneLiner: comments.get(z.name) || getFallbackComment(i + 1, day),
+    detail: details.get(z.key)!,
+    diff: diff.get(z.key) || 0,
+  }));
+
+  const jsonLd = rankingJsonLd({
+    month,
+    day,
+    rankings: rankings.map((z) => ({ name: z.name, rank: z.rank })),
+  });
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* ヘッダー */}
       <div className="mb-10 text-center">
         <p className="mb-2 text-sm tracking-widest text-muted">
@@ -100,57 +123,13 @@ export default async function DailyRankingPage() {
         <p className="font-yuji text-xl text-gold">
           {month}月{day}日
         </p>
+        <p className="mt-2 text-xs text-muted">
+          星座をタップすると詳細運勢が開きます
+        </p>
       </div>
 
       {/* ランキングリスト */}
-      <div className="space-y-3">
-        {rankings.map((zodiac, i) => {
-          const signData =
-            zodiacSigns[zodiac.key as keyof typeof zodiacSigns];
-          const isTop3 = i < 3;
-          const borderStyle = isTop3
-            ? RANK_STYLES[i]
-            : "border-border bg-surface text-foreground";
-          const comment =
-            comments.get(zodiac.name) || getFallbackComment(i + 1, day);
-
-          return (
-            <div
-              key={zodiac.key}
-              className={`flex items-center gap-4 rounded-xl border p-4 transition-colors hover:bg-surface-hover ${borderStyle}`}
-            >
-              {/* 順位 */}
-              <div className="flex w-12 shrink-0 items-center justify-center text-center">
-                {isTop3 ? (
-                  <span className="text-2xl">{RANK_LABELS[i]}</span>
-                ) : (
-                  <span className="text-lg font-bold text-muted">
-                    {i + 1}位
-                  </span>
-                )}
-              </div>
-
-              {/* 星座記号 */}
-              <span className="text-2xl">{zodiac.emoji}</span>
-
-              {/* 星座名と期間 */}
-              <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold">{zodiac.name}</p>
-                {signData && (
-                  <p className="truncate text-xs text-muted">
-                    {signData.period} / {signData.element}の星座
-                  </p>
-                )}
-              </div>
-
-              {/* 一言コメント */}
-              <p className="shrink-0 text-sm text-muted">
-                {comment}
-              </p>
-            </div>
-          );
-        })}
-      </div>
+      <RankingList items={items} />
 
       {/* 自分の星座を占うリンク */}
       <div className="mt-8 text-center">

@@ -74,6 +74,28 @@ export function articleJsonLd(params: {
   };
 }
 
+export function rankingJsonLd(params: {
+  month: number;
+  day: number;
+  rankings: { name: string; rank: number }[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `今日の星座占いランキング【${params.month}月${params.day}日】`,
+    description: `12星座の${params.month}月${params.day}日の運勢ランキング。1位から12位まで、詳細運勢とラッキーアイテムも掲載。`,
+    url: `${BASE_URL}/daily-ranking`,
+    numberOfItems: params.rankings.length,
+    itemListOrder: "ItemListOrderAscending",
+    inLanguage: "ja",
+    itemListElement: params.rankings.map((z) => ({
+      "@type": "ListItem",
+      position: z.rank,
+      name: z.name,
+    })),
+  };
+}
+
 export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
   return {
     "@context": "https://schema.org",

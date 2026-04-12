@@ -8,6 +8,18 @@ export interface ZodiacRanking {
   rank: number;
 }
 
+export type FortuneGrade = "◎" | "○" | "△";
+
+export interface ZodiacDetail {
+  work: FortuneGrade;
+  love: FortuneGrade;
+  money: FortuneGrade;
+  lucky_color: string;
+  lucky_item: string;
+  lucky_time: string;
+  detail: string;
+}
+
 const ZODIACS = [
   { key: "aries", name: "牡羊座", emoji: "\u2648" },
   { key: "taurus", name: "牡牛座", emoji: "\u2649" },
@@ -57,6 +69,13 @@ function getTodayStr(): string {
   return `${y}-${m}-${d}`;
 }
 
+// 指定した日付のランキングを取得（内部ヘルパー）
+function getRankingByDateStr(dateStr: string): ZodiacRanking[] {
+  const seed = dateToSeed(dateStr);
+  const shuffled = seededShuffle(ZODIACS, seed);
+  return shuffled.map((z, i) => ({ ...z, rank: i + 1 }));
+}
+
 // 今日のランキングを取得
 export function getDailyRanking(): {
   rankings: ZodiacRanking[];
@@ -67,14 +86,38 @@ export function getDailyRanking(): {
     new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
   );
   const dateStr = getTodayStr();
-  const seed = dateToSeed(dateStr);
-  const shuffled = seededShuffle(ZODIACS, seed);
 
   return {
-    rankings: shuffled.map((z, i) => ({ ...z, rank: i + 1 })),
+    rankings: getRankingByDateStr(dateStr),
     month: now.getMonth() + 1,
     day: now.getDate(),
   };
+}
+
+// 昨日のランキングとの差分（順位変動）を取得
+// 戻り値: key -> 変動数（正=上昇, 負=下降, 0=変動なし）
+export function getRankingDiff(): Map<string, number> {
+  const now = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+  );
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yDateStr = `${yesterday.getFullYear()}-${yesterday.getMonth() + 1}-${yesterday.getDate()}`;
+
+  const todayRanking = getRankingByDateStr(getTodayStr());
+  const yesterdayRanking = getRankingByDateStr(yDateStr);
+
+  const yesterdayRankMap = new Map<string, number>();
+  yesterdayRanking.forEach((z) => yesterdayRankMap.set(z.key, z.rank));
+
+  const diff = new Map<string, number>();
+  todayRanking.forEach((z) => {
+    const yRank = yesterdayRankMap.get(z.key) ?? z.rank;
+    // 昨日10位→今日3位 なら +7（上昇）、逆なら -7（下降）
+    diff.set(z.key, yRank - z.rank);
+  });
+
+  return diff;
 }
 
 // フォールバックコメントを順位に基づいて取得
