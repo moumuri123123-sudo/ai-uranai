@@ -164,6 +164,12 @@ export function generateOgImage(title: string, subtitle: string, emoji: string) 
         />
       </div>
     ),
-    { ...ogSize }
+    {
+      ...ogSize,
+      headers: {
+        "cache-control":
+          "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
+      },
+    },
   );
 }
