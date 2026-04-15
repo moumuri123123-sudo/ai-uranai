@@ -1,9 +1,11 @@
 import { ImageResponse } from "next/og";
 
-export const ogSize = { width: 1200, height: 630 };
-export const ogContentType = "image/png";
+export const runtime = "edge";
+export const alt = "占処 AI占い";
+export const size = { width: 1200, height: 630 };
+export const contentType = "image/png";
 
-export function generateOgImage(title: string, subtitle: string, emoji: string) {
+export default async function Image() {
   return new ImageResponse(
     (
       <div
@@ -32,12 +34,25 @@ export function generateOgImage(title: string, subtitle: string, emoji: string) 
             boxShadow: "0 0 30px rgba(255,45,85,0.3), inset 0 0 30px rgba(255,45,85,0.1)",
           }}
         />
-
-        {/* 装飾ライン上 */}
+        {/* 内枠 */}
         <div
           style={{
             position: "absolute",
-            top: 160,
+            top: 36,
+            left: 36,
+            right: 36,
+            bottom: 36,
+            border: "1px solid rgba(255,45,85,0.3)",
+            borderRadius: 4,
+            display: "flex",
+          }}
+        />
+
+        {/* 装飾ライン左 */}
+        <div
+          style={{
+            position: "absolute",
+            top: 210,
             left: 200,
             width: 260,
             height: 1,
@@ -45,10 +60,11 @@ export function generateOgImage(title: string, subtitle: string, emoji: string) 
             display: "flex",
           }}
         />
+        {/* 装飾ライン右 */}
         <div
           style={{
             position: "absolute",
-            top: 160,
+            top: 210,
             right: 200,
             width: 260,
             height: 1,
@@ -57,21 +73,24 @@ export function generateOgImage(title: string, subtitle: string, emoji: string) 
           }}
         />
 
-        {/* 絵文字 */}
+        {/* 星マーク上 */}
         <div
           style={{
-            fontSize: 80,
+            position: "absolute",
+            top: 155,
             display: "flex",
-            marginBottom: 10,
+            fontSize: 28,
+            color: "#ffd700",
+            opacity: 0.6,
           }}
         >
-          {emoji}
+          &#x2726;
         </div>
 
-        {/* タイトル */}
+        {/* メインタイトル */}
         <div
           style={{
-            fontSize: 80,
+            fontSize: 160,
             fontWeight: 700,
             color: "#ffd700",
             textShadow: "0 0 40px rgba(255,215,0,0.5), 0 0 80px rgba(255,215,0,0.3)",
@@ -79,71 +98,42 @@ export function generateOgImage(title: string, subtitle: string, emoji: string) 
             letterSpacing: "0.1em",
           }}
         >
-          {title}
+          占処
         </div>
 
         {/* サブタイトル */}
         <div
           style={{
-            fontSize: 32,
+            fontSize: 42,
             color: "#f5e6d0",
-            opacity: 0.8,
+            opacity: 0.9,
             letterSpacing: "0.15em",
-            marginTop: 10,
+            marginTop: -10,
             display: "flex",
           }}
         >
-          {subtitle}
+          AI占い師
         </div>
 
-        {/* 占処ロゴ */}
+        {/* 説明 */}
         <div
           style={{
-            position: "absolute",
-            bottom: 50,
+            fontSize: 22,
+            color: "#f5e6d0",
+            opacity: 0.5,
+            letterSpacing: "0.2em",
+            marginTop: 20,
             display: "flex",
-            alignItems: "center",
-            gap: 12,
           }}
         >
-          <div
-            style={{
-              fontSize: 24,
-              color: "#ffd700",
-              opacity: 0.5,
-              display: "flex",
-            }}
-          >
-            &#x2726;
-          </div>
-          <div
-            style={{
-              fontSize: 22,
-              color: "#f5e6d0",
-              opacity: 0.5,
-              letterSpacing: "0.2em",
-              display: "flex",
-            }}
-          >
-            占処 AI占い
-          </div>
-          <div
-            style={{
-              fontSize: 24,
-              color: "#ffd700",
-              opacity: 0.5,
-              display: "flex",
-            }}
-          >
-            &#x2726;
-          </div>
+          タロット・星座・相性・MBTI
         </div>
 
-        {/* 装飾ライン下 */}
+        {/* 装飾ライン下左 */}
         <div
           style={{
             position: "absolute",
-            bottom: 130,
+            bottom: 200,
             left: 200,
             width: 260,
             height: 1,
@@ -151,10 +141,11 @@ export function generateOgImage(title: string, subtitle: string, emoji: string) 
             display: "flex",
           }}
         />
+        {/* 装飾ライン下右 */}
         <div
           style={{
             position: "absolute",
-            bottom: 130,
+            bottom: 200,
             right: 200,
             width: 260,
             height: 1,
@@ -162,8 +153,24 @@ export function generateOgImage(title: string, subtitle: string, emoji: string) 
             display: "flex",
           }}
         />
+
+        {/* 星マーク下 */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 90,
+            display: "flex",
+            fontSize: 20,
+            color: "#ffd700",
+            opacity: 0.4,
+          }}
+        >
+          &#x2726;
+        </div>
       </div>
     ),
-    { ...ogSize }
+    {
+      ...size,
+    }
   );
 }
