@@ -3,7 +3,22 @@ import { ImageResponse } from "next/og";
 export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
 
-export function generateOgImage(title: string, subtitle: string, emoji: string) {
+async function loadJapaneseFont(text: string): Promise<ArrayBuffer | null> {
+  try {
+    const css = await fetch(
+      `https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&text=${encodeURIComponent(text)}`,
+      { headers: { "User-Agent": "Mozilla/5.0" } },
+    ).then((r) => r.text());
+    const url = css.match(/src:\s*url\(([^)]+)\)\s*format/)?.[1];
+    if (!url) return null;
+    return await fetch(url).then((r) => r.arrayBuffer());
+  } catch {
+    return null;
+  }
+}
+
+export async function generateOgImage(title: string, subtitle: string, emoji: string) {
+  const fontData = await loadJapaneseFont(`${title}${subtitle}占処 AI占い`);
   return new ImageResponse(
     (
       <div
@@ -164,6 +179,11 @@ export function generateOgImage(title: string, subtitle: string, emoji: string) 
         />
       </div>
     ),
-    { ...ogSize }
+    {
+      ...ogSize,
+      fonts: fontData
+        ? [{ name: "Noto Sans JP", data: fontData, style: "normal", weight: 700 }]
+        : undefined,
+    },
   );
 }

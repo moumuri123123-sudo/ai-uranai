@@ -42,12 +42,21 @@ export const metadata: Metadata = {
     title: "占処 ── AI占い師",
     description:
       "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "占処 AI占い師",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "占処 ── AI占い師",
     description:
       "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。",
+    images: ["/og-image.png"],
   },
   verification: {
     google: "pvyTPNU65t3trS8CreAG65RLQMR_luDhgPBpWUbYTIk",
