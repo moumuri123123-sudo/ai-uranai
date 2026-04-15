@@ -165,7 +165,7 @@ ${medals[1]} ${top3[1].name}
 ${medals[2]} ${top3[2].name}
 
 あなたは何位？全順位はこちら
-\u2192 https://uranaidokoro.com/daily-ranking?d=${month}${day}
+\u2192 https://uranaidokoro.com/daily-ranking
 
 #今日の運勢 #星座占い`;
 }
