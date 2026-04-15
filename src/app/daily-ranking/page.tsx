@@ -22,7 +22,6 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: "https://uranaidokoro.com/daily-ranking",
     },
   };
 }
