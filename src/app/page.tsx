@@ -99,7 +99,7 @@ export default function Home() {
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {/* タロットカード */}
-          <Link href="/tarot" className="group">
+          <Link href="/tarot" className="group touch-manipulation">
             <div className="card-mystical card-glow-red flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
                 <Image src="/images/tarot.webp" alt="タロット占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
@@ -123,7 +123,7 @@ export default function Home() {
           </Link>
 
           {/* 星座占いカード */}
-          <Link href="/zodiac" className="group">
+          <Link href="/zodiac" className="group touch-manipulation">
             <div className="card-mystical card-glow-gold flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
                 <Image src="/images/zodiac.webp" alt="星座占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
@@ -147,7 +147,7 @@ export default function Home() {
           </Link>
 
           {/* 相性占いカード */}
-          <Link href="/compatibility" className="group">
+          <Link href="/compatibility" className="group touch-manipulation">
             <div className="card-mystical card-glow-pink flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
                 <Image src="/images/compatibility.webp" alt="相性占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
@@ -171,7 +171,7 @@ export default function Home() {
           </Link>
 
           {/* MBTI診断カード */}
-          <Link href="/mbti" className="group">
+          <Link href="/mbti" className="group touch-manipulation">
             <div className="card-mystical card-glow-cyan flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
                 <Image src="/images/mbti.webp" alt="MBTI診断" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
@@ -195,7 +195,7 @@ export default function Home() {
           </Link>
 
           {/* 夢占いカード */}
-          <Link href="/dream" className="group">
+          <Link href="/dream" className="group touch-manipulation">
             <div className="card-mystical card-glow-purple flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
                 <Image src="/images/dream.webp" alt="夢占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
@@ -219,7 +219,7 @@ export default function Home() {
           </Link>
 
           {/* 数秘術カード */}
-          <Link href="/numerology" className="group">
+          <Link href="/numerology" className="group touch-manipulation">
             <div className="card-mystical card-glow-amber flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
                 <Image src="/images/numerology.webp" alt="数秘術" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
@@ -310,7 +310,7 @@ export default function Home() {
           <div className="grid gap-8 sm:grid-cols-3">
             <div className="text-center">
               <FortuneIcon type="ai" size="md" className="mb-4" />
-              <h3 className="mb-2 text-base font-semibold text-gold">高精度AI鑑定</h3>
+              <h3 className="mb-2 text-base font-semibold text-gold">AIが個別に鑑定</h3>
               <p className="text-sm leading-relaxed text-muted">
                 最新のAI技術を活用し、あなただけのパーソナルな鑑定結果をお届けします。
               </p>

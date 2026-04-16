@@ -9,6 +9,10 @@ type Message = {
   content: string;
 };
 
+// サーバー側（Gemini ストリーミングエラー時）が送信するエラーマーカー。
+// これが本文に含まれる場合、履歴には保存しない。
+const STREAM_ERROR_MARKER = "[ERROR:stream_interrupted]";
+
 type ChatBoxProps = {
   fortuneType: "tarot" | "zodiac" | "compatibility" | "mbti" | "dream" | "numerology";
   initialMessage?: string;
@@ -86,6 +90,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
     const runAutoReading = async () => {
       setIsLoading(true);
       setMessages([{ role: "assistant", content: "" }]);
+      let streamCompleted = false;
 
       try {
         const res = await fetch("/api/fortune", {
@@ -112,7 +117,19 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
           signal: controller.signal,
         });
 
-        if (!res.ok) throw new Error("APIエラー");
+        if (!res.ok) {
+          if (res.status === 429) {
+            let msg = "占いの上限に達しました。少し時間をおいてからお試しください。";
+            try {
+              const data = await res.json();
+              if (data && typeof data.error === "string") msg = data.error;
+            } catch {
+              // JSON解析失敗時はデフォルトメッセージを使用
+            }
+            throw new Error(msg);
+          }
+          throw new Error("APIエラー");
+        }
 
         const reader = res.body?.getReader();
         if (!reader) throw new Error("ストリーミング非対応");
@@ -123,12 +140,22 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
         while (true) {
           if (controller.signal.aborted) break;
           const { done, value } = await reader.read();
-          if (done) break;
+          if (done) {
+            streamCompleted = !controller.signal.aborted;
+            break;
+          }
           content += decoder.decode(value, { stream: true });
           setMessages([{ role: "assistant", content }]);
         }
 
-        if (!controller.signal.aborted && content && historyLabel) {
+        const hasErrorMarker = content.includes(STREAM_ERROR_MARKER);
+        if (
+          streamCompleted &&
+          !hasErrorMarker &&
+          !controller.signal.aborted &&
+          content &&
+          historyLabel
+        ) {
           addHistory({ fortuneType, label: historyLabel, firstResponse: content });
           historySavedRef.current = true;
           onFirstResponse?.(content);
@@ -141,10 +168,16 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
         ) {
           return;
         }
-        setMessages([{
-          role: "assistant",
-          content: "申し訳ございません。占いの途中でエラーが発生しました。もう一度お試しください。",
-        }]);
+        let errorMessage =
+          "申し訳ございません。占いの途中でエラーが発生しました。もう一度お試しください。";
+        if (err instanceof TypeError) {
+          // fetch自体が失敗（ネットワークエラー）
+          errorMessage = "通信エラーです。接続をご確認ください。";
+        } else if (err instanceof Error && err.message) {
+          // 429などサーバーから返ったエラーメッセージ
+          errorMessage = err.message;
+        }
+        setMessages([{ role: "assistant", content: errorMessage }]);
       } finally {
         if (!controller.signal.aborted) {
           setIsLoading(false);
@@ -180,6 +213,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
     }
     const controller = abortControllerRef.current;
 
+    let streamCompleted = false;
     try {
       const res = await fetch("/api/fortune", {
         method: "POST",
@@ -206,6 +240,16 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
       });
 
       if (!res.ok) {
+        if (res.status === 429) {
+          let msg = "占いの上限に達しました。少し時間をおいてからお試しください。";
+          try {
+            const data = await res.json();
+            if (data && typeof data.error === "string") msg = data.error;
+          } catch {
+            // JSON解析失敗時はデフォルトメッセージを使用
+          }
+          throw new Error(msg);
+        }
         throw new Error("APIエラーが発生しました");
       }
 
@@ -222,7 +266,10 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
       while (true) {
         if (controller.signal.aborted) break;
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          streamCompleted = !controller.signal.aborted;
+          break;
+        }
 
         const chunk = decoder.decode(value, { stream: true });
         assistantContent += chunk;
@@ -237,7 +284,15 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
         });
       }
 
-      if (!controller.signal.aborted && !historySavedRef.current && assistantContent && historyLabel) {
+      const hasErrorMarker = assistantContent.includes(STREAM_ERROR_MARKER);
+      if (
+        streamCompleted &&
+        !hasErrorMarker &&
+        !controller.signal.aborted &&
+        !historySavedRef.current &&
+        assistantContent &&
+        historyLabel
+      ) {
         addHistory({
           fortuneType,
           label: historyLabel,
@@ -254,12 +309,18 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
       ) {
         return;
       }
+      let errorMessage =
+        "申し訳ございません。占いの途中でエラーが発生しました。もう一度お試しください。";
+      if (err instanceof TypeError) {
+        // fetch自体が失敗（ネットワークエラー）
+        errorMessage = "通信エラーです。接続をご確認ください。";
+      } else if (err instanceof Error && err.message && err.message !== "APIエラーが発生しました") {
+        // 429などサーバーから返ったエラーメッセージ
+        errorMessage = err.message;
+      }
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: "申し訳ございません。占いの途中でエラーが発生しました。もう一度お試しください。",
-        },
+        { role: "assistant", content: errorMessage },
       ]);
     } finally {
       if (!controller.signal.aborted) {
@@ -278,7 +339,13 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
   return (
     <div className="flex flex-col h-full max-h-[70vh] sm:max-h-[600px] w-full max-w-2xl mx-auto rounded-2xl border border-border bg-[#0a0408] shadow-2xl overflow-hidden">
       {/* メッセージ一覧 */}
-      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-1 scrollbar-thin">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-1 scrollbar-thin"
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+      >
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-muted py-12">
             <span className="text-3xl mb-3 text-gold">&#x2726;</span>
@@ -324,7 +391,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
         <button
           type="submit"
           disabled={isLoading || !input.trim()}
-          className="flex-shrink-0 h-10 w-10 rounded-xl bg-neon-red text-white flex items-center justify-center hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
+          className="flex-shrink-0 h-11 w-11 rounded-xl bg-neon-red text-white flex items-center justify-center hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
           aria-label="送信"
         >
           <svg

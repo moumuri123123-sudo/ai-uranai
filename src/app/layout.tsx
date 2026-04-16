@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Shippori_Mincho_B1, Zen_Maru_Gothic, Yuji_Syuku } from "next/font/google";
 import Script from "next/script";
 import Link from "next/link";
@@ -66,6 +66,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#ff2d55",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -74,7 +80,6 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${zenMaruGothic.variable} ${shipporiMincho.variable} ${yujiSyuku.variable}`}>
       <head>
-        <meta name="theme-color" content="#ff2d55" />
         <link rel="alternate" type="application/rss+xml" title="占処コラム" href="/feed.xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         {process.env.NEXT_PUBLIC_ADSENSE_ID && (

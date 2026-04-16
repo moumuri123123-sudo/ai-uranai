@@ -102,6 +102,53 @@ export default function PrivacyPage() {
             </ul>
           </section>
 
+          {/* 4-2. 外国にある第三者への個人データの提供について */}
+          <section className="rounded-xl border border-border bg-surface p-6">
+            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+              4-2. 外国にある第三者への個人データの提供について
+            </h2>
+            <p className="mb-3">
+              個人情報保護法第28条に基づき、外国にある第三者への個人データの提供について、以下のとおり開示いたします。
+            </p>
+            <ul className="list-disc space-y-3 pl-5">
+              <li>
+                <span className="font-semibold text-foreground">提供先:</span>{" "}
+                Google LLC（米国）
+              </li>
+              <li>
+                <span className="font-semibold text-foreground">所在国:</span>{" "}
+                アメリカ合衆国
+              </li>
+              <li>
+                <span className="font-semibold text-foreground">提供される個人情報の種類:</span>{" "}
+                ユーザーがチャットで入力したテキスト（占い質問・悩みの内容など）、およびAPI呼び出しに伴う通信情報。
+              </li>
+              <li>
+                <span className="font-semibold text-foreground">提供の目的:</span>{" "}
+                Google Gemini APIを用いたAI占い結果の生成。
+              </li>
+              <li>
+                <span className="font-semibold text-foreground">当該外国における個人情報保護制度:</span>{" "}
+                アメリカ合衆国における個人情報の保護に関する制度は、日本の個人情報保護法と同等の水準にあるとは限らない可能性があります。
+                各国の個人情報保護制度の概要については、個人情報保護委員会のウェブサイト（
+                <a
+                  href="https://www.ppc.go.jp/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+                >
+                  https://www.ppc.go.jp/
+                </a>
+                ）にて確認することができます。
+              </li>
+              <li>
+                <span className="font-semibold text-foreground">提供先が講ずる個人情報保護のための措置:</span>{" "}
+                提供先であるGoogle LLCは、自社のプライバシーポリシーおよびGemini API利用規約に基づき、
+                個人情報の安全管理のための措置を講じています。詳細は前項のリンク先をご参照ください。
+              </li>
+            </ul>
+          </section>
+
           {/* 5. Cookieの使用 */}
           <section className="rounded-xl border border-border bg-surface p-6">
             <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
@@ -247,6 +294,40 @@ export default function PrivacyPage() {
               変更があった場合は、本ページ上で通知いたします。
               変更後のポリシーは、本ページに掲載した時点で効力を生じます。
             </p>
+          </section>
+
+          {/* 10. 個人情報保護管理者 */}
+          <section className="rounded-xl border border-border bg-surface p-6">
+            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+              10. 個人情報保護管理者
+            </h2>
+            <p>
+              本サービスにおける個人情報の取扱いに関する責任者は、以下のとおりです。
+            </p>
+            <div className="mt-3 space-y-2">
+              <div className="flex">
+                <span className="w-32 shrink-0 text-muted">責任者</span>
+                <span className="text-foreground">占処運営事務局 個人情報取扱責任者</span>
+              </div>
+              <div className="flex">
+                <span className="w-32 shrink-0 text-muted">お問い合わせ</span>
+                <span className="text-foreground">
+                  <Link
+                    href="/contact"
+                    className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+                  >
+                    お問い合わせページ
+                  </Link>
+                  {" "}または{" "}
+                  <a
+                    href="mailto:oyasumi6964@gmail.com"
+                    className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+                  >
+                    oyasumi6964@gmail.com
+                  </a>
+                </span>
+              </div>
+            </div>
           </section>
 
           {/* フッター情報 */}

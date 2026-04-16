@@ -463,6 +463,40 @@ function isValidFortuneType(type: string): type is FortuneType {
   return ["tarot", "zodiac", "compatibility", "mbti", "dream", "numerology"].includes(type);
 }
 
+function isValidBirthDate(birthDate: string): boolean {
+  // YYYY-MM-DD 形式チェック
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) return false;
+
+  const [yearStr, monthStr, dayStr] = birthDate.split("-");
+  const year = parseInt(yearStr, 10);
+  const month = parseInt(monthStr, 10);
+  const day = parseInt(dayStr, 10);
+
+  const currentYear = new Date().getFullYear();
+  if (year < 1900 || year > currentYear) return false;
+  if (month < 1 || month > 12) return false;
+  if (day < 1 || day > 31) return false;
+
+  // Dateで厳密にパースして、月末日などの整合性をチェック
+  const parsed = new Date(`${birthDate}T00:00:00Z`);
+  if (isNaN(parsed.getTime())) return false;
+
+  // パース結果が入力と一致するか（例：2月30日など無効日付を検出）
+  if (
+    parsed.getUTCFullYear() !== year ||
+    parsed.getUTCMonth() + 1 !== month ||
+    parsed.getUTCDate() !== day
+  ) {
+    return false;
+  }
+
+  // 未来日付は不可
+  const now = Date.now();
+  if (parsed.getTime() > now) return false;
+
+  return true;
+}
+
 // ===== メインハンドラー =====
 
 export async function POST(req: Request) {
@@ -510,6 +544,16 @@ export async function POST(req: Request) {
         { error: "質問は500文字以内で入力してください。" },
         { status: 400 },
       );
+    }
+
+    // 数秘術の場合は生年月日の形式と値を厳密にチェック
+    if (body.type === "numerology") {
+      if (typeof body.birthDate !== "string" || !isValidBirthDate(body.birthDate)) {
+        return Response.json(
+          { error: "生年月日の形式が正しくありません" },
+          { status: 400 },
+        );
+      }
     }
 
     // 会話履歴のバリデーション（最大20件、各メッセージ1000文字以内）
@@ -625,13 +669,17 @@ export async function POST(req: Request) {
       }
     }
 
+    // 全占いに共通する安全性ガイドライン（医療・法律・金融の助言を避ける）
+    const SAFETY_GUIDELINE = `\n\n【重要】病気の診断・治療・予防に関する助言は行わないでください。医療・法律・金融に関する具体的な判断・アドバイスは避け、必要な場合は「専門家にご相談ください」と返してください。`;
+    const safeSystemInstruction = systemInstruction + SAFETY_GUIDELINE;
+
     // Gemini APIストリーミング呼び出し
     try {
       const response = await ai.models.generateContentStream({
         model: MODEL,
         contents: userMessage,
         config: {
-          systemInstruction,
+          systemInstruction: safeSystemInstruction,
         },
       });
 
@@ -645,8 +693,18 @@ export async function POST(req: Request) {
               }
             }
             controller.close();
-          } catch {
+          } catch (err) {
             // ストリーミング中にエラーが発生した場合
+            console.error("Gemini stream error:", err);
+            try {
+              controller.enqueue(
+                encoder.encode(
+                  "\n\n[ERROR:stream_interrupted]\n\n※ 通信エラーが発生しました。もう一度お試しください。",
+                ),
+              );
+            } catch {
+              // enqueueが失敗した場合は無視
+            }
             controller.close();
           }
         },

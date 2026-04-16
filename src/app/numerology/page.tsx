@@ -85,42 +85,51 @@ export default function NumerologyPage() {
               <label className="mb-3 block text-center text-sm text-warm">
                 生年月日を入力してください
               </label>
-              <div className="flex items-center justify-center gap-2">
-                <select
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                  className="rounded-xl border border-border bg-surface px-3 py-3 text-sm text-foreground outline-none transition-colors focus:border-neon-amber/50"
-                >
-                  <option value="">年</option>
-                  {years.map((y) => (
-                    <option key={y} value={y}>{y}</option>
-                  ))}
-                </select>
-                <span className="text-muted">年</span>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="flex min-w-0 items-center gap-1">
+                  <select
+                    aria-label="生年"
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    className="min-w-0 flex-1 rounded-xl border border-border bg-surface px-2 py-3 text-sm text-foreground outline-none transition-colors focus:border-neon-amber/50"
+                  >
+                    <option value="">年</option>
+                    {years.map((y) => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                  <span className="text-xs text-muted">年</span>
+                </div>
 
-                <select
-                  value={month}
-                  onChange={(e) => setMonth(e.target.value)}
-                  className="rounded-xl border border-border bg-surface px-3 py-3 text-sm text-foreground outline-none transition-colors focus:border-neon-amber/50"
-                >
-                  <option value="">月</option>
-                  {months.map((m) => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-                <span className="text-muted">月</span>
+                <div className="flex min-w-0 items-center gap-1">
+                  <select
+                    aria-label="生月"
+                    value={month}
+                    onChange={(e) => setMonth(e.target.value)}
+                    className="min-w-0 flex-1 rounded-xl border border-border bg-surface px-2 py-3 text-sm text-foreground outline-none transition-colors focus:border-neon-amber/50"
+                  >
+                    <option value="">月</option>
+                    {months.map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                  <span className="text-xs text-muted">月</span>
+                </div>
 
-                <select
-                  value={day}
-                  onChange={(e) => setDay(e.target.value)}
-                  className="rounded-xl border border-border bg-surface px-3 py-3 text-sm text-foreground outline-none transition-colors focus:border-neon-amber/50"
-                >
-                  <option value="">日</option>
-                  {days.map((d) => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
-                <span className="text-muted">日</span>
+                <div className="flex min-w-0 items-center gap-1">
+                  <select
+                    aria-label="生日"
+                    value={day}
+                    onChange={(e) => setDay(e.target.value)}
+                    className="min-w-0 flex-1 rounded-xl border border-border bg-surface px-2 py-3 text-sm text-foreground outline-none transition-colors focus:border-neon-amber/50"
+                  >
+                    <option value="">日</option>
+                    {days.map((d) => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
+                  <span className="text-xs text-muted">日</span>
+                </div>
               </div>
             </div>
 

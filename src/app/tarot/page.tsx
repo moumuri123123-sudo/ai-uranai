@@ -36,6 +36,18 @@ const jsonLdData = JSON.stringify([
   breadcrumbJsonLd([{ name: "タロット占い", path: "/tarot" }]),
 ]);
 
+const STORAGE_KEY = "tarot-state";
+const STORAGE_TTL_MS = 60 * 60 * 1000; // 1時間
+
+type SavedState = {
+  drawnCards: DrawnCard[];
+  spreadType: SpreadType;
+  selectedTheme: string | null;
+  userQuestion: string;
+  phase: Phase;
+  savedAt: number;
+};
+
 export default function TarotPage() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
@@ -44,6 +56,51 @@ export default function TarotPage() {
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   const [resultSummary, setResultSummary] = useState("");
+
+  // ===== マウント時: sessionStorageから復元 =====
+  useEffect(() => {
+    try {
+      if (typeof window === "undefined") return;
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as SavedState;
+      if (!saved || typeof saved.savedAt !== "number") return;
+      if (Date.now() - saved.savedAt > STORAGE_TTL_MS) {
+        sessionStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      if (saved.phase === "reading" && saved.drawnCards?.length > 0) {
+        setDrawnCards(saved.drawnCards);
+        setSpreadType(saved.spreadType);
+        setSelectedTheme(saved.selectedTheme);
+        setUserQuestion(saved.userQuestion);
+        setFlippedIndices(saved.drawnCards.map((_, i) => i));
+        setPhase("reading");
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  // ===== reading フェーズでsessionStorageに保存 =====
+  useEffect(() => {
+    try {
+      if (typeof window === "undefined") return;
+      if (phase === "reading" && drawnCards.length > 0) {
+        const toSave: SavedState = {
+          drawnCards,
+          spreadType,
+          selectedTheme,
+          userQuestion,
+          phase,
+          savedAt: Date.now(),
+        };
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      }
+    } catch {
+      // ignore
+    }
+  }, [phase, drawnCards, spreadType, selectedTheme, userQuestion]);
 
   // ===== シャッフル → カード引きへ自動遷移 =====
   useEffect(() => {
@@ -100,6 +157,13 @@ export default function TarotPage() {
     setDrawnCards([]);
     setFlippedIndices([]);
     setResultSummary("");
+    try {
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {
+      // ignore
+    }
   };
 
   // 履歴ラベル
@@ -181,7 +245,9 @@ export default function TarotPage() {
 
             {/* 自由記述 */}
             <div className="mb-6">
+              <label htmlFor="tarot-question" className="sr-only">質問を入力</label>
               <textarea
+                id="tarot-question"
                 value={userQuestion}
                 onChange={(e) => {
                   if (e.target.value.length <= 200) setUserQuestion(e.target.value);
@@ -337,9 +403,12 @@ export default function TarotPage() {
                     <p className="mb-2 text-xs font-medium text-gold">{card.position}</p>
                   )}
 
-                  <div
-                    className={spreadType === "three" ? "card-flip-container-sm cursor-pointer" : "card-flip-container cursor-pointer"}
+                  <button
+                    type="button"
+                    aria-label={`カード${i + 1}${spreadType === "three" ? `(${card.position})` : ""}をめくる`}
+                    aria-pressed={flippedIndices.includes(i)}
                     onClick={() => flipCard(i)}
+                    className={`${spreadType === "three" ? "card-flip-container-sm" : "card-flip-container"} border-0 bg-transparent p-0`}
                   >
                     <div className={`card-flip-inner ${flippedIndices.includes(i) ? "flipped" : ""}`}>
                       {/* 裏面（占の文字） */}
@@ -360,7 +429,7 @@ export default function TarotPage() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 </div>
               ))}
             </div>
@@ -450,7 +519,7 @@ export default function TarotPage() {
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
-          <p className="text-xs leading-relaxed text-muted/70">
+          <p className="text-xs leading-relaxed text-muted">
             ※ この占い結果はAIが生成したエンターテインメントであり、科学的根拠はありません。医療・健康・法律・金銭に関する重大な判断は、必ず専門家にご相談ください。結果を過度に信頼したり、依存しないようご注意ください。
           </p>
         </div>

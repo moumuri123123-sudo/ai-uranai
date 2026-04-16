@@ -20,8 +20,11 @@ const accentColors: Record<FortuneType, string> = {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const rawType = searchParams.get("type") || "";
-  const label = (searchParams.get("label") || "占い結果").slice(0, 30);
-  const summary = (searchParams.get("summary") || "").slice(0, 80);
+  // 絵文字やサロゲートペアを壊さないようNFC正規化→書記素単位で切り詰める
+  const rawLabel = (searchParams.get("label") || "占い結果").normalize("NFC");
+  const label = Array.from(rawLabel).slice(0, 30).join("");
+  const rawSummary = (searchParams.get("summary") || "").normalize("NFC");
+  const summary = Array.from(rawSummary).slice(0, 80).join("");
 
   const type: FortuneType = isValidFortuneType(rawType) ? rawType : "tarot";
   const typeName = fortuneTypeNames[type];

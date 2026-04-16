@@ -1,10 +1,28 @@
 import { blogArticles } from "@/lib/blog-data";
 
+// publishedAtをパースし、無効ならフォールバック日付を返す
+function safeParseDate(raw: string, fallback: Date, slug: string): Date {
+  try {
+    const parsed = new Date(raw);
+    if (isNaN(parsed.getTime())) {
+      console.warn(`[feed.xml] 無効な日付: ${raw} (slug=${slug}) フォールバックを使用`);
+      return fallback;
+    }
+    return parsed;
+  } catch (e) {
+    console.warn(`[feed.xml] 日付パース失敗: ${raw} (slug=${slug})`, e);
+    return fallback;
+  }
+}
+
 export async function GET() {
   const baseUrl = "https://uranaidokoro.com";
+  const now = new Date();
 
   const sorted = [...blogArticles].sort(
-    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    (a, b) =>
+      safeParseDate(b.publishedAt, now, b.slug).getTime() -
+      safeParseDate(a.publishedAt, now, a.slug).getTime()
   );
 
   const items = sorted
@@ -15,7 +33,7 @@ export async function GET() {
       <link>${baseUrl}/blog/${article.slug}</link>
       <guid isPermaLink="true">${baseUrl}/blog/${article.slug}</guid>
       <description><![CDATA[${article.description}]]></description>
-      <pubDate>${new Date(article.publishedAt).toUTCString()}</pubDate>
+      <pubDate>${safeParseDate(article.publishedAt, now, article.slug).toUTCString()}</pubDate>
       <category>${article.category}</category>
     </item>`
     )
