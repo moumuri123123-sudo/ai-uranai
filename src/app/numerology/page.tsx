@@ -7,6 +7,7 @@ import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import RelatedArticles from "@/components/RelatedArticles";
+import NumerologyGuide from "@/components/fortune-guides/NumerologyGuide";
 
 function calculateLifePath(year: number, month: number, day: number): number {
   const digits = `${year}${String(month).padStart(2, "0")}${String(day).padStart(2, "0")}`;
@@ -215,6 +216,7 @@ export default function NumerologyPage() {
         {/* 広告 */}
         <AdBanner slot="numerology-1" />
       </div>
+      <NumerologyGuide />
     </div>
   );
 }

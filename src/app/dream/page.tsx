@@ -7,6 +7,7 @@ import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import RelatedArticles from "@/components/RelatedArticles";
+import DreamGuide from "@/components/fortune-guides/DreamGuide";
 
 export default function DreamPage() {
   const [phase, setPhase] = useState<"input" | "chat">("input");
@@ -159,6 +160,7 @@ export default function DreamPage() {
         {/* 広告 */}
         <AdBanner slot="dream-1" />
       </div>
+      <DreamGuide />
     </div>
   );
 }

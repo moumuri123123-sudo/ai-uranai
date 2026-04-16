@@ -8,6 +8,7 @@ import FortuneIcon from "@/components/FortuneIcon";
 import { zodiacSigns } from "@/lib/fortune-data";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import RelatedArticles from "@/components/RelatedArticles";
+import ZodiacGuide from "@/components/fortune-guides/ZodiacGuide";
 
 const zodiacList = Object.entries(zodiacSigns).map(([key, sign]) => ({
   key,
@@ -131,6 +132,7 @@ export default function ZodiacPage() {
         {/* 広告 */}
         <AdBanner slot="zodiac-1" />
       </div>
+      <ZodiacGuide />
     </div>
   );
 }

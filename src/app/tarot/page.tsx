@@ -8,6 +8,7 @@ import FortuneIcon from "@/components/FortuneIcon";
 import { tarotCards } from "@/lib/fortune-data";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import RelatedArticles from "@/components/RelatedArticles";
+import TarotGuide from "@/components/fortune-guides/TarotGuide";
 
 const CARD_BACK = "占";
 
@@ -456,6 +457,7 @@ export default function TarotPage() {
         {/* 広告 */}
         <AdBanner slot="tarot-1" />
       </div>
+      <TarotGuide />
     </div>
   );
 }

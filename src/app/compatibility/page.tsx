@@ -7,6 +7,7 @@ import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import RelatedArticles from "@/components/RelatedArticles";
+import CompatibilityGuide from "@/components/fortune-guides/CompatibilityGuide";
 
 export default function CompatibilityPage() {
   const [phase, setPhase] = useState<"input" | "chat">("input");
@@ -170,6 +171,7 @@ export default function CompatibilityPage() {
         {/* 広告 */}
         <AdBanner slot="compatibility-1" />
       </div>
+      <CompatibilityGuide />
     </div>
   );
 }

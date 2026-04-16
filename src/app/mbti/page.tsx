@@ -8,6 +8,7 @@ import FortuneIcon from "@/components/FortuneIcon";
 import { mbtiTypes, mbtiQuestions } from "@/lib/fortune-data";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import RelatedArticles from "@/components/RelatedArticles";
+import MbtiGuide from "@/components/fortune-guides/MbtiGuide";
 
 type Phase = "select" | "quiz" | "chat";
 
@@ -277,6 +278,7 @@ export default function MbtiPage() {
         {/* 広告 */}
         <AdBanner slot="mbti-1" />
       </div>
+      <MbtiGuide />
     </div>
   );
 }
