@@ -22,12 +22,13 @@ function maskPII(label: string): string {
     (_m, y1, _y2, sep1, _mm, sep2, _dd) => `${y1}**${sep1}**${sep2}**`,
   );
 
-  // 日本語（ひらがな・カタカナ・漢字）またはASCII英字の名前らしき連続を
-  // 先頭1文字 + *** にマスク（2文字以上のもののみ）
+  // 日本語（ひらがな・カタカナ・漢字・長音記号）の名前らしき連続を
+  // スクリプト混在（例: "田中たろう"）も1つのトークンとして扱い、先頭1文字 + *** にマスク
   masked = masked.replace(
     /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}ー]{2,}/gu,
     (m) => `${Array.from(m)[0]}***`,
   );
+  // ASCII英字の連続名もマスク
   masked = masked.replace(
     /[A-Za-z]{2,}/g,
     (m) => `${m[0]}***`,

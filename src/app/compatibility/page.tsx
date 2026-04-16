@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
@@ -9,13 +9,71 @@ import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import RelatedArticles from "@/components/RelatedArticles";
 import CompatibilityGuide from "@/components/fortune-guides/CompatibilityGuide";
 
+type Phase = "input" | "chat";
+
+const STORAGE_KEY = "compatibility-state";
+const STORAGE_TTL_MS = 60 * 60 * 1000; // 1時間
+
+type SavedState = {
+  person1: string;
+  person2: string;
+  submittedNames: { p1: string; p2: string };
+  compatibilityScore: number | null;
+  phase: Phase;
+  savedAt: number;
+};
+
 export default function CompatibilityPage() {
-  const [phase, setPhase] = useState<"input" | "chat">("input");
+  const [phase, setPhase] = useState<Phase>("input");
   const [person1, setPerson1] = useState("");
   const [person2, setPerson2] = useState("");
   const [submittedNames, setSubmittedNames] = useState({ p1: "", p2: "" });
   const [compatibilityScore, setCompatibilityScore] = useState<number | null>(null);
   const [resultSummary, setResultSummary] = useState("");
+
+  // ===== マウント時: sessionStorageから復元 =====
+  useEffect(() => {
+    try {
+      if (typeof window === "undefined") return;
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as SavedState;
+      if (!saved || typeof saved.savedAt !== "number") return;
+      if (Date.now() - saved.savedAt > STORAGE_TTL_MS) {
+        sessionStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      if (saved.phase === "chat" && saved.submittedNames?.p1 && saved.submittedNames?.p2) {
+        setPerson1(saved.person1);
+        setPerson2(saved.person2);
+        setSubmittedNames(saved.submittedNames);
+        setCompatibilityScore(saved.compatibilityScore);
+        setPhase("chat");
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  // ===== chat フェーズでsessionStorageに保存 =====
+  useEffect(() => {
+    try {
+      if (typeof window === "undefined") return;
+      if (phase === "chat" && submittedNames.p1 && submittedNames.p2) {
+        const toSave: SavedState = {
+          person1,
+          person2,
+          submittedNames,
+          compatibilityScore,
+          phase,
+          savedAt: Date.now(),
+        };
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      }
+    } catch {
+      // ignore
+    }
+  }, [phase, person1, person2, submittedNames, compatibilityScore]);
 
   const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +83,17 @@ export default function CompatibilityPage() {
     setCompatibilityScore(Math.floor(Math.random() * 41) + 60);
     setSubmittedNames({ p1, p2 });
     setPhase("chat");
+  };
+
+  const handleBackToInput = () => {
+    setPhase("input");
+    try {
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {
+      // ignore
+    }
   };
 
   return (
@@ -136,7 +205,7 @@ export default function CompatibilityPage() {
                 </div>
               </div>
               <button
-                onClick={() => setPhase("input")}
+                onClick={handleBackToInput}
                 className="mt-3 text-xs text-warm underline underline-offset-2 transition-colors hover:text-gold"
               >
                 名前を変更する

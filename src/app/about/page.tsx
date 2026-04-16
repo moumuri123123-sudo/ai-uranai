@@ -67,7 +67,7 @@ export default function AboutPage() {
               </li>
               <li>
                 <span className="font-semibold text-foreground">プライバシー配慮</span>
-                ── 占い結果はお使いの端末にのみ保存され、サーバーには送信されません。
+                ── 占い結果は当サイトのサーバーやデータベースには保存されず、お使いの端末にのみ記録されます。なお、AI回答の生成にあたっては、ご入力内容がGoogle LLC（Gemini API）に送信されます。詳しくは<Link href="/privacy" className="text-warm underline underline-offset-4 hover:text-gold">プライバシーポリシー</Link>をご確認ください。
               </li>
             </ul>
           </section>

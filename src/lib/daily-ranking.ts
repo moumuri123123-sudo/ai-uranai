@@ -58,15 +58,35 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
   return result;
 }
 
+// JSTの年月日を Intl.DateTimeFormat で確実に取得する
+// toLocaleString のラウンドトリップは locale や実行環境で壊れやすいため使わない
+function getJstParts(date: Date = new Date()): {
+  year: number;
+  month: number;
+  day: number;
+} {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  let year = 0;
+  let month = 0;
+  let day = 0;
+  for (const p of parts) {
+    if (p.type === "year") year = Number(p.value);
+    else if (p.type === "month") month = Number(p.value);
+    else if (p.type === "day") day = Number(p.value);
+  }
+  return { year, month, day };
+}
+
 // 今日の日付文字列を取得（JST）
 function getTodayStr(): string {
-  const now = new Date(
-    new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
-  );
-  const y = now.getFullYear();
-  const m = now.getMonth() + 1;
-  const d = now.getDate();
-  return `${y}-${m}-${d}`;
+  const { year, month, day } = getJstParts();
+  return `${year}-${month}-${day}`;
 }
 
 // 指定した日付のランキングを取得（内部ヘルパー）
@@ -82,27 +102,23 @@ export function getDailyRanking(): {
   month: number;
   day: number;
 } {
-  const now = new Date(
-    new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
-  );
+  const { month, day } = getJstParts();
   const dateStr = getTodayStr();
 
   return {
     rankings: getRankingByDateStr(dateStr),
-    month: now.getMonth() + 1,
-    day: now.getDate(),
+    month,
+    day,
   };
 }
 
 // 昨日のランキングとの差分（順位変動）を取得
 // 戻り値: key -> 変動数（正=上昇, 負=下降, 0=変動なし）
 export function getRankingDiff(): Map<string, number> {
-  const now = new Date(
-    new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
-  );
-  const yesterday = new Date(now);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yDateStr = `${yesterday.getFullYear()}-${yesterday.getMonth() + 1}-${yesterday.getDate()}`;
+  // 24時間前の時点の JST 日付を取得すれば「昨日」になる
+  const yesterdayDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const y = getJstParts(yesterdayDate);
+  const yDateStr = `${y.year}-${y.month}-${y.day}`;
 
   const todayRanking = getRankingByDateStr(getTodayStr());
   const yesterdayRanking = getRankingByDateStr(yDateStr);

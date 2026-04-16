@@ -30,8 +30,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// 毎日更新（ISR: 1時間ごとに再生成）
-export const revalidate = 3600;
+// 毎日更新（ISR: 5分ごとに再生成）
+// トレードオフ: 3600 (1時間) だと 0:00 JST のランキング切り替わりが最大1時間遅延して
+// 古いデータが表示されてしまう。300 (5分) にすることで日付切り替えが確実に5分以内に
+// 反映される。Geminiの呼び出し頻度は上がるが、再生成コストよりも正確性を優先する。
+export const revalidate = 300;
 
 // Geminiで全星座の一言コメントを生成
 async function generateAllComments(
