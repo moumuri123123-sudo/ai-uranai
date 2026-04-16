@@ -9,6 +9,33 @@ export interface HistoryEntry {
 const STORAGE_KEY = "uranai-history";
 const MAX_ENTRIES = 50;
 
+// PII（個人情報）をマスクするヘルパー
+// - 生年月日の数字をマスク（例: "1990-05-20" → "19**-**-**"）
+// - 1文字より長い名前を「先頭1文字 + ***」にマスク
+// localStorage上でも生の個人情報を残さないため、保存時のみ適用する。
+function maskPII(label: string): string {
+  if (!label) return label;
+
+  // 生年月日らしきパターンをマスク（YYYY-MM-DD, YYYY/MM/DD, YYYY.MM.DD）
+  let masked = label.replace(
+    /(\d{2})(\d{2})([-/.])(\d{2})([-/.])(\d{2})/g,
+    (_m, y1, _y2, sep1, _mm, sep2, _dd) => `${y1}**${sep1}**${sep2}**`,
+  );
+
+  // 日本語（ひらがな・カタカナ・漢字）またはASCII英字の名前らしき連続を
+  // 先頭1文字 + *** にマスク（2文字以上のもののみ）
+  masked = masked.replace(
+    /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}ー]{2,}/gu,
+    (m) => `${Array.from(m)[0]}***`,
+  );
+  masked = masked.replace(
+    /[A-Za-z]{2,}/g,
+    (m) => `${m[0]}***`,
+  );
+
+  return masked;
+}
+
 export function getHistory(): HistoryEntry[] {
   if (typeof window === "undefined") return [];
   try {
@@ -28,6 +55,8 @@ export function addHistory(
     const history = getHistory();
     const newEntry: HistoryEntry = {
       ...entry,
+      // ラベルは生年月日や名前など入力値をそのまま含むことがあるためマスクしてから保存する
+      label: maskPII(entry.label),
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       timestamp: new Date().toISOString(),
       firstResponse: entry.firstResponse.slice(0, 200),

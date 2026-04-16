@@ -8,23 +8,7 @@ import FortuneIcon from "@/components/FortuneIcon";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import RelatedArticles from "@/components/RelatedArticles";
 import NumerologyGuide from "@/components/fortune-guides/NumerologyGuide";
-
-function calculateLifePath(year: number, month: number, day: number): number {
-  const digits = `${year}${String(month).padStart(2, "0")}${String(day).padStart(2, "0")}`;
-  let sum = 0;
-  for (const d of digits) {
-    sum += parseInt(d, 10);
-  }
-  while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
-    let newSum = 0;
-    while (sum > 0) {
-      newSum += sum % 10;
-      sum = Math.floor(sum / 10);
-    }
-    sum = newSum;
-  }
-  return sum;
-}
+import { calculateLifePath } from "@/lib/numerology";
 
 const lifePathMeanings: Record<number, string> = {
   1: "リーダーシップと独立心の数字。先駆者としての使命を持っています。",
@@ -61,7 +45,8 @@ export default function NumerologyPage() {
     const d = parseInt(day, 10);
     if (!y || !m || !d) return;
 
-    const num = calculateLifePath(y, m, d);
+    const isoBirthDate = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const num = calculateLifePath(isoBirthDate);
     setLifePathNumber(num);
     setBirthDateStr(`${y}年${m}月${d}日`);
     setPhase("chat");

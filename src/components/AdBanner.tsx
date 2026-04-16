@@ -27,15 +27,10 @@ export default function AdBanner({ slot, format = "auto" }: AdBannerProps) {
     }
   }, [pubId, slot]);
 
-  // pub-ID が未設定の場合はプレースホルダーを表示
+  // pub-ID または slot が未設定の場合は何もレンダリングしない
+  // （AdSenseポリシー遵守: 広告に見えるプレースホルダーを表示しない）
   if (!pubId || !slot) {
-    return (
-      <section className="mx-auto max-w-6xl px-4 py-8">
-        <div className="flex items-center justify-center rounded-xl border border-dashed border-border bg-surface/50 px-4 py-12 text-sm text-muted">
-          広告スペース
-        </div>
-      </section>
-    );
+    return null;
   }
 
   return (

@@ -74,7 +74,9 @@ export async function POST(req: Request) {
 
 async function handleDailyPost(req: Request) {
   const authHeader = req.headers.get("authorization");
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  // CRON_SECRETが未設定、またはヘッダーが一致しない場合は401を返す
+  // （以前は未設定時に認証がバイパスされる脆弱性があった）
+  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -98,9 +100,10 @@ async function handleDailyPost(req: Request) {
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : String(e);
     const errorData = (e as { data?: unknown })?.data;
+    // 詳細なエラー情報はサーバーログのみに記録し、クライアントには返さない
     console.error("投稿エラー:", errorMessage, errorData);
     return NextResponse.json(
-      { error: "Failed to post tweet", detail: errorMessage, data: errorData },
+      { error: "Failed to post tweet" },
       { status: 500 },
     );
   }

@@ -18,6 +18,7 @@ export interface FortuneRequest {
   tarotCards?: Array<{ name: string; reversed: boolean; position: string }>;
   tarotSpread?: string;
   tarotQuestion?: string;
+  compatibilityScore?: number;
 }
 
 export interface TarotCard {

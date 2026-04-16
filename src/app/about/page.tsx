@@ -153,6 +153,10 @@ export default function AboutPage() {
                 <span className="text-foreground">占処 AI占い</span>
               </div>
               <div className="flex">
+                <span className="w-28 shrink-0 text-muted">運営者</span>
+                <span className="text-foreground">占処運営事務局</span>
+              </div>
+              <div className="flex">
                 <span className="w-28 shrink-0 text-muted">URL</span>
                 <a href="https://uranaidokoro.com" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">
                   https://uranaidokoro.com

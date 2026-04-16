@@ -7,14 +7,14 @@ import "./globals.css";
 
 const zenMaruGothic = Zen_Maru_Gothic({
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "700"],
   display: "swap",
   variable: "--font-body",
 });
 
 const shipporiMincho = Shippori_Mincho_B1({
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
+  weight: ["400", "600", "700"],
   display: "swap",
   variable: "--font-mincho",
 });

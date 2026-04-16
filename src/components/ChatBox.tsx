@@ -24,12 +24,13 @@ type ChatBoxProps = {
   tarotCards?: Array<{ name: string; reversed: boolean; position: string }>;
   tarotSpread?: string;
   tarotQuestion?: string;
+  compatibilityScore?: number;
   historyLabel?: string;
   onFirstResponse?: (response: string) => void;
   autoStart?: boolean;
 };
 
-export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, tarotCard, tarotReversed, tarotCards, tarotSpread, tarotQuestion, historyLabel, onFirstResponse, autoStart }: ChatBoxProps) {
+export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, tarotCard, tarotReversed, tarotCards, tarotSpread, tarotQuestion, compatibilityScore, historyLabel, onFirstResponse, autoStart }: ChatBoxProps) {
   const [messages, setMessages] = useState<Message[]>(() => {
     if (initialMessage) {
       return [{ role: "assistant", content: initialMessage }];
@@ -41,6 +42,15 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const historySavedRef = useRef(false);
+  // アンマウントや再実行時に進行中のストリーミングを中断するためのAbortController。
+  const abortControllerRef = useRef<AbortController>(new AbortController());
+
+  // アンマウント時に進行中のfetchを中止（setStateがアンマウント後に走るのを防ぐ）
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current.abort();
+    };
+  }, []);
 
   const scrollToBottom = useCallback(() => {
     const container = messagesContainerRef.current;
@@ -67,6 +77,12 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
     if (!autoStart || autoStartedRef.current) return;
     autoStartedRef.current = true;
 
+    // 既存のコントローラが中断済みの場合に備え、新しいものを用意する
+    if (abortControllerRef.current.signal.aborted) {
+      abortControllerRef.current = new AbortController();
+    }
+    const controller = abortControllerRef.current;
+
     const runAutoReading = async () => {
       setIsLoading(true);
       setMessages([{ role: "assistant", content: "" }]);
@@ -91,7 +107,9 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
             tarotCards,
             tarotSpread,
             tarotQuestion,
+            compatibilityScore,
           }),
+          signal: controller.signal,
         });
 
         if (!res.ok) throw new Error("APIエラー");
@@ -103,29 +121,45 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
         let content = "";
 
         while (true) {
+          if (controller.signal.aborted) break;
           const { done, value } = await reader.read();
           if (done) break;
           content += decoder.decode(value, { stream: true });
           setMessages([{ role: "assistant", content }]);
         }
 
-        if (content && historyLabel) {
+        if (!controller.signal.aborted && content && historyLabel) {
           addHistory({ fortuneType, label: historyLabel, firstResponse: content });
           historySavedRef.current = true;
           onFirstResponse?.(content);
         }
-      } catch {
+      } catch (err) {
+        // アンマウント等による中断はサイレントに無視
+        if (
+          controller.signal.aborted ||
+          (err instanceof DOMException && err.name === "AbortError")
+        ) {
+          return;
+        }
         setMessages([{
           role: "assistant",
           content: "申し訳ございません。占いの途中でエラーが発生しました。もう一度お試しください。",
         }]);
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
     runAutoReading();
-  }, [autoStart, fortuneType, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, tarotCard, tarotReversed, tarotCards, tarotSpread, tarotQuestion, historyLabel, onFirstResponse]);
+
+    // クリーンアップ：進行中のストリーミングを中断し、次回用に新しいコントローラを用意
+    return () => {
+      controller.abort();
+      abortControllerRef.current = new AbortController();
+    };
+  }, [autoStart, fortuneType, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, tarotCard, tarotReversed, tarotCards, tarotSpread, tarotQuestion, compatibilityScore, historyLabel, onFirstResponse]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,6 +172,13 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
     setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
+
+    // このリクエスト用のAbortController。アンマウントの副作用で中断できるよう
+    // refに登録しておく。
+    if (abortControllerRef.current.signal.aborted) {
+      abortControllerRef.current = new AbortController();
+    }
+    const controller = abortControllerRef.current;
 
     try {
       const res = await fetch("/api/fortune", {
@@ -159,7 +200,9 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
           tarotCards,
           tarotSpread,
           tarotQuestion,
+          compatibilityScore,
         }),
+        signal: controller.signal,
       });
 
       if (!res.ok) {
@@ -177,6 +220,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
       setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
       while (true) {
+        if (controller.signal.aborted) break;
         const { done, value } = await reader.read();
         if (done) break;
 
@@ -193,7 +237,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
         });
       }
 
-      if (!historySavedRef.current && assistantContent && historyLabel) {
+      if (!controller.signal.aborted && !historySavedRef.current && assistantContent && historyLabel) {
         addHistory({
           fortuneType,
           label: historyLabel,
@@ -202,7 +246,14 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
         historySavedRef.current = true;
         onFirstResponse?.(assistantContent);
       }
-    } catch {
+    } catch (err) {
+      // アンマウント等による中断はサイレントに無視
+      if (
+        controller.signal.aborted ||
+        (err instanceof DOMException && err.name === "AbortError")
+      ) {
+        return;
+      }
       setMessages((prev) => [
         ...prev,
         {
@@ -211,7 +262,9 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
         },
       ]);
     } finally {
-      setIsLoading(false);
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
     }
   };
 

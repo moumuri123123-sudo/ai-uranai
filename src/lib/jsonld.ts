@@ -1,5 +1,16 @@
 const BASE_URL = "https://uranaidokoro.com";
 const SITE_NAME = "占処 AI占い";
+const LOGO_URL = `${BASE_URL}/icon-192.png`;
+
+const publisherOrganization = {
+  "@type": "Organization",
+  name: SITE_NAME,
+  url: BASE_URL,
+  logo: {
+    "@type": "ImageObject",
+    url: LOGO_URL,
+  },
+};
 
 export function websiteJsonLd() {
   return {
@@ -10,11 +21,7 @@ export function websiteJsonLd() {
     description:
       "最先端のAIが、古来の占術であなたの運命を紡ぎます。タロット・星座・相性・MBTI・夢占い・数秘術。",
     inLanguage: "ja",
-    publisher: {
-      "@type": "Organization",
-      name: SITE_NAME,
-      url: BASE_URL,
-    },
+    publisher: publisherOrganization,
   };
 }
 
@@ -42,6 +49,7 @@ export function webApplicationJsonLd(params: {
       name: SITE_NAME,
       url: BASE_URL,
     },
+    publisher: publisherOrganization,
   };
 }
 
@@ -61,11 +69,7 @@ export function articleJsonLd(params: {
     datePublished: params.publishedAt,
     dateModified: params.updatedAt,
     inLanguage: "ja",
-    publisher: {
-      "@type": "Organization",
-      name: SITE_NAME,
-      url: BASE_URL,
-    },
+    publisher: publisherOrganization,
     isPartOf: {
       "@type": "WebSite",
       name: SITE_NAME,

@@ -14,6 +14,7 @@ import {
   generateDreamReading,
   generateNumerologyReading,
 } from "@/lib/fortune-data";
+import { calculateLifePath } from "@/lib/numerology";
 
 // Gemini クライアント（APIキーが設定されている場合のみ有効）
 const apiKey = process.env.GEMINI_API_KEY;
@@ -22,6 +23,12 @@ const MODEL = "gemini-2.5-flash";
 
 
 // ===== レート制限 =====
+//
+// 警告: このレート制限はベストエフォートでしか機能しません。
+// Vercelのサーバーレス環境では各インスタンスごとに独立したメモリを持ち、
+// Map は共有されないため、厳密な制限にはなりません。
+// 第一防衛線として機能するのみであり、厳密な制限が必要な場合は
+// Vercel KV や Upstash Redis などの共有ストレージに移行する必要があります。
 
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1分
 const RATE_LIMIT_MAX = 10; // 1分間に最大10リクエスト
@@ -56,18 +63,27 @@ setInterval(() => {
 }, 60 * 1000);
 
 function getClientIp(req: Request): string {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) {
-    return forwarded.split(",")[0].trim();
+  // Vercel固有の信頼できるヘッダーを優先。x-forwarded-forはクライアントが
+  // 任意に偽装可能なため、最終フォールバックとしてのみ使用する。
+  const vercelForwarded = req.headers.get("x-vercel-forwarded-for");
+  if (vercelForwarded) {
+    const first = vercelForwarded.split(",")[0].trim();
+    if (first) return first;
   }
   const realIp = req.headers.get("x-real-ip");
   if (realIp) {
-    return realIp;
+    const trimmed = realIp.trim();
+    if (trimmed) return trimmed;
+  }
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0].trim();
+    if (first) return first;
   }
   return "unknown";
 }
 
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number; daily?: boolean } {
+function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number; daily?: boolean; remaining?: number } {
   const now = Date.now();
 
   // 1日の制限チェック
@@ -75,20 +91,23 @@ function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number; da
   if (dailyEntry && now <= dailyEntry.resetTime) {
     if (dailyEntry.count >= DAILY_LIMIT_MAX) {
       const retryAfter = Math.ceil((dailyEntry.resetTime - now) / 1000);
-      return { allowed: false, retryAfter, daily: true };
+      return { allowed: false, retryAfter, daily: true, remaining: 0 };
     }
   }
 
   // 1分の制限チェック
   const entry = rateLimitMap.get(ip);
+  let currentMinuteCount: number;
 
   if (!entry || now > entry.resetTime) {
     rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    currentMinuteCount = 1;
   } else if (entry.count >= RATE_LIMIT_MAX) {
     const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
-    return { allowed: false, retryAfter };
+    return { allowed: false, retryAfter, remaining: 0 };
   } else {
     entry.count++;
+    currentMinuteCount = entry.count;
   }
 
   // 1日のカウントを更新
@@ -99,7 +118,8 @@ function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number; da
     dailyEntry.count++;
   }
 
-  return { allowed: true };
+  const remaining = Math.max(0, RATE_LIMIT_MAX - currentMinuteCount);
+  return { allowed: true, remaining };
 }
 
 // ===== プロンプト構築 =====
@@ -258,13 +278,17 @@ ${signElement ? `エレメント：${signElement}` : ""}
   return { systemInstruction, userMessage };
 }
 
-function buildCompatibilityPrompt(question: string, person1: string | undefined, person2: string | undefined, messages: FortuneRequest["messages"]): {
+function buildCompatibilityPrompt(question: string, person1: string | undefined, person2: string | undefined, messages: FortuneRequest["messages"], compatibilityScore?: number): {
   systemInstruction: string;
   userMessage: string;
 } {
   const name1 = person1 || "あなた";
   const name2 = person2 || "お相手";
-  const score = Math.floor(Math.random() * 41) + 60; // 60-100
+  // クライアントから送られた相性度があればそれを使う（会話を跨いだ一貫性維持）。
+  // なければ初回用にランダム生成（60-100）。
+  const score = typeof compatibilityScore === "number"
+    ? compatibilityScore
+    : Math.floor(Math.random() * 41) + 60;
 
   const systemInstruction = `あなたは親しみやすい占い師です。相性占いを担当しています。
 丁寧なですます口調で、相談者に寄り添うように話してください。
@@ -366,21 +390,7 @@ function buildNumerologyPrompt(question: string, birthDate: string | undefined, 
 } {
   let lifePathInfo = "";
   if (birthDate) {
-    // ライフパスナンバーを計算
-    const digits = birthDate.replace(/\D/g, "");
-    let sum = 0;
-    for (const d of digits) {
-      sum += parseInt(d, 10);
-    }
-    // マスターナンバー（11, 22, 33）をチェックしながら1桁にする
-    while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
-      let newSum = 0;
-      while (sum > 0) {
-        newSum += sum % 10;
-        sum = Math.floor(sum / 10);
-      }
-      sum = newSum;
-    }
+    const sum = calculateLifePath(birthDate);
     lifePathInfo = `生年月日：${birthDate}\nライフパスナンバー：${sum}`;
   }
 
@@ -468,10 +478,14 @@ export async function POST(req: Request) {
         { error: message },
         {
           status: 429,
-          headers: { "Retry-After": String(rateCheck.retryAfter) },
+          headers: {
+            "Retry-After": String(rateCheck.retryAfter),
+            "X-RateLimit-Remaining": String(rateCheck.remaining ?? 0),
+          },
         },
       );
     }
+    const rateLimitRemaining = String(rateCheck.remaining ?? 0);
 
     const body = await req.json();
 
@@ -546,6 +560,13 @@ export async function POST(req: Request) {
             position: (c.position as string).slice(0, 10),
           }))
         : undefined,
+      compatibilityScore:
+        typeof body.compatibilityScore === "number" &&
+        Number.isFinite(body.compatibilityScore) &&
+        body.compatibilityScore >= 60 &&
+        body.compatibilityScore <= 100
+          ? Math.floor(body.compatibilityScore)
+          : undefined,
     };
 
     // Gemini APIが使えない場合はモックにフォールバック
@@ -556,6 +577,7 @@ export async function POST(req: Request) {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
           Connection: "keep-alive",
+          "X-RateLimit-Remaining": rateLimitRemaining,
         },
       });
     }
@@ -578,7 +600,7 @@ export async function POST(req: Request) {
         break;
       }
       case "compatibility": {
-        const prompt = buildCompatibilityPrompt(request.question, request.person1, request.person2, request.messages);
+        const prompt = buildCompatibilityPrompt(request.question, request.person1, request.person2, request.messages, request.compatibilityScore);
         systemInstruction = prompt.systemInstruction;
         userMessage = prompt.userMessage;
         break;
@@ -635,6 +657,7 @@ export async function POST(req: Request) {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
           Connection: "keep-alive",
+          "X-RateLimit-Remaining": rateLimitRemaining,
         },
       });
     } catch (e) {
@@ -646,6 +669,7 @@ export async function POST(req: Request) {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
           Connection: "keep-alive",
+          "X-RateLimit-Remaining": rateLimitRemaining,
         },
       });
     }

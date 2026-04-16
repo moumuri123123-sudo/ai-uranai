@@ -5,7 +5,7 @@ import ChatBox from "@/components/ChatBox";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
-import { tarotCards } from "@/lib/fortune-data";
+import { tarotCardNames } from "@/lib/fortune-data.client";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import RelatedArticles from "@/components/RelatedArticles";
 import TarotGuide from "@/components/fortune-guides/TarotGuide";
@@ -57,11 +57,11 @@ export default function TarotPage() {
       for (let i = 0; i < count; i++) {
         let idx: number;
         do {
-          idx = Math.floor(Math.random() * tarotCards.length);
+          idx = Math.floor(Math.random() * tarotCardNames.length);
         } while (usedIndices.has(idx));
         usedIndices.add(idx);
         drawn.push({
-          name: tarotCards[idx].name,
+          name: tarotCardNames[idx],
           reversed: Math.random() < 0.35,
           position: positions[i],
         });

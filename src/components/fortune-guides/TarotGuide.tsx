@@ -188,6 +188,30 @@ export default function TarotGuide() {
           </div>
         </section>
 
+        <section className="rounded-2xl border border-border bg-surface p-6">
+          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-red">
+            関連する占い
+          </h3>
+          <ul className="flex flex-wrap gap-3">
+            <li>
+              <Link
+                href="/zodiac"
+                className="inline-block rounded-lg border border-border bg-[#0a0408]/50 px-4 py-2 text-sm text-foreground/85 transition-colors hover:border-neon-red hover:text-neon-red"
+              >
+                星座占い
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/compatibility"
+                className="inline-block rounded-lg border border-border bg-[#0a0408]/50 px-4 py-2 text-sm text-foreground/85 transition-colors hover:border-neon-red hover:text-neon-red"
+              >
+                相性占い
+              </Link>
+            </li>
+          </ul>
+        </section>
+
         <div className="text-center text-xs text-muted">
           <p>
             さらに深く学びたい方は、

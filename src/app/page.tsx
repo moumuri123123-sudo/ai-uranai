@@ -17,9 +17,10 @@ export default function Home() {
       <section className="relative overflow-hidden bg-[#0a0408] px-4 py-20 text-center sm:py-28">
         {/* 背景画像 */}
         <Image
-          src="/images/hero-bg.png"
-          alt=""
+          src="/images/hero-bg.webp"
+          alt="占処 AI占いの館のイメージ"
           fill
+          sizes="100vw"
           className="object-cover opacity-20"
           priority
         />
@@ -101,7 +102,7 @@ export default function Home() {
           <Link href="/tarot" className="group">
             <div className="card-mystical card-glow-red flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
-                <Image src="/images/tarot.png" alt="タロット占い" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+                <Image src="/images/tarot.webp" alt="タロット占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
               </div>
               <div className="flex flex-1 flex-col p-6 pt-4">
               <div className="mb-3"><FortuneIcon type="tarot" size="lg" /></div>
@@ -125,7 +126,7 @@ export default function Home() {
           <Link href="/zodiac" className="group">
             <div className="card-mystical card-glow-gold flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
-                <Image src="/images/zodiac.png" alt="星座占い" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+                <Image src="/images/zodiac.webp" alt="星座占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
               </div>
               <div className="flex flex-1 flex-col p-6 pt-4">
               <div className="mb-3"><FortuneIcon type="zodiac" size="lg" /></div>
@@ -149,7 +150,7 @@ export default function Home() {
           <Link href="/compatibility" className="group">
             <div className="card-mystical card-glow-pink flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
-                <Image src="/images/compatibility.png" alt="相性占い" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+                <Image src="/images/compatibility.webp" alt="相性占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
               </div>
               <div className="flex flex-1 flex-col p-6 pt-4">
               <div className="mb-3"><FortuneIcon type="compatibility" size="lg" /></div>
@@ -173,7 +174,7 @@ export default function Home() {
           <Link href="/mbti" className="group">
             <div className="card-mystical card-glow-cyan flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
-                <Image src="/images/mbti.png" alt="MBTI診断" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+                <Image src="/images/mbti.webp" alt="MBTI診断" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
               </div>
               <div className="flex flex-1 flex-col p-6 pt-4">
               <div className="mb-3"><FortuneIcon type="mbti" size="lg" /></div>
@@ -197,7 +198,7 @@ export default function Home() {
           <Link href="/dream" className="group">
             <div className="card-mystical card-glow-purple flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
-                <Image src="/images/dream.png" alt="夢占い" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+                <Image src="/images/dream.webp" alt="夢占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
               </div>
               <div className="flex flex-1 flex-col p-6 pt-4">
               <div className="mb-3"><FortuneIcon type="dream" size="lg" /></div>
@@ -221,7 +222,7 @@ export default function Home() {
           <Link href="/numerology" className="group">
             <div className="card-mystical card-glow-amber flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
               <div className="relative h-36 w-full">
-                <Image src="/images/numerology.png" alt="数秘術" fill className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
+                <Image src="/images/numerology.webp" alt="数秘術" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
               </div>
               <div className="flex flex-1 flex-col p-6 pt-4">
               <div className="mb-3"><FortuneIcon type="numerology" size="lg" /></div>

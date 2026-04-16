@@ -14,12 +14,15 @@ export default function CompatibilityPage() {
   const [person1, setPerson1] = useState("");
   const [person2, setPerson2] = useState("");
   const [submittedNames, setSubmittedNames] = useState({ p1: "", p2: "" });
+  const [compatibilityScore, setCompatibilityScore] = useState<number | null>(null);
   const [resultSummary, setResultSummary] = useState("");
 
   const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
     const p1 = person1.trim() || "あなた";
     const p2 = person2.trim() || "お相手";
+    // 相性度はここで1回だけ生成し、以降のチャットAPI呼び出しに同じ値を渡して一貫性を保つ
+    setCompatibilityScore(Math.floor(Math.random() * 41) + 60);
     setSubmittedNames({ p1, p2 });
     setPhase("chat");
   };
@@ -144,6 +147,7 @@ export default function CompatibilityPage() {
               fortuneType="compatibility"
               person1={submittedNames.p1}
               person2={submittedNames.p2}
+              compatibilityScore={compatibilityScore ?? undefined}
               historyLabel={`相性占い - ${submittedNames.p1} & ${submittedNames.p2}`}
               initialMessage={`${submittedNames.p1}さんと${submittedNames.p2}さんの相性占いですね。\n\nそれでは鑑定に入りますね...`}
               autoStart
