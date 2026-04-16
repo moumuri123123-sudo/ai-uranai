@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "夢占い",
   description:
     "あなたが見た夢の意味をAIが深層心理から読み解きます。夢のキーワードを入力して、隠されたメッセージを発見しましょう。",
+  alternates: {
+    canonical: "/dream",
+  },
   openGraph: {
     title: "夢占い | 占処 AI占い",
     description:

@@ -4,6 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "お問い合わせ",
   description: "占処 AI占いへのお問い合わせはこちら。ご質問・ご意見・不具合のご報告などお気軽にご連絡ください。",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default function ContactPage() {

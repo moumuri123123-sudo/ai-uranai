@@ -4,6 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "利用規約",
   description: "占処 AI占いの利用規約です。サービスの利用条件、免責事項、禁止事項等をご確認ください。",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function TermsPage() {

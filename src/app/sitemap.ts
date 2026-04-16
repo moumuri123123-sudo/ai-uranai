@@ -3,7 +3,7 @@ import { blogArticles } from "@/lib/blog-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://uranaidokoro.com";
-  const lastUpdated = new Date("2026-03-30");
+  const lastUpdated = new Date();
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: lastUpdated, changeFrequency: "daily", priority: 1.0 },

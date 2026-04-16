@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "MBTI性格診断",
   description:
     "16タイプの性格診断をAIが分析。MBTIタイプに基づいた恋愛・仕事・人間関係のアドバイスをお届けします。",
+  alternates: {
+    canonical: "/mbti",
+  },
   openGraph: {
     title: "MBTI性格診断 | 占処 AI占い",
     description:

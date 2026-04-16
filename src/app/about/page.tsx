@@ -4,6 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "このサイトについて",
   description: "占処 AI占いの運営者情報・サイト概要です。AI技術を活用した占いエンターテインメントサービスについてご紹介します。",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export default function AboutPage() {
