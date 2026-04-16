@@ -86,15 +86,18 @@ body {
 }
 
 .animate-neon-flicker {
-  animation: neonFlicker 4s ease-in-out infinite;
+  animation: neonFlicker 4s ease-in-out 3;
+  animation-fill-mode: forwards;
 }
 
 .animate-neon-pulse {
-  animation: neonPulse 3s ease-in-out infinite;
+  animation: neonPulse 3s ease-in-out 3;
+  animation-fill-mode: forwards;
 }
 
 .animate-gold-pulse {
-  animation: goldPulse 3s ease-in-out infinite;
+  animation: goldPulse 3s ease-in-out 3;
+  animation-fill-mode: forwards;
 }
 
 .animate-fade-slide-up {
@@ -194,12 +197,20 @@ body {
 }
 
 .hero-neon-sign {
-  animation: neonSignGlow 4s ease-in-out infinite;
+  animation: neonSignGlow 4s ease-in-out 3;
+  animation-fill-mode: forwards;
   -webkit-text-stroke: 1px rgba(255, 45, 85, 0.3);
+  /* アニメーション終了後も常時グローを維持（LCP計算を妨げない静的シャドウ） */
+  text-shadow:
+    0 0 10px var(--neon-red),
+    0 0 30px var(--neon-red),
+    0 0 60px var(--neon-red),
+    0 0 100px rgba(255, 45, 85, 0.4);
 }
 
 .hero-cta-button {
-  animation: neonFlicker 6s ease-in-out infinite;
+  animation: neonFlicker 6s ease-in-out 2;
+  animation-fill-mode: forwards;
 }
 
 /* フォント指定ユーティリティ（next/fontのCSS変数から参照） */
@@ -207,8 +218,9 @@ body {
   font-family: var(--font-mincho), serif;
 }
 
+/* Yuji Syukuフォントは読み込み削減のためShippori Minchoにフォールバック */
 .font-yuji {
-  font-family: var(--font-yuji), serif;
+  font-family: var(--font-mincho), serif;
 }
 
 /* シャッフルアニメーション */

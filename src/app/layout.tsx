@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Shippori_Mincho_B1, Zen_Maru_Gothic, Yuji_Syuku } from "next/font/google";
+import { Shippori_Mincho_B1, Zen_Maru_Gothic } from "next/font/google";
 import Script from "next/script";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -12,18 +12,12 @@ const zenMaruGothic = Zen_Maru_Gothic({
   variable: "--font-body",
 });
 
+// Yuji Syukuは廃止し、Shippori MinchoをYuji用途にも流用（--font-yujiも同じfont-familyを指すようにglobals.cssで定義）
 const shipporiMincho = Shippori_Mincho_B1({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["600", "700"],
   display: "swap",
   variable: "--font-mincho",
-});
-
-const yujiSyuku = Yuji_Syuku({
-  subsets: ["latin"],
-  weight: ["400"],
-  display: "swap",
-  variable: "--font-yuji",
 });
 
 export const metadata: Metadata = {
@@ -78,17 +72,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${zenMaruGothic.variable} ${shipporiMincho.variable} ${yujiSyuku.variable}`}>
+    <html lang="ja" className={`${zenMaruGothic.variable} ${shipporiMincho.variable}`}>
       <head>
         <link rel="alternate" type="application/rss+xml" title="占処コラム" href="/feed.xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
-        {process.env.NEXT_PUBLIC_ADSENSE_ID && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
-            crossOrigin="anonymous"
-          />
-        )}
       </head>
       {process.env.NEXT_PUBLIC_GA_ID && (
         <>
@@ -102,6 +89,15 @@ export default function RootLayout({
         </>
       )}
       <body className={`antialiased ${zenMaruGothic.className}`}>
+        {process.env.NEXT_PUBLIC_ADSENSE_ID && (
+          <Script
+            id="adsbygoogle-init"
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+          />
+        )}
         <Script id="sw-register" strategy="afterInteractive">
           {`if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}`}
         </Script>
