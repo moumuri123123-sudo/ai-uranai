@@ -14,17 +14,50 @@ export default function AdBanner({ slot, format = "auto" }: AdBannerProps) {
 
   useEffect(() => {
     if (!pubId || !slot || pushed.current) return;
+    const el = adRef.current;
+    if (!el) return;
 
-    try {
-      const adsbygoogle = (window as unknown as { adsbygoogle: unknown[] })
-        .adsbygoogle;
-      if (adsbygoogle) {
-        adsbygoogle.push({});
-        pushed.current = true;
+    // 広告枠が視界に入った時のみAdSenseスクリプトの読み込みを待ってpush。
+    // lazyOnload戦略と組み合わせてモバイルの初期ロードを軽量化する。
+    const tryPush = () => {
+      if (pushed.current) return true;
+      try {
+        const w = window as unknown as { adsbygoogle?: unknown[] };
+        if (w.adsbygoogle) {
+          w.adsbygoogle.push({});
+          pushed.current = true;
+          return true;
+        }
+      } catch {
+        // noop
       }
-    } catch {
-      // AdSense がまだ読み込まれていない場合は何もしない
-    }
+      return false;
+    };
+
+    let pollTimer: ReturnType<typeof setInterval> | null = null;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          if (!tryPush()) {
+            let attempts = 0;
+            pollTimer = setInterval(() => {
+              attempts++;
+              if (tryPush() || attempts > 20) {
+                if (pollTimer) clearInterval(pollTimer);
+              }
+            }, 500);
+          }
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+      if (pollTimer) clearInterval(pollTimer);
+    };
   }, [pubId, slot]);
 
   // pub-ID または slot が未設定の場合は何もレンダリングしない

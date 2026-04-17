@@ -83,9 +83,9 @@ export default function RootLayout({
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
-          <Script id="ga4-init" strategy="afterInteractive">
+          <Script id="ga4-init" strategy="lazyOnload">
             {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}');`}
           </Script>
         </>
@@ -96,12 +96,12 @@ export default function RootLayout({
             id="adsbygoogle-init"
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             crossOrigin="anonymous"
           />
         )}
-        <Script id="sw-register" strategy="afterInteractive">
-          {`if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}`}
+        <Script id="sw-register" strategy="lazyOnload">
+          {`if('serviceWorker' in navigator){window.addEventListener('load',()=>{if('requestIdleCallback' in window){requestIdleCallback(()=>navigator.serviceWorker.register('/sw.js'))}else{setTimeout(()=>navigator.serviceWorker.register('/sw.js'),2000)}})}`}
         </Script>
         <Header />
 
