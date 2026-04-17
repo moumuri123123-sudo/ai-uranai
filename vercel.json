@@ -2,7 +2,19 @@
   "crons": [
     {
       "path": "/api/daily-post",
-      "schedule": "0 22 * * *"
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/auto-tweet?slot=midday",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/auto-tweet?slot=evening",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/auto-tweet?slot=night",
+      "schedule": "0 13 * * *"
     }
   ]
 }
