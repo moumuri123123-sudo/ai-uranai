@@ -126,7 +126,7 @@ export default async function Image() {
             display: "flex",
           }}
         >
-          タロット・星座・相性・MBTI
+          タロット・星座・相性・MBTI®
         </div>
 
         {/* 装飾ライン下左 */}

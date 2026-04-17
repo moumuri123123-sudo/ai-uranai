@@ -187,8 +187,9 @@ export default function ReadingExperience({ relatedArticles }: Props) {
             </p>
             <div className="pt-4">
               <button
+                type="button"
                 onClick={() => setPhase("question")}
-                className="rounded-full border-2 border-neon-red bg-transparent px-10 py-3 text-sm font-semibold text-neon-red transition-all hover:bg-neon-red/10 hover:shadow-lg hover:shadow-neon-red/20 active:scale-95"
+                className="min-h-11 rounded-full border-2 border-neon-red bg-transparent px-10 py-3 text-sm font-semibold text-neon-red transition-all hover:bg-neon-red/10 hover:shadow-lg hover:shadow-neon-red/20 active:scale-95"
               >
                 占いを始める
               </button>
@@ -217,14 +218,16 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               {THEMES.map((theme) => (
                 <button
                   key={theme.key}
+                  type="button"
                   onClick={() => setSelectedTheme(selectedTheme === theme.key ? null : theme.key)}
-                  className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs transition-all active:scale-95 ${
+                  aria-pressed={selectedTheme === theme.key}
+                  className={`flex min-h-11 items-center gap-1.5 rounded-full border px-4 py-2 text-xs transition-all active:scale-95 ${
                     selectedTheme === theme.key
                       ? "border-neon-red bg-neon-red/10 text-neon-red"
                       : "border-border bg-surface text-muted hover:border-neon-red/30 hover:text-warm"
                   }`}
                 >
-                  <span className="font-yuji">{theme.icon}</span>
+                  <span className="font-yuji" aria-hidden="true">{theme.icon}</span>
                   {theme.key}
                 </button>
               ))}
@@ -254,16 +257,18 @@ export default function ReadingExperience({ relatedArticles }: Props) {
 
           <div className="text-center">
             <button
+              type="button"
               onClick={() => setPhase("spread")}
-              className="rounded-full border-2 border-neon-red bg-transparent px-10 py-3 text-sm font-semibold text-neon-red transition-all hover:bg-neon-red/10 hover:shadow-lg hover:shadow-neon-red/20 active:scale-95"
+              className="min-h-11 rounded-full border-2 border-neon-red bg-transparent px-10 py-3 text-sm font-semibold text-neon-red transition-all hover:bg-neon-red/10 hover:shadow-lg hover:shadow-neon-red/20 active:scale-95"
             >
               次へ
             </button>
             <button
+              type="button"
               onClick={() => setPhase("intro")}
               className="mt-3 block mx-auto text-xs text-muted hover:text-warm transition-colors"
             >
-              &#x2190; 戻る
+              <span aria-hidden="true">&#x2190;</span> 戻る
             </button>
           </div>
         </div>
@@ -284,11 +289,12 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           <div className="grid gap-4 sm:grid-cols-2">
             {/* ワンオラクル */}
             <button
+              type="button"
               onClick={() => { setSpreadType("one"); setPhase("shuffle"); }}
               className="group rounded-2xl border border-border bg-surface p-6 text-left transition-all hover:border-neon-red/50 hover:shadow-lg hover:shadow-neon-red/10 active:scale-[0.98]"
             >
               <div className="mb-3 flex items-center gap-3">
-                <div className="flex h-12 w-9 items-center justify-center rounded-lg border border-neon-red/30 bg-[#0a0408] font-yuji text-lg text-neon-red">
+                <div className="flex h-12 w-9 items-center justify-center rounded-lg border border-neon-red/30 bg-[#0a0408] font-yuji text-lg text-neon-red" aria-hidden="true">
                   {CARD_BACK}
                 </div>
                 <div>
@@ -303,11 +309,12 @@ export default function ReadingExperience({ relatedArticles }: Props) {
 
             {/* スリーカード */}
             <button
+              type="button"
               onClick={() => { setSpreadType("three"); setPhase("shuffle"); }}
               className="group rounded-2xl border border-border bg-surface p-6 text-left transition-all hover:border-gold/50 hover:shadow-lg hover:shadow-gold/10 active:scale-[0.98]"
             >
               <div className="mb-3 flex items-center gap-3">
-                <div className="flex gap-1">
+                <div className="flex gap-1" aria-hidden="true">
                   {[0,1,2].map(i => (
                     <div key={i} className="flex h-12 w-7 items-center justify-center rounded-md border border-gold/30 bg-[#0a0408] font-yuji text-sm text-gold">
                       {CARD_BACK}
@@ -338,21 +345,26 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           )}
 
           <button
+            type="button"
             onClick={() => setPhase("question")}
             className="mt-4 block mx-auto text-xs text-muted hover:text-warm transition-colors"
           >
-            &#x2190; 質問を変更する
+            <span aria-hidden="true">&#x2190;</span> 質問を変更する
           </button>
         </div>
       )}
 
       {/* ===== 4. シャッフル演出 ===== */}
       {phase === "shuffle" && (
-        <div className="flex min-h-[50vh] flex-col items-center justify-center animate-fade-in">
+        <div
+          className="flex min-h-[50vh] flex-col items-center justify-center animate-fade-in"
+          role="status"
+          aria-live="polite"
+        >
           <p className="mb-8 font-mincho text-sm text-warm">
             心の中で悩みを念じながら...
           </p>
-          <div className="relative flex items-center justify-center gap-3">
+          <div className="relative flex items-center justify-center gap-3" aria-hidden="true">
             {Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
@@ -400,7 +412,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                 >
                   <div className={`card-flip-inner ${flippedIndices.includes(i) ? "flipped" : ""}`}>
                     {/* 裏面（占の文字） */}
-                    <div className="card-flip-front border-2 border-neon-red/50 bg-surface shadow-2xl shadow-neon-red/20 hover:border-neon-red hover:shadow-neon-red/40 transition-all">
+                    <div className="card-flip-front border-2 border-neon-red/50 bg-surface shadow-2xl shadow-neon-red/20 hover:border-neon-red hover:shadow-neon-red/40 transition-all" aria-hidden="true">
                       <div className="flex h-full w-full items-center justify-center font-yuji text-3xl text-neon-red/60 sm:text-4xl">
                         {CARD_BACK}
                       </div>
@@ -494,10 +506,11 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           />
 
           <button
+            type="button"
             onClick={resetAll}
             className="mx-auto mt-4 block text-sm text-muted hover:text-warm transition-colors"
           >
-            &#x2190; もう一度占う
+            <span aria-hidden="true">&#x2190;</span> もう一度占う
           </button>
         </div>
       )}

@@ -47,10 +47,12 @@ export default function ReadingExperience({ relatedArticles }: Props) {
             {zodiacList.map((sign) => (
               <button
                 key={sign.key}
+                type="button"
                 onClick={() => setSelectedSign(sign.key)}
-                className="group flex flex-col items-center gap-2 rounded-xl border border-border bg-surface p-4 transition-all hover:border-gold/50 hover:bg-surface-hover hover:shadow-lg hover:shadow-gold/10 active:scale-95"
+                aria-label={`${sign.name}（${sign.period}）を選ぶ`}
+                className="group flex min-h-11 flex-col items-center gap-2 rounded-xl border border-border bg-surface p-4 transition-all hover:border-gold/50 hover:bg-surface-hover hover:shadow-lg hover:shadow-gold/10 active:scale-95"
               >
-                <span className="text-3xl transition-transform group-hover:scale-110">
+                <span aria-hidden="true" className="text-3xl transition-transform group-hover:scale-110">
                   {zodiacEmojis[sign.key]}
                 </span>
                 <span className="text-sm font-medium text-foreground/90">
@@ -67,12 +69,13 @@ export default function ReadingExperience({ relatedArticles }: Props) {
       {selectedSign && selected && (
         <div>
           <div className="mx-auto mb-8 max-w-sm rounded-2xl border border-gold/30 bg-surface p-6 text-center shadow-lg shadow-gold/10">
-            <span className="text-4xl">{zodiacEmojis[selectedSign]}</span>
+            <span className="text-4xl" aria-hidden="true">{zodiacEmojis[selectedSign]}</span>
             <p className="mt-2 text-xl font-bold text-gold">{selected.name}</p>
             <p className="mt-1 text-xs text-muted">
               {selected.period} / {selected.element}のエレメント
             </p>
             <button
+              type="button"
               onClick={() => setSelectedSign(null)}
               className="mt-3 text-xs text-warm underline underline-offset-2 transition-colors hover:text-gold"
             >

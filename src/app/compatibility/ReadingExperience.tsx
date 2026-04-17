@@ -121,7 +121,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               </div>
 
               {/* ハートの装飾 */}
-              <div className="my-4 flex items-center justify-center">
+              <div className="my-4 flex items-center justify-center" aria-hidden="true">
                 <div className="h-px flex-1 bg-border" />
                 <span className="mx-4 text-2xl font-yuji text-neon-pink animate-pulse">
                   縁
@@ -173,7 +173,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                   {submittedNames.p1}
                 </p>
               </div>
-              <span className="text-2xl font-yuji text-neon-pink">縁</span>
+              <span className="text-2xl font-yuji text-neon-pink" aria-hidden="true">縁</span>
               <div>
                 <p className="text-xs text-muted">2人目</p>
                 <p className="text-lg font-bold text-gold">
@@ -182,6 +182,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               </div>
             </div>
             <button
+              type="button"
               onClick={handleBackToInput}
               className="mt-3 text-xs text-warm underline underline-offset-2 transition-colors hover:text-gold"
             >

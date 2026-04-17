@@ -52,7 +52,7 @@ export default function Home() {
 
           {/* 占い種類タグ */}
           <p className="mb-10 text-xs tracking-[0.2em] text-muted sm:text-sm">
-            タロット ・ 星座 ・ 相性 ・ MBTI ・ 夢占い ・ 数秘術
+            タロット ・ 星座 ・ 相性 ・ MBTI&reg; ・ 夢占い ・ 数秘術
           </p>
 
           <Link

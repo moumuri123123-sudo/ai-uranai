@@ -33,10 +33,15 @@ export default function DailyFortune() {
         </h2>
 
         {/* 星評価 */}
-        <div className="flex items-center justify-center gap-1 mb-4">
+        <div
+          className="flex items-center justify-center gap-1 mb-4"
+          role="img"
+          aria-label={`運勢${fortune.starRating}段階中${fortune.starRating}`}
+        >
           {Array.from({ length: 5 }).map((_, i) => (
             <span
               key={i}
+              aria-hidden="true"
               className={`text-lg ${
                 i < fortune.starRating
                   ? "text-gold"
@@ -49,7 +54,7 @@ export default function DailyFortune() {
         </div>
 
         {/* 装飾ライン */}
-        <div className="flex items-center justify-center gap-4 mb-5">
+        <div className="flex items-center justify-center gap-4 mb-5" aria-hidden="true">
           <div className="h-px w-12 bg-gold/30" />
           <span className="font-yuji text-sm text-gold/50">占</span>
           <div className="h-px w-12 bg-gold/30" />
@@ -67,6 +72,7 @@ export default function DailyFortune() {
             <p className="text-[10px] text-muted mb-1.5">ラッキーカラー</p>
             <div className="flex items-center justify-center gap-2">
               <span
+                aria-hidden="true"
                 className="inline-block h-4 w-4 rounded-full border border-white/20"
                 style={{ backgroundColor: fortune.luckyColor }}
               />

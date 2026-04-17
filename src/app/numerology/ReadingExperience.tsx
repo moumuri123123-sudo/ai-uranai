@@ -58,14 +58,15 @@ export default function ReadingExperience({ relatedArticles }: Props) {
       {/* 入力フェーズ */}
       {phase === "input" && (
         <div className="mx-auto max-w-sm space-y-8">
-          <div>
-            <label className="mb-3 block text-center text-sm text-warm">
+          <fieldset>
+            <legend className="mb-3 block w-full text-center text-sm text-warm">
               生年月日を入力してください
-            </label>
+            </legend>
             <div className="grid grid-cols-3 gap-2">
               <div className="flex min-w-0 items-center gap-1">
+                <label htmlFor="birth-year" className="sr-only">生年</label>
                 <select
-                  aria-label="生年"
+                  id="birth-year"
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
                   className="min-w-0 flex-1 rounded-xl border border-border bg-surface px-2 py-3 text-sm text-foreground outline-none transition-colors focus:border-neon-amber/50"
@@ -75,12 +76,13 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                     <option key={y} value={y}>{y}</option>
                   ))}
                 </select>
-                <span className="text-xs text-muted">年</span>
+                <span className="text-xs text-muted" aria-hidden="true">年</span>
               </div>
 
               <div className="flex min-w-0 items-center gap-1">
+                <label htmlFor="birth-month" className="sr-only">生月</label>
                 <select
-                  aria-label="生月"
+                  id="birth-month"
                   value={month}
                   onChange={(e) => setMonth(e.target.value)}
                   className="min-w-0 flex-1 rounded-xl border border-border bg-surface px-2 py-3 text-sm text-foreground outline-none transition-colors focus:border-neon-amber/50"
@@ -90,12 +92,13 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                     <option key={m} value={m}>{m}</option>
                   ))}
                 </select>
-                <span className="text-xs text-muted">月</span>
+                <span className="text-xs text-muted" aria-hidden="true">月</span>
               </div>
 
               <div className="flex min-w-0 items-center gap-1">
+                <label htmlFor="birth-day" className="sr-only">生日</label>
                 <select
-                  aria-label="生日"
+                  id="birth-day"
                   value={day}
                   onChange={(e) => setDay(e.target.value)}
                   className="min-w-0 flex-1 rounded-xl border border-border bg-surface px-2 py-3 text-sm text-foreground outline-none transition-colors focus:border-neon-amber/50"
@@ -105,16 +108,17 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                     <option key={d} value={d}>{d}</option>
                   ))}
                 </select>
-                <span className="text-xs text-muted">日</span>
+                <span className="text-xs text-muted" aria-hidden="true">日</span>
               </div>
             </div>
-          </div>
+          </fieldset>
 
           <div className="text-center">
             <button
+              type="button"
               onClick={handleSubmit}
               disabled={!year || !month || !day}
-              className="rounded-full border-2 border-neon-amber px-8 py-3 text-sm font-semibold text-neon-amber transition-all hover:bg-neon-amber/10 hover:shadow-lg hover:shadow-neon-amber/20 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="min-h-11 rounded-full border-2 border-neon-amber px-8 py-3 text-sm font-semibold text-neon-amber transition-all hover:bg-neon-amber/10 hover:shadow-lg hover:shadow-neon-amber/20 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
             >
               鑑定する
             </button>
@@ -160,6 +164,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           />
 
           <button
+            type="button"
             onClick={() => {
               setPhase("input");
               setYear("");

@@ -5,7 +5,11 @@ import { notFound } from "next/navigation";
 import { blogArticles, getArticleBySlug } from "@/lib/blog-data";
 import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
-import { articleJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import {
+  DEFAULT_BLOG_OG_IMAGE,
+  articleJsonLd,
+  breadcrumbJsonLd,
+} from "@/lib/jsonld";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -21,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = getArticleBySlug(slug);
   if (!article) return { title: "記事が見つかりません" };
+  const ogImage = DEFAULT_BLOG_OG_IMAGE;
   return {
     title: article.title,
     description: article.description,
@@ -28,8 +33,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `/blog/${article.slug}`,
     },
     openGraph: {
+      type: "article",
       title: `${article.title} | 占処 AI占い`,
       description: article.description,
+      url: `/blog/${article.slug}`,
+      siteName: "占処 AI占い",
+      locale: "ja_JP",
+      publishedTime: article.publishedAt,
+      modifiedTime: article.updatedAt,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${article.title} | 占処 AI占い`,
+      description: article.description,
+      images: [ogImage],
     },
   };
 }
@@ -51,23 +76,35 @@ export default async function BlogDetailPage({ params }: Props) {
 
   const link = categoryLinks[article.category];
 
+  // articleBody用：markdownリンク記法を除去して先頭500字程度を要約として使う
+  const articleBodyText = article.content
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 500);
+
+  const jsonLdPayload = JSON.stringify([
+    articleJsonLd({
+      title: article.title,
+      description: article.description,
+      slug: article.slug,
+      publishedAt: article.publishedAt,
+      updatedAt: article.updatedAt,
+      image: DEFAULT_BLOG_OG_IMAGE,
+      articleBody: articleBodyText,
+      authorName: "占処AI編集部",
+    }),
+    breadcrumbJsonLd([
+      { name: "コラム", path: "/blog" },
+      { name: article.title, path: `/blog/${article.slug}` },
+    ]),
+  ]);
+
   return (
     <div className="min-h-screen bg-[#0a0408]">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([
-          articleJsonLd({
-            title: article.title,
-            description: article.description,
-            slug: article.slug,
-            publishedAt: article.publishedAt,
-            updatedAt: article.publishedAt,
-          }),
-          breadcrumbJsonLd([
-            { name: "コラム", path: "/blog" },
-            { name: article.title, path: `/blog/${article.slug}` },
-          ]),
-        ]) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdPayload }}
       />
       <div className="mx-auto max-w-3xl px-4 py-12">
         <div className="mb-6 text-sm text-muted">

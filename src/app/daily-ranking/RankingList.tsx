@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { ZodiacRanking, ZodiacDetail } from "@/lib/daily-ranking";
+import type { ZodiacRanking, ZodiacDetail, RankingDiff } from "@/lib/daily-ranking";
 import { zodiacSigns } from "@/lib/fortune-data";
 
 const RANK_STYLES = [
@@ -15,22 +15,53 @@ const RANK_LABELS = ["🥇", "🥈", "🥉"];
 interface RankingItem extends ZodiacRanking {
   oneLiner: string;
   detail: ZodiacDetail;
-  diff: number;
+  // number なら前日との差分、null なら前日データなし（NEW扱い）
+  diff: RankingDiff;
 }
 
 interface Props {
   items: RankingItem[];
 }
 
-function DiffBadge({ diff }: { diff: number }) {
+// 順位変動バッジ。レトロネオンのgold/red配色に調和させる:
+//   上昇: gold（↑）/ 下降: neon-red（↓）/ 変動なし: muted（→）/ NEW: warm
+// aria-label でスクリーンリーダーに意味を伝え、アイコン自体は aria-hidden にする
+function DiffBadge({ diff }: { diff: RankingDiff }) {
+  if (diff === null) {
+    return (
+      <span
+        className="text-[11px] font-bold leading-none text-warm"
+        aria-label="前日データなし（新しく登場）"
+      >
+        NEW
+      </span>
+    );
+  }
   if (diff === 0) {
-    return <span className="text-sm text-muted">→</span>;
+    return (
+      <span className="text-sm text-muted" aria-label="順位変動なし">
+        <span aria-hidden="true">→</span>
+      </span>
+    );
   }
   if (diff > 0) {
-    return <span className="text-sm font-bold text-gold">↑{diff}</span>;
+    return (
+      <span
+        className="text-sm font-bold text-gold"
+        aria-label={`前日より${diff}位上昇`}
+      >
+        <span aria-hidden="true">↑{diff}</span>
+      </span>
+    );
   }
+  const down = Math.abs(diff);
   return (
-    <span className="text-sm font-bold text-muted">↓{Math.abs(diff)}</span>
+    <span
+      className="text-sm font-bold text-neon-red"
+      aria-label={`前日より${down}位下降`}
+    >
+      <span aria-hidden="true">↓{down}</span>
+    </span>
   );
 }
 
@@ -48,7 +79,9 @@ export default function RankingList({ items }: Props) {
   const [openKey, setOpenKey] = useState<string | null>(null);
 
   const handleShare = (item: RankingItem) => {
-    const ogUrl = `https://uranaidokoro.com/api/og-ranking?name=${encodeURIComponent(item.name)}&emoji=${encodeURIComponent(item.emoji)}&rank=${item.rank}&diff=${item.diff}&work=${encodeURIComponent(item.detail.work)}&love=${encodeURIComponent(item.detail.love)}&money=${encodeURIComponent(item.detail.money)}`;
+    // OGP API は number 前提。null（NEW）の場合は 0 を渡す
+    const diffParam = item.diff ?? 0;
+    const ogUrl = `https://uranaidokoro.com/api/og-ranking?name=${encodeURIComponent(item.name)}&emoji=${encodeURIComponent(item.emoji)}&rank=${item.rank}&diff=${diffParam}&work=${encodeURIComponent(item.detail.work)}&love=${encodeURIComponent(item.detail.love)}&money=${encodeURIComponent(item.detail.money)}`;
     const text = `${item.name} 今日${item.rank}位！\n仕事${item.detail.work} 恋愛${item.detail.love} 金運${item.detail.money}\n\n#今日の運勢 #星座占い`;
     const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent("https://uranaidokoro.com/daily-ranking")}`;
     // OGP画像が反映されるよう一度プリフェッチ

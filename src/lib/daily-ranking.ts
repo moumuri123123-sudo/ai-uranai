@@ -112,9 +112,12 @@ export function getDailyRanking(): {
   };
 }
 
+// 順位変動の型：number なら差分、null なら前日データなし（NEW）
+export type RankingDiff = number | null;
+
 // 昨日のランキングとの差分（順位変動）を取得
-// 戻り値: key -> 変動数（正=上昇, 負=下降, 0=変動なし）
-export function getRankingDiff(): Map<string, number> {
+// 戻り値: key -> 変動数（正=上昇, 負=下降, 0=変動なし, null=前日データなし）
+export function getRankingDiff(): Map<string, RankingDiff> {
   // 24時間前の時点の JST 日付を取得すれば「昨日」になる
   const yesterdayDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const y = getJstParts(yesterdayDate);
@@ -126,14 +129,25 @@ export function getRankingDiff(): Map<string, number> {
   const yesterdayRankMap = new Map<string, number>();
   yesterdayRanking.forEach((z) => yesterdayRankMap.set(z.key, z.rank));
 
-  const diff = new Map<string, number>();
+  const diff = new Map<string, RankingDiff>();
   todayRanking.forEach((z) => {
-    const yRank = yesterdayRankMap.get(z.key) ?? z.rank;
+    const yRank = yesterdayRankMap.get(z.key);
+    if (yRank === undefined) {
+      // 昨日のランキングに存在しない星座（データ定義変更時のみ発生）
+      diff.set(z.key, null);
+      return;
+    }
     // 昨日10位→今日3位 なら +7（上昇）、逆なら -7（下降）
     diff.set(z.key, yRank - z.rank);
   });
 
   return diff;
+}
+
+// 今日の日付文字列（JST, YYYY-MM-DD）を外部にも公開
+// Geminiコメント/詳細運勢キャッシュのキーとして利用する
+export function getTodayDateStr(): string {
+  return getTodayStr();
 }
 
 // フォールバックコメントを順位に基づいて取得

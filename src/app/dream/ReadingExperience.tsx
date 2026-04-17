@@ -39,11 +39,12 @@ export default function ReadingExperience({ relatedArticles }: Props) {
         <div className="mx-auto max-w-md space-y-8">
           {/* テキスト入力 */}
           <div>
-            <label className="mb-2 block text-sm text-warm">
+            <label htmlFor="dream-keyword" className="mb-2 block text-sm text-warm">
               夢の内容やキーワードを入力してください
             </label>
             <div className="flex gap-3">
               <input
+                id="dream-keyword"
                 type="text"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
@@ -55,9 +56,10 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                 className="flex-1 rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted/50 outline-none transition-colors focus:border-neon-purple/50"
               />
               <button
+                type="button"
                 onClick={() => handleSubmit(keyword)}
                 disabled={!keyword.trim()}
-                className="rounded-xl border-2 border-neon-purple px-6 py-3 text-sm font-semibold text-neon-purple transition-all hover:bg-neon-purple/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="min-h-11 rounded-xl border-2 border-neon-purple px-6 py-3 text-sm font-semibold text-neon-purple transition-all hover:bg-neon-purple/10 disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 占う
               </button>
@@ -73,8 +75,9 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               {quickDreams.map((dream) => (
                 <button
                   key={dream}
+                  type="button"
                   onClick={() => handleSubmit(dream)}
-                  className="rounded-full border border-border bg-surface px-4 py-2 text-xs text-foreground/80 transition-all hover:border-neon-purple/40 hover:bg-surface-hover hover:text-neon-purple"
+                  className="min-h-11 rounded-full border border-border bg-surface px-4 py-2 text-xs text-foreground/80 transition-all hover:border-neon-purple/40 hover:bg-surface-hover hover:text-neon-purple"
                 >
                   {dream}
                 </button>
@@ -112,6 +115,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           />
 
           <button
+            type="button"
             onClick={() => {
               setPhase("input");
               setKeyword("");

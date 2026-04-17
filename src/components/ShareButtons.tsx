@@ -75,7 +75,7 @@ export default function ShareButtons({ title, resultData }: ShareButtonsProps) {
       <div className="flex flex-wrap items-center justify-center gap-3">
         <button
           onClick={handleTwitter}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground/70 transition-all hover:border-neon-red/50 hover:text-neon-red hover:shadow-lg hover:shadow-neon-red/10"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-surface text-foreground/70 transition-all hover:border-neon-red/50 hover:text-neon-red hover:shadow-lg hover:shadow-neon-red/10"
           aria-label="Xでシェア"
           title="Xでシェア"
         >
@@ -83,7 +83,7 @@ export default function ShareButtons({ title, resultData }: ShareButtonsProps) {
         </button>
         <button
           onClick={handleLine}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground/70 transition-all hover:border-[#06C755]/50 hover:text-[#06C755] hover:shadow-lg hover:shadow-[#06C755]/10"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-surface text-foreground/70 transition-all hover:border-[#06C755]/50 hover:text-[#06C755] hover:shadow-lg hover:shadow-[#06C755]/10"
           aria-label="LINEでシェア"
           title="LINEでシェア"
         >
@@ -91,7 +91,7 @@ export default function ShareButtons({ title, resultData }: ShareButtonsProps) {
         </button>
         <button
           onClick={handleCopy}
-          className="flex h-10 items-center gap-1.5 rounded-full border border-border bg-surface px-4 text-foreground/70 transition-all hover:border-gold/50 hover:text-gold hover:shadow-lg hover:shadow-gold/10"
+          className="flex h-11 items-center gap-1.5 rounded-full border border-border bg-surface px-4 text-foreground/70 transition-all hover:border-gold/50 hover:text-gold hover:shadow-lg hover:shadow-gold/10"
           aria-label="リンクをコピー"
           title="リンクをコピー"
         >
@@ -103,7 +103,7 @@ export default function ShareButtons({ title, resultData }: ShareButtonsProps) {
           <button
             onClick={handleDownload}
             disabled={isGenerating}
-            className="flex h-10 items-center gap-1.5 rounded-full border border-border bg-surface px-4 text-foreground/70 transition-all hover:border-neon-red/50 hover:text-neon-red hover:shadow-lg hover:shadow-neon-red/10 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex h-11 items-center gap-1.5 rounded-full border border-border bg-surface px-4 text-foreground/70 transition-all hover:border-neon-red/50 hover:text-neon-red hover:shadow-lg hover:shadow-neon-red/10 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="画像を保存"
             title="画像を保存"
           >
@@ -112,6 +112,8 @@ export default function ShareButtons({ title, resultData }: ShareButtonsProps) {
               viewBox="0 0 20 20"
               fill="currentColor"
               className="w-4 h-4"
+              aria-hidden="true"
+              focusable="false"
             >
               <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
               <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />

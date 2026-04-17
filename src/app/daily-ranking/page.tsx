@@ -2,10 +2,14 @@ import {
   getDailyRanking,
   getFallbackComment,
   getRankingDiff,
+  getTodayDateStr,
+  type ZodiacDetail,
+  type ZodiacRanking,
 } from "@/lib/daily-ranking";
 import { generateAllDetails } from "@/lib/ranking-details";
 import { rankingJsonLd } from "@/lib/jsonld";
 import { GoogleGenAI } from "@google/genai";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import AdBanner from "@/components/AdBanner";
 import RankingList from "./RankingList";
@@ -36,13 +40,16 @@ export async function generateMetadata(): Promise<Metadata> {
 // 反映される。Geminiの呼び出し頻度は上がるが、再生成コストよりも正確性を優先する。
 export const revalidate = 300;
 
-// Geminiで全星座の一言コメントを生成
-async function generateAllComments(
+// Geminiで全星座の一言コメントを生成（素の実装）
+// 引数に dateStr を受け取ることでキャッシュキーに含められるようにする
+async function generateAllCommentsRaw(
+  dateStr: string,
   rankings: { name: string; rank: number }[],
-): Promise<Map<string, string>> {
-  const comments = new Map<string, string>();
+): Promise<[string, string][]> {
+  // 戻り値を tuple 配列にしているのは unstable_cache が Map をシリアライズできないため
+  void dateStr; // キャッシュキーに使うだけで内部では参照不要
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return comments;
+  if (!apiKey) return [];
 
   try {
     const ai = new GoogleGenAI({ apiKey });
@@ -69,6 +76,7 @@ async function generateAllComments(
     });
 
     const text = response.text?.trim();
+    const pairs: [string, string][] = [];
     if (text) {
       for (const line of text.split("\n")) {
         const match = line.match(/(.+?)[：:](.+)/);
@@ -76,34 +84,86 @@ async function generateAllComments(
           const name = match[1].trim();
           const comment = match[2].trim();
           if (comment.length <= 25) {
-            comments.set(name, comment);
+            pairs.push([name, comment]);
           }
         }
       }
     }
+    return pairs;
   } catch {
     // Gemini失敗時はフォールバック
+    return [];
   }
+}
 
-  return comments;
+// 日付ごとにキャッシュ化したコメント生成。
+// - JSTの日付文字列をキャッシュキーに含めるため、0:00 JSTで自動的に別キャッシュになる
+// - revalidate: 1日（86400秒）でタグ `ranking-comments-YYYY-MM-DD` で無効化可能
+// - 同一日付内は Gemini を1回しか呼ばず、以降はキャッシュから返す
+async function getCachedComments(
+  dateStr: string,
+  rankings: { name: string; rank: number }[],
+): Promise<Map<string, string>> {
+  const cached = unstable_cache(
+    async (d: string, r: { name: string; rank: number }[]) =>
+      generateAllCommentsRaw(d, r),
+    ["daily-ranking-comments"],
+    {
+      revalidate: 86400,
+      tags: [`ranking-comments-${dateStr}`],
+    },
+  );
+  const pairs = await cached(dateStr, rankings);
+  return new Map(pairs);
+}
+
+// 詳細運勢も同じく日付キーでキャッシュ化する
+// generateAllDetails はすでに Map を返すが unstable_cache は Map をシリアライズできないため
+// 内部では配列に変換して保存する
+async function getCachedDetails(
+  dateStr: string,
+  rankings: ZodiacRanking[],
+): Promise<Map<string, ZodiacDetail>> {
+  const cached = unstable_cache(
+    async (
+      d: string,
+      r: ZodiacRanking[],
+    ): Promise<[string, ZodiacDetail][]> => {
+      void d;
+      const map = await generateAllDetails(r);
+      return Array.from(map.entries());
+    },
+    ["daily-ranking-details"],
+    {
+      revalidate: 86400,
+      tags: [`ranking-details-${dateStr}`],
+    },
+  );
+  const entries = await cached(dateStr, rankings);
+  return new Map(entries);
 }
 
 export default async function DailyRankingPage() {
   const { rankings, month, day } = getDailyRanking();
   const diff = getRankingDiff();
+  const dateStr = getTodayDateStr();
 
-  // 一言コメントと詳細運勢を並列で取得
+  // 一言コメントと詳細運勢を日付キーで並列取得（同日は同じコメントを返す）
   const [comments, details] = await Promise.all([
-    generateAllComments(rankings),
-    generateAllDetails(rankings),
+    getCachedComments(dateStr, rankings),
+    getCachedDetails(dateStr, rankings),
   ]);
 
-  const items = rankings.map((z, i) => ({
-    ...z,
-    oneLiner: comments.get(z.name) || getFallbackComment(i + 1, day),
-    detail: details.get(z.key)!,
-    diff: diff.get(z.key) || 0,
-  }));
+  const items = rankings.map((z, i) => {
+    // diff は number（変動） or null（前日データなし=NEW）
+    const d = diff.get(z.key);
+    return {
+      ...z,
+      oneLiner: comments.get(z.name) || getFallbackComment(i + 1, day),
+      detail: details.get(z.key)!,
+      diff: d === undefined ? 0 : d,
+    };
+  });
 
   const jsonLd = rankingJsonLd({
     month,

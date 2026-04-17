@@ -75,10 +75,11 @@ export default function ReadingExperience({ relatedArticles }: Props) {
         <div className="space-y-8">
           <div className="grid gap-4 sm:grid-cols-2">
             <button
+              type="button"
               onClick={() => setPhase("quiz")}
               className="group rounded-2xl border border-border bg-surface p-8 text-left transition-all hover:border-neon-cyan/40 hover:shadow-lg hover:shadow-neon-cyan/10"
             >
-              <div className="mb-3 font-yuji text-3xl text-neon-cyan">問</div>
+              <div className="mb-3 font-yuji text-3xl text-neon-cyan" aria-hidden="true">問</div>
               <h3 className="mb-2 text-lg font-bold text-neon-cyan transition-colors group-hover:brightness-125">
                 診断する
               </h3>
@@ -88,13 +89,14 @@ export default function ReadingExperience({ relatedArticles }: Props) {
             </button>
 
             <button
+              type="button"
               onClick={() => {
                 const el = document.getElementById("type-grid");
                 if (el) el.scrollIntoView({ behavior: "smooth" });
               }}
               className="group rounded-2xl border border-border bg-surface p-8 text-left transition-all hover:border-gold/40 hover:shadow-lg hover:shadow-gold/10"
             >
-              <div className="mb-3 font-yuji text-3xl text-gold">選</div>
+              <div className="mb-3 font-yuji text-3xl text-gold" aria-hidden="true">選</div>
               <h3 className="mb-2 text-lg font-bold text-gold transition-colors group-hover:brightness-125">
                 タイプを選ぶ
               </h3>
@@ -120,8 +122,9 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                     return (
                       <button
                         key={code}
+                        type="button"
                         onClick={() => handleSelectType(code)}
-                        className="group rounded-xl border border-border bg-surface p-4 text-left transition-all hover:border-neon-cyan/40 hover:bg-surface-hover"
+                        className="group min-h-11 rounded-xl border border-border bg-surface p-4 text-left transition-all hover:border-neon-cyan/40 hover:bg-surface-hover"
                       >
                         <div className="mb-1 text-sm font-bold text-neon-cyan transition-colors group-hover:brightness-125">
                           {t.code}
@@ -146,7 +149,14 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               <span>質問 {currentQuestion + 1} / {mbtiQuestions.length}</span>
               <span>{Math.round(((currentQuestion) / mbtiQuestions.length) * 100)}%</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-surface">
+            <div
+              className="h-2 overflow-hidden rounded-full bg-surface"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={mbtiQuestions.length}
+              aria-valuenow={currentQuestion}
+              aria-label="診断進捗"
+            >
               <div
                 className="h-full rounded-full bg-gradient-to-r from-neon-red to-gold transition-all duration-500"
                 style={{ width: `${(currentQuestion / mbtiQuestions.length) * 100}%` }}
@@ -161,19 +171,21 @@ export default function ReadingExperience({ relatedArticles }: Props) {
             </h2>
             <div className="space-y-4">
               <button
+                type="button"
                 onClick={() => handleAnswer("A")}
-                className="w-full rounded-xl border border-border bg-[#0a0408] px-6 py-4 text-left text-sm transition-all hover:border-neon-red/50 hover:bg-surface-hover"
+                className="w-full min-h-11 rounded-xl border border-border bg-[#0a0408] px-6 py-4 text-left text-sm transition-all hover:border-neon-red/50 hover:bg-surface-hover"
               >
-                <span className="mr-3 inline-block rounded-full bg-neon-red/20 px-2.5 py-0.5 text-xs font-bold text-neon-red">
+                <span className="mr-3 inline-block rounded-full bg-neon-red/20 px-2.5 py-0.5 text-xs font-bold text-neon-red" aria-hidden="true">
                   A
                 </span>
                 {mbtiQuestions[currentQuestion].choiceA}
               </button>
               <button
+                type="button"
                 onClick={() => handleAnswer("B")}
-                className="w-full rounded-xl border border-border bg-[#0a0408] px-6 py-4 text-left text-sm transition-all hover:border-gold/50 hover:bg-surface-hover"
+                className="w-full min-h-11 rounded-xl border border-border bg-[#0a0408] px-6 py-4 text-left text-sm transition-all hover:border-gold/50 hover:bg-surface-hover"
               >
-                <span className="mr-3 inline-block rounded-full bg-gold/20 px-2.5 py-0.5 text-xs font-bold text-gold">
+                <span className="mr-3 inline-block rounded-full bg-gold/20 px-2.5 py-0.5 text-xs font-bold text-gold" aria-hidden="true">
                   B
                 </span>
                 {mbtiQuestions[currentQuestion].choiceB}
@@ -182,6 +194,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           </div>
 
           <button
+            type="button"
             onClick={() => {
               if (currentQuestion > 0) {
                 setCurrentQuestion(currentQuestion - 1);
@@ -231,6 +244,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           />
 
           <button
+            type="button"
             onClick={() => {
               setPhase("select");
               setSelectedType(null);

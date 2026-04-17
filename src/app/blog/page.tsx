@@ -7,7 +7,7 @@ import FortuneIcon from "@/components/FortuneIcon";
 export const metadata: Metadata = {
   title: "コラム",
   description:
-    "占いに関するコラム記事。タロット、星座、相性、MBTI、夢占い、数秘術の知識を深める記事をお届けします。",
+    "占いに関するコラム記事。タロット、星座、相性、MBTI®、夢占い、数秘術の知識を深める記事をお届けします。",
   alternates: {
     canonical: "/blog",
   },

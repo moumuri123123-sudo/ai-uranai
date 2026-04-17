@@ -25,12 +25,15 @@ export default function TermsPage() {
             </h2>
             <p>
               「占処 AI占い」（以下「本サービス」）は、AI技術（Google Gemini API）を利用した占いエンターテインメントサービスです。
-              タロット占い、星座占い、相性占い、MBTI診断、夢占い、数秘術等のコンテンツを提供します。
+              タロット占い、星座占い、相性占い、MBTI&reg;診断、夢占い、数秘術等のコンテンツを提供します。
             </p>
             <p className="mt-3">
               本サービスが提供する占い結果は、あくまでエンターテインメント（娯楽）としてお楽しみいただくものであり、
               科学的根拠に基づく助言や予測ではありません。
               医療診断・法的判断・金銭判断・人生の重大な判断の根拠として使用しないでください。
+            </p>
+            <p className="mt-3 text-xs text-muted">
+              ※ MBTI&reg;（Myers-Briggs Type Indicator）はThe Myers-Briggs Companyの登録商標です。本サービスで提供するMBTI関連コンテンツは、同社公認のものではありません。
             </p>
           </section>
 
