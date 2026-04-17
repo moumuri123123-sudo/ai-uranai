@@ -15,6 +15,7 @@ import {
   generateNumerologyReading,
 } from "@/lib/fortune-data";
 import { calculateLifePath } from "@/lib/numerology";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 // Gemini クライアント（APIキーが設定されている場合のみ有効）
 const apiKey = process.env.GEMINI_API_KEY;
@@ -23,44 +24,9 @@ const MODEL = "gemini-2.5-flash";
 
 
 // ===== レート制限 =====
-//
-// 警告: このレート制限はベストエフォートでしか機能しません。
-// Vercelのサーバーレス環境では各インスタンスごとに独立したメモリを持ち、
-// Map は共有されないため、厳密な制限にはなりません。
-// 第一防衛線として機能するのみであり、厳密な制限が必要な場合は
-// Vercel KV や Upstash Redis などの共有ストレージに移行する必要があります。
-
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1分
-const RATE_LIMIT_MAX = 10; // 1分間に最大10リクエスト
-const DAILY_LIMIT_MAX = 50; // 1日最大50リクエスト
-
-type RateLimitEntry = {
-  count: number;
-  resetTime: number;
-};
-
-type DailyLimitEntry = {
-  count: number;
-  resetTime: number;
-};
-
-const rateLimitMap = new Map<string, RateLimitEntry>();
-const dailyLimitMap = new Map<string, DailyLimitEntry>();
-
-// 古いエントリを定期的にクリーンアップ（メモリリーク防止）
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, entry] of rateLimitMap) {
-    if (now > entry.resetTime) {
-      rateLimitMap.delete(key);
-    }
-  }
-  for (const [key, entry] of dailyLimitMap) {
-    if (now > entry.resetTime) {
-      dailyLimitMap.delete(key);
-    }
-  }
-}, 60 * 1000);
+// Upstash Redis（UPSTASH_REDIS_REST_URL/TOKEN）が設定されていれば共有ストアで
+// 厳密に制限。未設定時はin-memoryフォールバック（サーバーレスではベストエフォート）。
+// 実装は src/lib/rate-limit.ts を参照。
 
 function getClientIp(req: Request): string {
   // Vercel固有の信頼できるヘッダーを優先。x-forwarded-forはクライアントが
@@ -81,45 +47,6 @@ function getClientIp(req: Request): string {
     if (first) return first;
   }
   return "unknown";
-}
-
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number; daily?: boolean; remaining?: number } {
-  const now = Date.now();
-
-  // 1日の制限チェック
-  const dailyEntry = dailyLimitMap.get(ip);
-  if (dailyEntry && now <= dailyEntry.resetTime) {
-    if (dailyEntry.count >= DAILY_LIMIT_MAX) {
-      const retryAfter = Math.ceil((dailyEntry.resetTime - now) / 1000);
-      return { allowed: false, retryAfter, daily: true, remaining: 0 };
-    }
-  }
-
-  // 1分の制限チェック
-  const entry = rateLimitMap.get(ip);
-  let currentMinuteCount: number;
-
-  if (!entry || now > entry.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
-    currentMinuteCount = 1;
-  } else if (entry.count >= RATE_LIMIT_MAX) {
-    const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
-    return { allowed: false, retryAfter, remaining: 0 };
-  } else {
-    entry.count++;
-    currentMinuteCount = entry.count;
-  }
-
-  // 1日のカウントを更新
-  const MS_PER_DAY = 24 * 60 * 60 * 1000;
-  if (!dailyEntry || now > dailyEntry.resetTime) {
-    dailyLimitMap.set(ip, { count: 1, resetTime: now + MS_PER_DAY });
-  } else {
-    dailyEntry.count++;
-  }
-
-  const remaining = Math.max(0, RATE_LIMIT_MAX - currentMinuteCount);
-  return { allowed: true, remaining };
 }
 
 // ===== サニタイズ =====
@@ -567,7 +494,7 @@ export async function POST(req: Request) {
   try {
     // レート制限チェック
     const clientIp = getClientIp(req);
-    const rateCheck = checkRateLimit(clientIp);
+    const rateCheck = await checkRateLimit(clientIp);
     if (!rateCheck.allowed) {
       const message = rateCheck.daily
         ? "本日の占い回数の上限（50回）に達しました。明日またお越しください。"
