@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import Link from "next/link";
 import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
 import RelatedArticles from "@/components/RelatedArticles";
@@ -30,7 +32,22 @@ export default function DreamPage() {
           </p>
         </div>
 
-        <ReadingExperience relatedArticles={<RelatedArticles category="dream" />} />
+        <Suspense fallback={<div className="py-16 text-center text-muted">読み込み中…</div>}>
+          <ReadingExperience relatedArticles={<RelatedArticles category="dream" />} />
+        </Suspense>
+
+        {/* 夢占いトレンドへの導線 */}
+        <div className="mt-10 rounded-xl border border-neon-purple/30 bg-surface/30 p-5 text-center">
+          <p className="mb-2 text-sm text-warm">
+            🌙 今月みんなが見ている夢は？
+          </p>
+          <Link
+            href="/dream-trends"
+            className="inline-block rounded-full border border-neon-purple px-5 py-2 text-xs font-semibold text-neon-purple transition-colors hover:bg-neon-purple/10"
+          >
+            夢占いトレンドを見る
+          </Link>
+        </div>
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">

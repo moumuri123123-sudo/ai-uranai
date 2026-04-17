@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import ChatBox from "@/components/ChatBox";
 import ShareButtons from "@/components/ShareButtons";
 
@@ -13,6 +14,14 @@ export default function ReadingExperience({ relatedArticles }: Props) {
   const [keyword, setKeyword] = useState("");
   const [submittedKeyword, setSubmittedKeyword] = useState("");
   const [resultSummary, setResultSummary] = useState("");
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q && typeof q === "string" && q.trim()) {
+      setKeyword(q.trim().slice(0, 100));
+    }
+  }, [searchParams]);
 
   const quickDreams = [
     "空を飛ぶ夢",
@@ -30,6 +39,14 @@ export default function ReadingExperience({ relatedArticles }: Props) {
     if (!trimmed) return;
     setSubmittedKeyword(trimmed);
     setPhase("chat");
+    // 匿名ワード雲のために特徴語のみ集計に送信（原文は送らず、キーワード抽出のみ）
+    fetch("/api/dream-words", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ keyword: trimmed }),
+    }).catch(() => {
+      // 記録失敗はユーザー体験に影響しないので無視
+    });
   };
 
   return (

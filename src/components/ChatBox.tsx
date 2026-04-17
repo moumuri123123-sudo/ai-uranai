@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import ChatMessage from "./ChatMessage";
+import VoteStamps from "./VoteStamps";
 import { addHistory } from "@/lib/history";
 
 type Message = {
@@ -409,6 +410,8 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
           </svg>
         </button>
       </form>
+      {messages.some((m) => m.role === "assistant" && m.content.trim() && !m.content.includes(STREAM_ERROR_MARKER)) &&
+        !isLoading && <VoteStamps fortuneType={fortuneType} />}
     </div>
   );
 }

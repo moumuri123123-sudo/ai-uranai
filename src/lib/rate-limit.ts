@@ -1,5 +1,5 @@
 import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { redis } from "./redis";
 
 export type RateLimitResult = {
   allowed: boolean;
@@ -12,30 +12,6 @@ const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX = 10;
 const DAILY_LIMIT_MAX = 50;
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
-
-// Upstash Redis: 環境変数が設定されている場合のみ共有ストアで制限
-// Vercel Marketplace統合ではプレフィックスが付く場合があるので複数パターンを確認。
-// 対応するパターン（優先度順）:
-//   1. UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN
-//   2. KV_REST_API_URL / KV_REST_API_TOKEN
-//   3. STORAGE_UPSTASH_REDIS_REST_URL / STORAGE_UPSTASH_REDIS_REST_TOKEN
-//   4. STORAGE_KV_REST_API_URL / STORAGE_KV_REST_API_TOKEN
-function getRedis(): Redis | null {
-  const url =
-    process.env.UPSTASH_REDIS_REST_URL ||
-    process.env.KV_REST_API_URL ||
-    process.env.STORAGE_UPSTASH_REDIS_REST_URL ||
-    process.env.STORAGE_KV_REST_API_URL;
-  const token =
-    process.env.UPSTASH_REDIS_REST_TOKEN ||
-    process.env.KV_REST_API_TOKEN ||
-    process.env.STORAGE_UPSTASH_REDIS_REST_TOKEN ||
-    process.env.STORAGE_KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  return new Redis({ url, token });
-}
-
-const redis = getRedis();
 
 const minuteLimiter = redis
   ? new Ratelimit({
