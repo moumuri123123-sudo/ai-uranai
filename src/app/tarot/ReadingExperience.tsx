@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import ChatBox from "@/components/ChatBox";
 import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
+import AffiliateCTA from "@/components/AffiliateCTA";
 import { tarotCardNames } from "@/lib/fortune-data.client";
 
 const CARD_BACK = "占";
@@ -504,6 +505,8 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               summary: resultSummary,
             } : undefined}
           />
+
+          <AffiliateCTA fortuneType="tarot" />
 
           <button
             type="button"

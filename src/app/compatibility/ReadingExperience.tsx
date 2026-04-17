@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import ChatBox from "@/components/ChatBox";
 import ShareButtons from "@/components/ShareButtons";
+import AffiliateCTA from "@/components/AffiliateCTA";
 
 type Phase = "input" | "chat";
 
@@ -208,6 +209,8 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               summary: resultSummary,
             } : undefined}
           />
+
+          <AffiliateCTA fortuneType="compatibility" />
         </div>
       )}
       {/* 関連コラム（入力フェーズのみ） */}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import ShareButtons from "@/components/ShareButtons";
+import AffiliateCTA from "@/components/AffiliateCTA";
 import { calculateLifePath } from "@/lib/numerology";
 
 const lifePathMeanings: Record<number, string> = {
@@ -162,6 +163,8 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               summary: resultSummary,
             } : undefined}
           />
+
+          <AffiliateCTA fortuneType="numerology" />
 
           <button
             type="button"

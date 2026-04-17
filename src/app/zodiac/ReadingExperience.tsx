@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import ShareButtons from "@/components/ShareButtons";
+import AffiliateCTA from "@/components/AffiliateCTA";
 import { zodiacSigns } from "@/lib/fortune-data";
 
 const zodiacList = Object.entries(zodiacSigns).map(([key, sign]) => ({
@@ -99,6 +100,8 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               summary: resultSummary,
             } : undefined}
           />
+
+          <AffiliateCTA fortuneType="zodiac" />
         </div>
       )}
       {/* 関連コラム（星座未選択時のみ） */}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ChatBox from "@/components/ChatBox";
 import ShareButtons from "@/components/ShareButtons";
+import AffiliateCTA from "@/components/AffiliateCTA";
 
 type Props = {
   relatedArticles: React.ReactNode;
@@ -130,6 +131,8 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               summary: resultSummary,
             } : undefined}
           />
+
+          <AffiliateCTA fortuneType="dream" />
 
           <button
             type="button"

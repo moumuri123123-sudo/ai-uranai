@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ChatBox from "@/components/ChatBox";
 import ShareButtons from "@/components/ShareButtons";
+import AffiliateCTA from "@/components/AffiliateCTA";
 import { mbtiTypes, mbtiQuestions } from "@/lib/fortune-data";
 
 type Phase = "select" | "quiz" | "chat";
@@ -242,6 +243,8 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               summary: resultSummary,
             } : undefined}
           />
+
+          <AffiliateCTA fortuneType="mbti" />
 
           <button
             type="button"
