@@ -178,6 +178,8 @@ export async function formatRankingForTweet(
   const { rankings, month, day } = getDailyRanking();
   const top3 = rankings.slice(0, 3);
   const medals = ["\u{1F947}", "\u{1F948}", "\u{1F949}"];
+  // URLに日付クエリを付与することでXのOGPキャッシュを日次でバスト
+  const dateStr = getTodayDateStr();
 
   // 1位の一言コメントを取得
   let comment: string;
@@ -195,7 +197,7 @@ ${medals[1]} ${top3[1].name}
 ${medals[2]} ${top3[2].name}
 
 あなたは何位？全順位はこちら
-\u2192 https://uranaidokoro.com/daily-ranking
+\u2192 https://uranaidokoro.com/daily-ranking?d=${dateStr}
 
 #今日の運勢 #星座占い`;
 }

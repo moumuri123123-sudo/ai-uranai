@@ -27,6 +27,12 @@ export function getJstDateString(): string {
 
 // 夢占いトレンド宣伝ツイート（4日に1回evening枠で差し替え）
 export function getDreamTrendsTweet(): string {
+  // URLに月クエリを付与することでXのOGPキャッシュを月次でバスト
+  const jst = getJstDate();
+  const y = jst.getUTCFullYear();
+  const m = String(jst.getUTCMonth() + 1).padStart(2, "0");
+  const monthQuery = `?m=${y}-${m}`;
+
   const patterns = [
     `🌙 今月みんなが見た夢は？
 
@@ -34,7 +40,7 @@ export function getDreamTrendsTweet(): string {
 匿名集計されたワード雲をチェック。
 気になる夢を見た人が他にも…？
 
-https://uranaidokoro.com/dream-trends
+https://uranaidokoro.com/dream-trends${monthQuery}
 
 #夢占い #占処`,
     `✨ 夢占いトレンド更新中
@@ -42,7 +48,7 @@ https://uranaidokoro.com/dream-trends
 あなたが見た夢、実は今月流行ってるかも？
 ワードをタップで即占い。
 
-https://uranaidokoro.com/dream-trends
+https://uranaidokoro.com/dream-trends${monthQuery}
 
 #夢占い #AI占い`,
     `🌙 「最近こんな夢を見た」
@@ -51,7 +57,7 @@ https://uranaidokoro.com/dream-trends
 今月よく見られている夢ランキング、
 トップの夢が意外すぎるかも…🔮
 
-https://uranaidokoro.com/dream-trends
+https://uranaidokoro.com/dream-trends${monthQuery}
 
 #占い #夢占い`,
   ];
