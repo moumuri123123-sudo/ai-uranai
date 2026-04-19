@@ -3,6 +3,8 @@ import { Shippori_Mincho_B1, Zen_Maru_Gothic } from "next/font/google";
 import Script from "next/script";
 import Link from "next/link";
 import Header from "@/components/Header";
+import JsonLd from "@/components/JsonLd";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 import "./globals.css";
 
 const zenMaruGothic = Zen_Maru_Gothic({
@@ -78,6 +80,8 @@ export default function RootLayout({
       <head>
         <link rel="alternate" type="application/rss+xml" title="占処コラム" href="/feed.xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
+        <JsonLd id="ld-website" data={websiteJsonLd()} />
+        <JsonLd id="ld-organization" data={organizationJsonLd()} />
       </head>
       {process.env.NEXT_PUBLIC_GA_ID && (
         <>
