@@ -4,6 +4,9 @@ import RelatedArticles from "@/components/RelatedArticles";
 import MbtiGuide from "@/components/fortune-guides/MbtiGuide";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import ReadingExperience from "./ReadingExperience";
+import FAQSection from "@/components/FAQSection";
+import FAQJsonLd from "@/components/FAQJsonLd";
+import { mbtiFaqs } from "@/lib/faqs/mbti";
 
 const jsonLdData = JSON.stringify([
   webApplicationJsonLd({ name: "MBTI性格診断", description: "16タイプの性格診断であなたをAIが分析しアドバイスします", path: "/mbti" }),
@@ -32,6 +35,9 @@ export default function MbtiPage() {
         </div>
 
         <ReadingExperience relatedArticles={<RelatedArticles category="mbti" />} />
+
+        <FAQJsonLd id="faq-mbti" items={mbtiFaqs.items} />
+        <FAQSection title={mbtiFaqs.title} items={mbtiFaqs.items} idPrefix="faq-mbti" />
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
