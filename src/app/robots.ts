@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/share/", "/history"],
+        disallow: ["/api/", "/share/", "/history/"],
       },
     ],
     sitemap: "https://uranaidokoro.com/sitemap.xml",
