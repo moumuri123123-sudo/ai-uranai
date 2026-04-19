@@ -2,7 +2,10 @@ import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
 import RelatedArticles from "@/components/RelatedArticles";
 import ZodiacGuide from "@/components/fortune-guides/ZodiacGuide";
+import FAQSection from "@/components/FAQSection";
+import FAQJsonLd from "@/components/FAQJsonLd";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import { zodiacFaqs } from "@/lib/faqs/zodiac";
 import ReadingExperience from "./ReadingExperience";
 
 const jsonLdData = JSON.stringify([
@@ -32,6 +35,9 @@ export default function ZodiacPage() {
         </div>
 
         <ReadingExperience relatedArticles={<RelatedArticles category="zodiac" />} />
+
+        <FAQJsonLd id="faq-zodiac" items={zodiacFaqs.items} />
+        <FAQSection title={zodiacFaqs.title} items={zodiacFaqs.items} idPrefix="faq-zodiac" />
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
