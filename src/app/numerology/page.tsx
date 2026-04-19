@@ -2,7 +2,10 @@ import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
 import RelatedArticles from "@/components/RelatedArticles";
 import NumerologyGuide from "@/components/fortune-guides/NumerologyGuide";
+import FAQSection from "@/components/FAQSection";
+import FAQJsonLd from "@/components/FAQJsonLd";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import { numerologyFaqs } from "@/lib/faqs/numerology";
 import ReadingExperience from "./ReadingExperience";
 
 export default function NumerologyPage() {
@@ -31,6 +34,9 @@ export default function NumerologyPage() {
         </div>
 
         <ReadingExperience relatedArticles={<RelatedArticles category="numerology" />} />
+
+        <FAQJsonLd id="faq-numerology" items={numerologyFaqs.items} />
+        <FAQSection title={numerologyFaqs.title} items={numerologyFaqs.items} idPrefix="faq-numerology" />
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
