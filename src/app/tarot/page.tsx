@@ -2,6 +2,9 @@ import AdBanner from "@/components/AdBanner";
 import RelatedArticles from "@/components/RelatedArticles";
 import TarotGuide from "@/components/fortune-guides/TarotGuide";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import FAQSection from "@/components/FAQSection";
+import FAQJsonLd from "@/components/FAQJsonLd";
+import { tarotFaqs } from "@/lib/faqs/tarot";
 import ReadingExperience from "./ReadingExperience";
 
 // JSON-LDは静的なデータのみで構成（XSSリスクなし）
@@ -19,6 +22,9 @@ export default function TarotPage() {
       />
       <div className="mx-auto max-w-4xl px-4 py-12">
         <ReadingExperience relatedArticles={<RelatedArticles category="tarot" />} />
+
+        <FAQJsonLd id="faq-tarot" items={tarotFaqs.items} />
+        <FAQSection title={tarotFaqs.title} items={tarotFaqs.items} idPrefix="faq-tarot" />
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
