@@ -2,7 +2,10 @@ import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
 import RelatedArticles from "@/components/RelatedArticles";
 import CompatibilityGuide from "@/components/fortune-guides/CompatibilityGuide";
+import FAQSection from "@/components/FAQSection";
+import FAQJsonLd from "@/components/FAQJsonLd";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import { compatibilityFaqs } from "@/lib/faqs/compatibility";
 import ReadingExperience from "./ReadingExperience";
 
 const jsonLdData = JSON.stringify([
@@ -33,6 +36,9 @@ export default function CompatibilityPage() {
         </div>
 
         <ReadingExperience relatedArticles={<RelatedArticles category="compatibility" />} />
+
+        <FAQJsonLd id="faq-compatibility" items={compatibilityFaqs.items} />
+        <FAQSection title={compatibilityFaqs.title} items={compatibilityFaqs.items} idPrefix="faq-compatibility" />
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
