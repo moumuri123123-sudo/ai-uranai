@@ -4,7 +4,10 @@ import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
 import RelatedArticles from "@/components/RelatedArticles";
 import DreamGuide from "@/components/fortune-guides/DreamGuide";
+import FAQSection from "@/components/FAQSection";
+import FAQJsonLd from "@/components/FAQJsonLd";
 import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import { dreamFaqs } from "@/lib/faqs/dream";
 import ReadingExperience from "./ReadingExperience";
 
 export default function DreamPage() {
@@ -48,6 +51,9 @@ export default function DreamPage() {
             夢占いトレンドを見る
           </Link>
         </div>
+
+        <FAQJsonLd id="faq-dream" items={dreamFaqs.items} />
+        <FAQSection title={dreamFaqs.title} items={dreamFaqs.items} idPrefix="faq-dream" />
 
         {/* 注意書き */}
         <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
