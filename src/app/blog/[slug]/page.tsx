@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: article.title,
     description: article.description,
     alternates: {
-      canonical: `/blog/${article.slug}`,
+      canonical: `https://uranaidokoro.com/blog/${article.slug}`,
     },
     openGraph: {
       type: "article",

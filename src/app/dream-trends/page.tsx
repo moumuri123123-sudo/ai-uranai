@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   title: "夢占いトレンド ── 今月みんなが見た夢ランキング",
   description:
     "占処で占われた夢のキーワードを匿名集計。今月、みんなが見ている夢は？恋愛・仕事・不安を映す夢の傾向をチェックできます。",
-  alternates: { canonical: "/dream-trends" },
+  alternates: { canonical: "https://uranaidokoro.com/dream-trends" },
   openGraph: {
     title: "夢占いトレンド | 占処 AI占い",
     description: "今月みんなが見た夢のキーワードランキング。夢占いトレンドをチェック。",
