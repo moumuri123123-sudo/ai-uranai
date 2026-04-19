@@ -163,3 +163,21 @@ export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
     ],
   };
 }
+
+export function organizationJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: BASE_URL,
+    logo: {
+      "@type": "ImageObject",
+      url: LOGO_URL,
+      width: 192,
+      height: 192,
+    },
+    foundingDate: "2026-03-01",
+    description:
+      "AIが古来の占術であなたの運命を紡ぐ占いプラットフォーム。タロット・星座・相性・MBTI®・夢占い・数秘術。",
+  };
+}
