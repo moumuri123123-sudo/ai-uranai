@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, type ReactNode } from "react";
 import ChatMessage from "./ChatMessage";
 import VoteStamps from "./VoteStamps";
 import { addHistory } from "@/lib/history";
@@ -13,6 +13,13 @@ type Message = {
 // サーバー側（Gemini ストリーミングエラー時）が送信するエラーマーカー。
 // これが本文に含まれる場合、履歴には保存しない。
 const STREAM_ERROR_MARKER = "[ERROR:stream_interrupted]";
+
+// デフォルトのサンプル質問（空状態で表示）
+const DEFAULT_SAMPLE_QUESTIONS = [
+  "今の自分に必要なメッセージを教えてください",
+  "最近もやもやしている気持ちを整理したいです",
+  "これから進む道のヒントが欲しいです",
+];
 
 type ChatBoxProps = {
   fortuneType: "tarot" | "zodiac" | "compatibility" | "mbti" | "dream" | "numerology";
@@ -33,9 +40,13 @@ type ChatBoxProps = {
   historyLabel?: string;
   onFirstResponse?: (response: string) => void;
   autoStart?: boolean;
+  /** 空状態で表示するサンプル質問（タップで入力欄に反映）。未指定時は汎用的な3件 */
+  sampleQuestions?: string[];
+  /** メッセージ下（入力欄の上）に差し込む任意のコンテンツ。ストリーミング完了後のみ表示 */
+  afterContent?: ReactNode;
 };
 
-export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, tarotCard, tarotReversed, tarotCards, tarotSpread, tarotQuestion, compatibilityScore, historyLabel, onFirstResponse, autoStart }: ChatBoxProps) {
+export default function ChatBox({ fortuneType, initialMessage, zodiacSign, person1, person2, mbtiType, dreamKeyword, birthDate, tarotTheme, tarotCard, tarotReversed, tarotCards, tarotSpread, tarotQuestion, compatibilityScore, historyLabel, onFirstResponse, autoStart, sampleQuestions, afterContent }: ChatBoxProps) {
   const [messages, setMessages] = useState<Message[]>(() => {
     if (initialMessage) {
       return [{ role: "assistant", content: initialMessage }];
@@ -337,20 +348,78 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
     }
   };
 
+  // サンプル質問タップ時: 入力欄に流し込んでフォーカス
+  const handleSampleClick = (q: string) => {
+    setInput(q);
+    // 次tickでフォーカスとカーソル末尾移動（スクロール問題も避ける）
+    requestAnimationFrame(() => {
+      const ta = textareaRef.current;
+      if (ta) {
+        ta.focus();
+        ta.setSelectionRange(q.length, q.length);
+      }
+    });
+  };
+
+  // ストリーミング開始〜本文未着（空のassistantメッセージだけ）状態を検出
+  const lastMessage = messages[messages.length - 1];
+  const isWaitingForStream =
+    isLoading &&
+    !!lastMessage &&
+    lastMessage.role === "assistant" &&
+    lastMessage.content.length === 0;
+
+  // afterContent の表示条件: メッセージがあり、ストリーミング中でなく、
+  // エラーマーカーを含まないアシスタント応答が1件以上ある
+  const hasValidAssistantReply = messages.some(
+    (m) => m.role === "assistant" && m.content.trim() && !m.content.includes(STREAM_ERROR_MARKER)
+  );
+  const showAfterContent = !!afterContent && !isLoading && hasValidAssistantReply;
+
+  const samples = sampleQuestions && sampleQuestions.length > 0 ? sampleQuestions : DEFAULT_SAMPLE_QUESTIONS;
+
   return (
-    <div className="flex flex-col h-full max-h-[70vh] sm:max-h-[600px] w-full max-w-2xl mx-auto rounded-2xl border border-border bg-[#0a0408] shadow-2xl overflow-hidden">
-      {/* メッセージ一覧 */}
+    <div className="w-full max-w-2xl mx-auto rounded-2xl border border-border bg-[#0a0408] shadow-2xl overflow-hidden">
+      {/* メッセージ一覧 + sticky入力（同じスクロールコンテキストに入れることでstickyが機能する） */}
       <div
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-1 scrollbar-thin"
-        role="log"
-        aria-live="polite"
-        aria-relevant="additions"
+        className="relative max-h-[70vh] sm:max-h-[600px] overflow-y-auto scrollbar-thin"
       >
+        <div
+          className="p-4 space-y-1"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+        >
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-muted py-12">
-            <span className="text-3xl mb-3 text-gold" aria-hidden="true">&#x2726;</span>
-            <p className="text-sm">質問を入力して占いを始めましょう</p>
+          <div className="flex flex-col items-center justify-center min-h-[14rem] text-muted py-8">
+            <span className="text-4xl mb-3 text-gold motion-safe:animate-pulse" aria-hidden="true">&#x2726;</span>
+            <p className="font-mincho text-sm text-warm">
+              ようこそ、占処へ。
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              気になることを自由に尋ねてみてください
+            </p>
+
+            {/* サンプル質問チップ */}
+            <div className="mt-5 flex w-full max-w-md flex-col gap-2">
+              <p className="text-center text-[10px] tracking-widest text-gold/80" aria-hidden="true">
+                &mdash; 例えばこんな質問 &mdash;
+              </p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {samples.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={() => handleSampleClick(q)}
+                    aria-label={`サンプル質問を入力: ${q}`}
+                    className="min-h-10 rounded-full border border-border bg-surface px-3.5 py-1.5 text-xs text-warm transition-all hover:border-neon-red/50 hover:bg-neon-red/5 hover:text-neon-red active:scale-95"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
         {messages.map((msg, i) => (
@@ -365,12 +434,36 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
             }
           />
         ))}
-      </div>
 
-      {/* 入力エリア */}
+        {/* ストリーミング待機中のインジケータ（本文がまだ届いていないとき） */}
+        {isWaitingForStream && (
+          <div
+            className="mt-2 flex items-center gap-2 px-2 text-xs text-muted"
+            aria-live="polite"
+            role="status"
+          >
+            <span
+              aria-hidden="true"
+              className="inline-block h-2 w-2 rounded-full bg-neon-red motion-safe:animate-pulse"
+            />
+            <span className="font-mincho text-warm motion-safe:animate-pulse">
+              <span aria-hidden="true">&#x2728;</span> AIが鑑定中...
+            </span>
+          </div>
+        )}
+
+        {/* 鑑定完了後に親から渡される追加コンテンツ（NextFortuneCTAなど） */}
+        {showAfterContent && (
+          <div className="mt-6">
+            {afterContent}
+          </div>
+        )}
+        </div>
+
+      {/* 入力エリア（メッセージと同じスクロール親内にstickyで常時表示） */}
       <form
         onSubmit={handleSubmit}
-        className="relative flex items-end gap-2 p-3 border-t border-border bg-[#0a0408]/80"
+        className="sticky bottom-0 z-10 flex items-end gap-2 border-t border-border bg-[#0a0408]/85 p-3 backdrop-blur-md supports-[backdrop-filter]:bg-[#0a0408]/70"
       >
         <label htmlFor="chatbox-input" className="sr-only">質問を入力</label>
         <textarea
@@ -410,6 +503,7 @@ export default function ChatBox({ fortuneType, initialMessage, zodiacSign, perso
           </svg>
         </button>
       </form>
+      </div>
       {messages.some((m) => m.role === "assistant" && m.content.trim() && !m.content.includes(STREAM_ERROR_MARKER)) &&
         !isLoading && <VoteStamps fortuneType={fortuneType} />}
     </div>

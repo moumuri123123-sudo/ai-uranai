@@ -1,11 +1,24 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import ChatBox from "@/components/ChatBox";
+import dynamic from "next/dynamic";
 import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import AffiliateCTA from "@/components/AffiliateCTA";
+import NextFortuneCTA from "@/components/NextFortuneCTA";
 import { tarotCardNames } from "@/lib/fortune-data.client";
+
+// ChatBoxはreadingフェーズでのみ使用する重量コンポーネント。
+// 初期ロードを軽くするために動的インポートする（クライアント専用）。
+const ChatBox = dynamic(() => import("@/components/ChatBox"), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="mx-auto my-6 h-24 w-full max-w-2xl animate-pulse rounded-2xl border border-neon-red/30 bg-surface"
+      aria-label="チャットを読み込み中"
+    />
+  ),
+});
 
 const CARD_BACK = "占";
 
@@ -17,6 +30,17 @@ type DrawnCard = {
 
 type Phase = "intro" | "question" | "spread" | "shuffle" | "draw" | "reading";
 type SpreadType = "one" | "three";
+
+// 6フェーズの順序と日本語ラベル
+const PHASE_ORDER: Phase[] = ["intro", "question", "spread", "shuffle", "draw", "reading"];
+const PHASE_LABELS: Record<Phase, string> = {
+  intro: "はじめに",
+  question: "質問",
+  spread: "スプレッド",
+  shuffle: "シャッフル",
+  draw: "ドロー",
+  reading: "鑑定",
+};
 
 const THEMES = [
   { key: "総合運", icon: "運" },
@@ -42,6 +66,57 @@ type SavedState = {
 type Props = {
   relatedArticles: React.ReactNode;
 };
+
+// 上部に表示する6フェーズの進行インジケータ
+function StepIndicator({ phase }: { phase: Phase }) {
+  const currentIndex = PHASE_ORDER.indexOf(phase);
+  const total = PHASE_ORDER.length;
+  const currentLabel = PHASE_LABELS[phase];
+
+  return (
+    <nav
+      aria-label="タロット占いの進行状況"
+      className="mx-auto mb-6 max-w-lg"
+    >
+      <div className="mb-2 flex items-baseline justify-between text-xs">
+        <span className="font-mincho text-gold">
+          ステップ {currentIndex + 1} / {total}
+        </span>
+        <span className="text-warm">
+          <span className="text-muted">現在:</span>{" "}
+          <span className="text-neon-red">{currentLabel}</span>
+        </span>
+      </div>
+      <ol className="flex items-center gap-1" role="list">
+        {PHASE_ORDER.map((p, i) => {
+          const done = i < currentIndex;
+          const current = i === currentIndex;
+          return (
+            <li
+              key={p}
+              className="flex-1"
+              aria-current={current ? "step" : undefined}
+            >
+              <div
+                className={`h-1.5 rounded-full transition-colors ${
+                  current
+                    ? "bg-neon-red"
+                    : done
+                    ? "bg-gold/70"
+                    : "bg-border"
+                }`}
+              />
+              <span className="sr-only">
+                {PHASE_LABELS[p]}
+                {current ? "（現在のステップ）" : done ? "（完了）" : "（未完了）"}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
 
 export default function ReadingExperience({ relatedArticles }: Props) {
   const [phase, setPhase] = useState<Phase>("intro");
@@ -170,6 +245,9 @@ export default function ReadingExperience({ relatedArticles }: Props) {
 
   return (
     <>
+      {/* 6フェーズの進行インジケータ（常時表示） */}
+      <StepIndicator phase={phase} />
+
       {/* ===== 1. 心を落ち着ける ===== */}
       {phase === "intro" && (
         <div className="flex min-h-[60vh] flex-col items-center justify-center text-center animate-fade-in">
@@ -494,6 +572,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
             historyLabel={historyLabel}
             autoStart
             onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
+            afterContent={<NextFortuneCTA currentFortune="tarot" />}
           />
           <ShareButtons
             title="タロット占い結果"
