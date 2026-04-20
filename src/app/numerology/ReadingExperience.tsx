@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import ShareButtons from "@/components/ShareButtons";
 import AffiliateCTA from "@/components/AffiliateCTA";
+import NextFortuneCTA from "@/components/NextFortuneCTA";
 import { calculateLifePath } from "@/lib/numerology";
 
 // ChatBoxはchatフェーズでのみ使用する重量コンポーネント。初期ロードを軽くするため動的インポート。
@@ -165,6 +166,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
             initialMessage={`${birthDateStr}生まれのあなたのライフパスナンバーは「${lifePathNumber}」です。\n\n${meaning}\n\nそれでは鑑定に入りますね...`}
             autoStart
             onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
+            afterContent={<NextFortuneCTA currentFortune="numerology" />}
           />
           <ShareButtons
             title="数秘術結果"

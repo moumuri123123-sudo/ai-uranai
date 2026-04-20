@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import ShareButtons from "@/components/ShareButtons";
 import AffiliateCTA from "@/components/AffiliateCTA";
+import NextFortuneCTA from "@/components/NextFortuneCTA";
 import { zodiacSigns } from "@/lib/fortune-data";
 
 // ChatBoxは星座選択後のみ使用する重量コンポーネント。初期ロードを軽くするため動的インポート。
@@ -102,6 +103,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
             initialMessage={`${selected.name}（${selected.period}）のあなたですね。${selected.element}のエレメントに属し、${selected.traits}とされています。\n\nそれでは鑑定に入りますね...`}
             autoStart
             onFirstResponse={(text) => setResultSummary(text.slice(0, 80))}
+            afterContent={<NextFortuneCTA currentFortune="zodiac" />}
           />
           <ShareButtons
             title="星座占い結果"
