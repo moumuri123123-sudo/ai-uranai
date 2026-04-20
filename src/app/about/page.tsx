@@ -2,202 +2,226 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "このサイトについて",
-  description: "占処 AI占いの運営者情報・サイト概要です。AI技術を活用した占いエンターテインメントサービスについてご紹介します。",
+  title: "占処について",
+  description:
+    "占処（うらないどころ）は、Gemini 2.5 Flashを用いた無料のAI占いサイトです。運営者情報・占える占術・更新方針・免責事項・お問い合わせについてご案内します。",
   alternates: {
     canonical: "https://uranaidokoro.com/about",
   },
 };
+
+type FortuneCard = {
+  href: string;
+  title: string;
+  description: string;
+  accent: string; // Tailwind ring / border accent
+};
+
+const fortuneCards: FortuneCard[] = [
+  {
+    href: "/tarot",
+    title: "タロット占い",
+    description: "大アルカナ22枚を使って、今の問いに光を当てます。",
+    accent: "hover:border-neon-red/60 hover:shadow-[0_0_24px_rgba(255,45,85,0.18)]",
+  },
+  {
+    href: "/zodiac",
+    title: "星座占い",
+    description: "12星座それぞれの性質から、今日の運気を読み解きます。",
+    accent: "hover:border-gold/60 hover:shadow-[0_0_24px_rgba(255,215,0,0.18)]",
+  },
+  {
+    href: "/mbti",
+    title: "MBTI\u00ae診断",
+    description: "16タイプの傾向をもとに、思考のクセを言葉にします。",
+    accent: "hover:border-neon-cyan/60 hover:shadow-[0_0_24px_rgba(0,221,255,0.18)]",
+  },
+  {
+    href: "/compatibility",
+    title: "相性占い",
+    description: "ふたりの関係を、やわらかな視点でそっと照らします。",
+    accent: "hover:border-neon-pink/60 hover:shadow-[0_0_24px_rgba(255,105,180,0.18)]",
+  },
+  {
+    href: "/numerology",
+    title: "数秘術",
+    description: "生年月日が示す数字から、生まれ持った質を辿ります。",
+    accent: "hover:border-neon-purple/60 hover:shadow-[0_0_24px_rgba(136,72,152,0.18)]",
+  },
+  {
+    href: "/dream",
+    title: "夢占い",
+    description: "夢に現れた断片を、象徴の辞書でひも解きます。",
+    accent: "hover:border-neon-amber/60 hover:shadow-[0_0_24px_rgba(240,160,48,0.18)]",
+  },
+];
 
 export default function AboutPage() {
   return (
     <div className="bg-[#0a0408] px-4 py-12 sm:py-16">
       <div className="mx-auto max-w-3xl">
         <h1 className="font-mincho mb-10 text-center text-2xl font-bold text-gold sm:text-3xl">
-          このサイトについて
+          占処について
         </h1>
 
         <div className="space-y-8 text-sm leading-relaxed text-foreground/80">
+          {/* 占処とは */}
           <section className="rounded-xl border border-border bg-surface p-6">
             <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
               占処とは
             </h2>
             <p>
-              「占処（うらないどころ）」は、最先端のAI技術と古来の占術を融合させた、
-              新しい形の占いエンターテインメントサービスです。
+              「占処（うらないどころ）」は、GoogleのAIモデル
+              <span className="text-warm">{" Gemini 2.5 Flash "}</span>
+              を用いて、6つの占術を無料でお届けするAI占いサイトです。
+              レトロな占い館のような雰囲気のなかで、気の向いたときに扉を叩いていただけるよう設えました。
             </p>
             <p className="mt-3">
-              レトロな占い館をコンセプトに、タロット占い・星座占い・相性占い・MBTI&reg;診断・夢占い・数秘術の
-              6つの占術をすべて無料でお楽しみいただけます。
+              登録も課金も不要です。問いをひとつ抱えて、ふらりと暖簾をくぐるようにお楽しみください。
             </p>
           </section>
 
+          {/* 占える占術 */}
           <section className="rounded-xl border border-border bg-surface p-6">
             <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              占処の理念
+              占える占術
+            </h2>
+            <p className="mb-5">
+              気分や問いの種類に合わせて、下記の6つの占術からお選びいただけます。
+            </p>
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {fortuneCards.map((card) => (
+                <li key={card.href}>
+                  <Link
+                    href={card.href}
+                    className={`block h-full rounded-lg border border-border bg-[#0a0408]/60 p-4 transition-all ${card.accent}`}
+                  >
+                    <p className="font-mincho text-base text-gold">{card.title}</p>
+                    <p className="mt-1 text-xs leading-relaxed text-foreground/75">
+                      {card.description}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 text-xs text-muted">
+              ※ MBTI&reg;（Myers-Briggs Type Indicator）は The Myers-Briggs Company の登録商標です。
+              当サイトの診断は同社公認のものではありません。
+            </p>
+          </section>
+
+          {/* 運営者について */}
+          <section className="rounded-xl border border-border bg-surface p-6">
+            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+              運営者について
             </h2>
             <p>
-              占処は、占いを「堅苦しい儀式」ではなく「気軽に楽しめるエンターテインメント」として提供することを大切にしています。
-              暮らしの中でふと立ち止まりたくなったとき、心のモヤモヤを整理したくなったときに、
-              お茶を飲むような軽やかさで扉を叩いていただける場所でありたいと考えています。
+              占処は、AIと占いの両方を愛するひとりの運営者が、個人で運営している小さなサイトです。
+              「占いの敷居をもう少し低くしたい」「夜中にも気兼ねなく話せる相手がいるといい」
+              ──そんな思いから始まりました。
             </p>
             <p className="mt-3">
-              人生の決断を下すのは、いつだってあなた自身です。占いの結果はあくまで思考のきっかけや背中を押す小さな風であり、
-              答えそのものではありません。占処は、24時間いつでもそばにいる静かな話し相手として、
-              あなたの心の整理をそっとお手伝いする存在でありたいと願っています。
+              技術的な試みとしての面も大切にしており、
+              AIがどこまで自然に占いの語り口を真似られるのかを日々探っています。
+              商用の占い鑑定のような重さはなく、気の向いたときにお茶を淹れるくらいの軽やかさで
+              立ち寄っていただける場所でありたいと考えています。
             </p>
+            <dl className="mt-5 space-y-2 text-xs">
+              <div className="flex gap-4">
+                <dt className="w-24 shrink-0 text-muted">運営者</dt>
+                <dd className="text-foreground/90">廣末 大輝</dd>
+              </div>
+              <div className="flex gap-4">
+                <dt className="w-24 shrink-0 text-muted">運営形態</dt>
+                <dd className="text-foreground/90">個人運営</dd>
+              </div>
+              <div className="flex gap-4">
+                <dt className="w-24 shrink-0 text-muted">運営開始</dt>
+                <dd className="text-foreground/90">2026年</dd>
+              </div>
+            </dl>
           </section>
 
+          {/* 更新について */}
           <section className="rounded-xl border border-border bg-surface p-6">
             <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              占処の特徴
+              更新について
             </h2>
-            <ul className="list-disc space-y-3 pl-5">
+            <ul className="list-disc space-y-2 pl-5">
               <li>
-                <span className="font-semibold text-foreground">AI占い師との対話</span>
-                ── チャット形式で、まるで本物の占い師と対話するような体験ができます。
+                毎朝7時（日本時間）に、デイリー運勢のランキングを自動更新します。
+                その日の流れを、朝のひとときにご覧ください。
               </li>
               <li>
-                <span className="font-semibold text-foreground">6つの占術</span>
-                ── タロット、星座、相性、MBTI、夢占い、数秘術を網羅。気分やお悩みに合わせてお選びいただけます。
+                占いにまつわる読み物やコラムを、月に数本のペースで少しずつ追加しています。
+                急がずに、書ける日に書ける分だけ、という緩やかな更新です。
               </li>
               <li>
-                <span className="font-semibold text-foreground">完全無料</span>
-                ── すべての占い機能を無料でご利用いただけます。会員登録も不要です。
-              </li>
-              <li>
-                <span className="font-semibold text-foreground">プライバシー配慮</span>
-                ── 占い結果は当サイトのサーバーやデータベースには保存されず、お使いの端末にのみ記録されます。なお、AI回答の生成にあたっては、ご入力内容がGoogle LLC（Gemini API）に送信されます。詳しくは<Link href="/privacy" className="text-warm underline underline-offset-4 hover:text-gold">プライバシーポリシー</Link>をご確認ください。
+                システム面はAIモデルの動向に合わせて随時見直します。大きな変更がある際は、
+                ページ上または<Link href="/blog" className="text-warm underline underline-offset-4 hover:text-gold">コラム</Link>でお知らせいたします。
               </li>
             </ul>
           </section>
 
+          {/* 免責事項 */}
           <section className="rounded-xl border border-border bg-surface p-6">
             <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              こんな方におすすめ
-            </h2>
-            <ul className="list-disc space-y-3 pl-5">
-              <li>
-                誰にも話しづらい悩みを、気軽に相談してみたい方
-              </li>
-              <li>
-                深夜や早朝など、思い立ったそのときに占いを試してみたい方
-              </li>
-              <li>
-                対面の占い館に行くのは少しハードルが高いと感じている方
-              </li>
-              <li>
-                頭の中のモヤモヤを言葉にして、自分の気持ちを整理したい方
-              </li>
-              <li>
-                占いを日常のちょっとしたエンターテインメントとして楽しみたい方
-              </li>
-            </ul>
-          </section>
-
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              AI占い師の仕組み
+              免責事項
             </h2>
             <p>
-              占処のAI占い師は、Google社が提供する大規模言語モデル「Gemini」を利用して回答を生成しています。
-              Geminiは膨大な書籍・ウェブ上のテキストから学習しており、そこには古今東西の占術に関する知識も多く含まれています。
+              占処が提供する占い結果は、AIが生成するエンターテインメントコンテンツです。
+              生まれた言葉のひとつひとつは、あくまで思考のきっかけとしてお受け取りください。
+              医療・法律・金銭・生命に関わる重要な判断については、
+              占い結果を根拠とせず、各分野の専門家へのご相談をおすすめします。
             </p>
             <p className="mt-3">
-              タロットの大アルカナ22枚が持つ象徴的な意味、12星座それぞれの性格的特徴、
-              数秘術における各数字の意味合いなど、占術の伝統的な解釈をベースに据えつつ、
-              あなたが入力した質問や状況に合わせて、AIがその場で文章を組み立ててお届けします。
-            </p>
-            <p className="mt-3">
-              もちろん、長年の経験を積んだ対面占い師の「直感」や「場の空気を読む力」までは再現できません。
-              その代わり、AI占い師は24時間いつでも待機していて、気軽に何度でも相談できるという気軽さが最大の強みです。
-              結果に過度に依存することなく、ひとつの視点・ひとつの参考として、ゆったりとお楽しみください。
+              詳しい利用条件や個人情報の取扱いは、
+              <Link href="/terms" className="text-warm underline underline-offset-4 hover:text-gold">利用規約</Link>
+              および
+              <Link href="/privacy" className="text-warm underline underline-offset-4 hover:text-gold">プライバシーポリシー</Link>
+              をご確認ください。
             </p>
           </section>
 
+          {/* お問い合わせ */}
           <section className="rounded-xl border border-border bg-surface p-6">
             <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              ご利用にあたっての注意
+              お問い合わせ
             </h2>
-            <ul className="list-disc space-y-3 pl-5">
-              <li>
-                占処が提供する占い結果はAIが生成したエンターテインメントコンテンツであり、
-                科学的根拠や統計的な裏付けがあるものではありません。
-              </li>
-              <li>
-                医療・法律・金銭・生命に関わる重大なご判断については、占いの結果を根拠とせず、
-                必ず医師・弁護士・ファイナンシャルプランナーなど各分野の専門家にご相談ください。
-              </li>
-              <li>
-                占いの結果に過度に依存することはおすすめしません。
-                あくまでひとつの見方・ひとつの参考としてお受け取りいただき、最終的な判断はご自身で行ってください。
-              </li>
-              <li>
-                ユーザーがチャットに入力した質問内容は、回答生成のためGoogle社のGemini APIへ送信されます。
-                氏名・住所・電話番号・パスワードなどの個人情報や機密情報は入力されないようご注意ください。
-              </li>
-              <li>
-                占い結果はお使いの端末のローカルストレージにのみ保存され、占処のサーバーや外部データベースには送信・保管されません。
-                ブラウザのデータを削除すると履歴も消去されます。
-              </li>
-            </ul>
+            <p>
+              ご意見・ご感想、掲載内容に関するご指摘などございましたら、
+              下記のメールアドレスまでお気軽にご連絡ください。いただいたお便りはひとつずつ目を通しています。
+            </p>
+            <p className="mt-4">
+              <a
+                href="mailto:oyasumi6964@gmail.com"
+                className="font-mincho text-base text-warm underline underline-offset-4 transition-colors hover:text-gold"
+              >
+                oyasumi6964@gmail.com
+              </a>
+            </p>
           </section>
 
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              運営者情報
-            </h2>
-            <div className="space-y-2">
-              <div className="flex">
-                <span className="w-28 shrink-0 text-muted">サイト名</span>
-                <span className="text-foreground">占処 AI占い</span>
-              </div>
-              <div className="flex">
-                <span className="w-28 shrink-0 text-muted">運営者</span>
-                <span className="text-foreground">占処運営事務局</span>
-              </div>
-              <div className="flex">
-                <span className="w-28 shrink-0 text-muted">URL</span>
-                <a href="https://uranaidokoro.com" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">
-                  https://uranaidokoro.com
-                </a>
-              </div>
-              <div className="flex">
-                <span className="w-28 shrink-0 text-muted">運営形態</span>
-                <span className="text-foreground">個人運営</span>
-              </div>
-              <div className="flex">
-                <span className="w-28 shrink-0 text-muted">お問い合わせ</span>
-                <a href="mailto:oyasumi6964@gmail.com" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">
-                  oyasumi6964@gmail.com
-                </a>
-              </div>
-              <div className="flex">
-                <span className="w-28 shrink-0 text-muted">運営開始</span>
-                <span className="text-foreground">2026年3月</span>
-              </div>
-            </div>
-          </section>
-
+          {/* フッタ内リンク */}
           <div className="border-t border-border pt-6 text-center">
-            <div className="flex justify-center gap-6">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
               <Link
-                href="/contact"
+                href="/legal/tokushoho"
                 className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
               >
-                お問い合わせ
-              </Link>
-              <Link
-                href="/terms"
-                className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
-              >
-                利用規約
+                特定商取引法に基づく表記
               </Link>
               <Link
                 href="/privacy"
                 className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
               >
                 プライバシーポリシー
+              </Link>
+              <Link
+                href="/terms"
+                className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+              >
+                利用規約
               </Link>
             </div>
           </div>
