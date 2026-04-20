@@ -3,6 +3,7 @@ import { Shippori_Mincho_B1, Zen_Maru_Gothic } from "next/font/google";
 import Script from "next/script";
 import Link from "next/link";
 import Header from "@/components/Header";
+import CookieBanner from "@/components/CookieBanner";
 import JsonLd from "@/components/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 import "./globals.css";
@@ -149,10 +150,17 @@ export default function RootLayout({
                 >
                   プライバシーポリシー
                 </Link>
+                <Link
+                  href="/legal/tokushoho"
+                  className="text-sm text-muted transition-colors hover:text-gold"
+                >
+                  特定商取引法に基づく表記
+                </Link>
               </div>
             </div>
           </div>
         </footer>
+        <CookieBanner />
       </body>
     </html>
   );
