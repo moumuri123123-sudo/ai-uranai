@@ -1,10 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import ChatBox from "@/components/ChatBox";
+import dynamic from "next/dynamic";
 import ShareButtons from "@/components/ShareButtons";
 import AffiliateCTA from "@/components/AffiliateCTA";
 import { mbtiTypes, mbtiQuestions } from "@/lib/fortune-data";
+
+// ChatBoxはchatフェーズでのみ使用する重量コンポーネント。初期ロードを軽くするため動的インポート。
+const ChatBox = dynamic(() => import("@/components/ChatBox"), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="mx-auto my-6 h-24 w-full max-w-2xl animate-pulse rounded-2xl border border-neon-cyan/30 bg-surface"
+      aria-label="チャットを読み込み中"
+    />
+  ),
+});
 
 type Phase = "select" | "quiz" | "chat";
 
