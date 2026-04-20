@@ -1,10 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import ChatBox from "@/components/ChatBox";
 import ShareButtons from "@/components/ShareButtons";
 import AffiliateCTA from "@/components/AffiliateCTA";
+
+// ChatBoxはchatフェーズでのみ使用する重量コンポーネント。初期ロードを軽くするため動的インポート。
+const ChatBox = dynamic(() => import("@/components/ChatBox"), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="mx-auto my-6 h-24 w-full max-w-2xl animate-pulse rounded-2xl border border-neon-purple/30 bg-surface"
+      aria-label="チャットを読み込み中"
+    />
+  ),
+});
 
 type Props = {
   relatedArticles: React.ReactNode;

@@ -1,8 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // gzip/brotli圧縮（Next.js 16はデフォルトで有効だが明示）
+  compress: true,
   experimental: {
-    optimizePackageImports: ["@google/genai"],
+    // 大きなパッケージのTree-shakingを改善して初期バンドルを軽く
+    optimizePackageImports: [
+      "@google/genai",
+      "@supabase/ssr",
+      "@supabase/supabase-js",
+    ],
   },
   async headers() {
     return [
