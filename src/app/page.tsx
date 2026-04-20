@@ -3,6 +3,7 @@ import Image from "next/image";
 import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
 import DailyFortune from "@/components/DailyFortune";
+import TrustBar from "@/components/TrustBar";
 import { websiteJsonLd } from "@/lib/jsonld";
 import { blogArticles } from "@/lib/blog-data";
 
@@ -55,14 +56,37 @@ export default function Home() {
             タロット ・ 星座 ・ 相性 ・ MBTI&reg; ・ 夢占い ・ 数秘術
           </p>
 
-          <Link
-            href="#fortune-menu"
-            className="hero-cta-button inline-block rounded-full border-2 border-neon-red bg-transparent px-8 py-3 text-sm font-semibold tracking-wider text-neon-red transition-all hover:bg-neon-red/10 hover:shadow-[0_0_24px_rgba(255,45,85,0.4)]"
-          >
-            占いを始める
-          </Link>
+          {/* 主要CTA：タロット占いを推奨入口に据えつつ、メニュー全体への導線も残す */}
+          <div className="flex flex-col items-center gap-4">
+            <Link
+              href="/tarot"
+              aria-label="タロット占いを始める（おすすめの入口）"
+              className="hero-cta-button inline-flex h-14 items-center justify-center gap-2 rounded-full border-2 border-neon-red bg-neon-red/10 px-10 text-base font-bold tracking-wider text-neon-red shadow-[0_0_32px_rgba(255,45,85,0.35)] transition-all hover:bg-neon-red/20 hover:shadow-[0_0_48px_rgba(255,45,85,0.6)] motion-safe:animate-pulse"
+            >
+              タロット占いを始める
+              <span aria-hidden="true">&rarr;</span>
+            </Link>
+            <Link
+              href="#fortune-menu"
+              className="text-xs tracking-[0.2em] text-gold/70 underline-offset-4 transition-colors hover:text-gold hover:underline sm:text-sm"
+            >
+              他の占いから選ぶ
+            </Link>
+          </div>
+
+          {/* スクロールヒント（アニメーションはmotion-safe） */}
+          <div className="mt-10 flex flex-col items-center gap-1 text-[11px] tracking-[0.2em] text-gold/50 sm:text-xs">
+            <span>↓ スクロールして占いを選ぶ</span>
+            <span
+              aria-hidden="true"
+              className="block h-4 w-px bg-gradient-to-b from-gold/40 to-transparent motion-safe:animate-bounce"
+            />
+          </div>
         </div>
       </section>
+
+      {/* トラストバー（信頼感を伝える控えめなストリップ） */}
+      <TrustBar />
 
       {/* 今日の運勢 */}
       <DailyFortune />
@@ -88,6 +112,9 @@ export default function Home() {
         </Link>
       </section>
 
+      {/* 広告スペース（ランキング導線と占いメニューの間） */}
+      <AdBanner slot="top-0" format="horizontal" />
+
       {/* 占いメニューカード */}
       <section
         id="fortune-menu"
@@ -98,9 +125,12 @@ export default function Home() {
         </h2>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {/* タロットカード */}
+          {/* タロットカード（人気・おすすめ。枠をやや太くして強調） */}
           <Link href="/tarot" className="group touch-manipulation">
-            <div className="card-mystical card-glow-red flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
+            <div className="card-mystical card-glow-red relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-neon-red/40 bg-surface ring-1 ring-neon-red/10">
+              <span className="absolute top-3 left-3 z-10 inline-flex items-center rounded-full bg-gold/90 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-[#0a0408] shadow-[0_0_12px_rgba(255,215,0,0.35)]">
+                人気
+              </span>
               <div className="relative h-36 w-full">
                 <Image src="/images/tarot.webp" alt="タロット占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
               </div>
@@ -194,9 +224,12 @@ export default function Home() {
             </div>
           </Link>
 
-          {/* 夢占いカード */}
+          {/* 夢占いカード（NEW：比較的新しく追加されたメニュー） */}
           <Link href="/dream" className="group touch-manipulation">
-            <div className="card-mystical card-glow-purple flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
+            <div className="card-mystical card-glow-purple relative flex h-full flex-col rounded-2xl border border-border bg-surface overflow-hidden">
+              <span className="absolute top-3 left-3 z-10 inline-flex items-center rounded-full border border-neon-purple/60 bg-[#0a0408]/80 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-neon-purple">
+                NEW
+              </span>
               <div className="relative h-36 w-full">
                 <Image src="/images/dream.webp" alt="夢占い" fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover opacity-70 transition-opacity group-hover:opacity-90" />
               </div>
