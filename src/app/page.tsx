@@ -3,7 +3,6 @@ import Image from "next/image";
 import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
 import DailyFortune from "@/components/DailyFortune";
-import TrustBar from "@/components/TrustBar";
 import { websiteJsonLd } from "@/lib/jsonld";
 import { blogArticles } from "@/lib/blog-data";
 
@@ -84,9 +83,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* トラストバー（信頼感を伝える控えめなストリップ） */}
-      <TrustBar />
 
       {/* 今日の運勢 */}
       <DailyFortune />
