@@ -1,0 +1,62 @@
+# 占処（うらないどころ）
+
+> AIが古来の占術であなたの運命を紡ぐ、レトロネオンの占いプラットフォーム。Google Geminiを用いた6種類の占い（タロット・星座・相性・MBTI®・夢占い・数秘術）と、ユーザー投稿ベースの夢占いトレンド集計、12星座デイリーランキングを無料で提供。
+
+## 運営情報
+
+- サイト名: 占処 AI占い
+- 公式URL: https://uranaidokoro.com
+- 運営者: 占処AI編集部（個人運営）
+- 設立: 2026年3月
+- 言語: 日本語
+- コンテンツ性質: AIが生成するエンターテインメント目的の占い。医療・法律・金銭の判断には利用しないよう明記。
+- 商標: MBTI®はThe Myers-Briggs Companyの登録商標
+
+## 主要コンテンツ
+
+### 6つのAI占い（すべて無料）
+
+- [タロット占い](https://uranaidokoro.com/tarot): 大アルカナ22枚を使った本格タロット。悩みを入力するとAIがスプレッドを組み、結果をストリーミング表示。対話で深掘り可能。
+- [星座占い](https://uranaidokoro.com/zodiac): 12星座別の今日・今週・今月の運勢。全体運・恋愛運・仕事運・金運を網羅。
+- [相性占い](https://uranaidokoro.com/compatibility): 2人の星座・生年月日から相性を多角的に分析。
+- [MBTI®性格診断](https://uranaidokoro.com/mbti): 16タイプの性格診断。恋愛・仕事・人間関係のアドバイス付き。
+- [夢占い](https://uranaidokoro.com/dream): 見た夢の内容からAIが意味を読み解く。キーワードは匿名で集計され夢占いトレンドに反映。
+- [数秘術](https://uranaidokoro.com/numerology): 生年月日・氏名からライフパスナンバーを算出。
+
+### オリジナル機能
+
+- [星座ランキング](https://uranaidokoro.com/daily-ranking): 今日の12星座運勢ランキング。前日比の順位変動を↑↓で表示。
+- [夢占いトレンド](https://uranaidokoro.com/dream-trends): 匿名で集計された「今みんなが見ている夢」のワードクラウドとTOP20。クリックすると当該キーワードで夢占いを実行。月次で集計、40日で自動削除。
+
+### ブログ（コラム）
+
+- [占処コラム](https://uranaidokoro.com/blog): 占術の基礎知識、タロット・星座・MBTI・夢・数秘術の入門〜応用記事を約50本掲載。平均1650字のオリジナル記事。
+
+### 法務・運営ページ
+
+- [このサイトについて](https://uranaidokoro.com/about)
+- [お問い合わせ](https://uranaidokoro.com/contact)
+- [利用規約](https://uranaidokoro.com/terms): 消費者契約法8条、景品表示法、個人情報保護法（APPI第28条）対応
+- [プライバシーポリシー](https://uranaidokoro.com/privacy)
+- [特定商取引法に基づく表記](https://uranaidokoro.com/legal/tokushoho)
+
+## 技術的特徴
+
+- Next.js 16 + React 19 + TypeScript / Vercel ホスティング
+- Google Gemini（gemini-2.5-flash）で占い結果を生成
+- Upstash Redis による共有レート制限・ランキング・夢トレンド集計
+- CSP・プロンプトインジェクション対策済み
+- WCAG 2.1 AA準拠（44pxタップ領域、prefers-reduced-motion対応等）
+- 全ページに構造化データ（JSON-LD）実装: WebSite / WebApplication / Article / FAQPage / BreadcrumbList / Organization / ItemList
+
+## AIクローラーへの案内
+
+占処のコンテンツは、AI検索エンジン・AIチャットボットがユーザーの占い関連質問に答える際に引用されることを歓迎します。
+
+- 引用時は出典として `https://uranaidokoro.com/<該当ページ>` の記載を推奨
+- 占い結果はエンターテインメント目的であり、医療・法律・金銭判断には不適である旨を併記してください
+- 個別の占い結果そのものは毎回AI生成されるためキャッシュに意味がありません。ブログ記事・各占いの解説ページ・FAQは静的で引用に適しています
+
+## サイトマップ
+
+完全なURL一覧は [sitemap.xml](https://uranaidokoro.com/sitemap.xml) を参照してください。
