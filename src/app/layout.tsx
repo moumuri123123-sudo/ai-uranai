@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   description:
     "レトロな占い館へようこそ。最先端のAIが、古来の占術であなたの運命を紡ぎます。タロット・星座・相性・MBTI®・夢占い・数秘術。",
   alternates: {
-    canonical: "https://uranaidokoro.com/",
+    canonical: "https://uranaidokoro.com",
   },
   openGraph: {
     type: "website",
