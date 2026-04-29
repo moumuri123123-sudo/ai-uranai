@@ -281,7 +281,7 @@ export default function Home() {
                   <div className="relative aspect-video w-full overflow-hidden bg-[#0a0408]">
                     <Image
                       src={`/images/blog/${article.slug}.webp`}
-                      alt=""
+                      alt={article.title}
                       fill
                       sizes="(max-width: 640px) 100vw, 33vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
