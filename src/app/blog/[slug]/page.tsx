@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { blogArticles, getArticleBySlug } from "@/lib/blog-data";
 import AdBanner from "@/components/AdBanner";
@@ -145,6 +146,17 @@ export default async function BlogDetailPage({ params }: Props) {
         </div>
 
         <article>
+          <div className="relative mb-8 aspect-video w-full overflow-hidden rounded-2xl border border-border bg-[#0a0408] shadow-lg shadow-neon-red/10">
+            <Image
+              src={`/images/blog/${article.slug}.webp`}
+              alt={article.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-cover"
+              priority
+            />
+          </div>
+
           <div className="mb-8 text-center">
             {article.category !== "general" ? (
               <FortuneIcon type={article.category} size="lg" />

@@ -277,27 +277,38 @@ export default function Home() {
                 href={`/blog/${article.slug}`}
                 className="group"
               >
-                <div className="card-mystical flex h-full flex-col rounded-2xl border border-border bg-surface p-6">
-                  <div className="mb-3">
-                    {article.category !== "general" ? (
-                      <FortuneIcon type={article.category} size="md" />
-                    ) : (
-                      <FortuneIcon type="ai" size="md" />
-                    )}
+                <div className="card-mystical flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface">
+                  <div className="relative aspect-video w-full overflow-hidden bg-[#0a0408]">
+                    <Image
+                      src={`/images/blog/${article.slug}.webp`}
+                      alt=""
+                      fill
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                   </div>
-                  <h3 className="mb-2 text-base font-bold text-foreground transition-colors group-hover:text-gold line-clamp-2">
-                    {article.title}
-                  </h3>
-                  <p className="mb-4 flex-1 text-sm text-muted line-clamp-2">
-                    {article.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted">
-                      {article.publishedAt}
-                    </span>
-                    <span className="text-sm text-gold/70 group-hover:text-gold">
-                      読む &rarr;
-                    </span>
+                  <div className="flex flex-1 flex-col p-6 pt-4">
+                    <div className="mb-3">
+                      {article.category !== "general" ? (
+                        <FortuneIcon type={article.category} size="md" />
+                      ) : (
+                        <FortuneIcon type="ai" size="md" />
+                      )}
+                    </div>
+                    <h3 className="mb-2 text-base font-bold text-foreground transition-colors group-hover:text-gold line-clamp-2">
+                      {article.title}
+                    </h3>
+                    <p className="mb-4 flex-1 text-sm text-muted line-clamp-2">
+                      {article.description}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted">
+                        {article.publishedAt}
+                      </span>
+                      <span className="text-sm text-gold/70 group-hover:text-gold">
+                        読む &rarr;
+                      </span>
+                    </div>
                   </div>
                 </div>
               </Link>

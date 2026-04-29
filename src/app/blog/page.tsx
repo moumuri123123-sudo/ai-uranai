@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { blogArticles } from "@/lib/blog-data";
 import AdBanner from "@/components/AdBanner";
 import FortuneIcon from "@/components/FortuneIcon";
@@ -33,27 +34,38 @@ export default function BlogPage() {
               href={`/blog/${article.slug}`}
               className="group"
             >
-              <div className="card-mystical flex h-full flex-col rounded-2xl border border-border bg-surface p-6">
-                <div className="mb-3">
-                  {article.category !== "general" ? (
-                    <FortuneIcon type={article.category} size="md" />
-                  ) : (
-                    <FortuneIcon type="ai" size="md" />
-                  )}
+              <div className="card-mystical flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface">
+                <div className="relative aspect-video w-full overflow-hidden bg-[#0a0408]">
+                  <Image
+                    src={`/images/blog/${article.slug}.webp`}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                 </div>
-                <h2 className="mb-2 text-lg font-bold text-foreground transition-colors group-hover:text-gold">
-                  {article.title}
-                </h2>
-                <p className="mb-4 flex-1 text-sm text-muted">
-                  {article.description}
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted">
-                    {article.publishedAt}
-                  </span>
-                  <span className="text-sm text-gold/70 group-hover:text-gold">
-                    読む &rarr;
-                  </span>
+                <div className="flex flex-1 flex-col p-6 pt-4">
+                  <div className="mb-3">
+                    {article.category !== "general" ? (
+                      <FortuneIcon type={article.category} size="md" />
+                    ) : (
+                      <FortuneIcon type="ai" size="md" />
+                    )}
+                  </div>
+                  <h2 className="mb-2 text-lg font-bold text-foreground transition-colors group-hover:text-gold">
+                    {article.title}
+                  </h2>
+                  <p className="mb-4 flex-1 text-sm text-muted">
+                    {article.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted">
+                      {article.publishedAt}
+                    </span>
+                    <span className="text-sm text-gold/70 group-hover:text-gold">
+                      読む &rarr;
+                    </span>
+                  </div>
                 </div>
               </div>
             </Link>
