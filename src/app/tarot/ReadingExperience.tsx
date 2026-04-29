@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import ShareButtons from "@/components/ShareButtons";
 import FortuneIcon from "@/components/FortuneIcon";
 import AffiliateCTA from "@/components/AffiliateCTA";
 import NextFortuneCTA from "@/components/NextFortuneCTA";
-import { tarotCardNames } from "@/lib/fortune-data.client";
+import { tarotCards } from "@/lib/fortune-data.client";
 
 // ChatBoxはreadingフェーズでのみ使用する重量コンポーネント。
 // 初期ロードを軽くするために動的インポートする（クライアント専用）。
@@ -24,6 +25,7 @@ const CARD_BACK = "占";
 
 type DrawnCard = {
   name: string;
+  image: string;
   reversed: boolean;
   position: string;
 };
@@ -54,8 +56,10 @@ const THEMES = [
 const STORAGE_KEY = "tarot-state";
 const STORAGE_TTL_MS = 60 * 60 * 1000; // 1時間
 
+// 保存形式は旧バージョン（image欠落）からの互換のためimageを任意にする
+type SavedDrawnCard = Omit<DrawnCard, "image"> & { image?: string };
 type SavedState = {
-  drawnCards: DrawnCard[];
+  drawnCards: SavedDrawnCard[];
   spreadType: SpreadType;
   selectedTheme: string | null;
   userQuestion: string;
@@ -140,11 +144,16 @@ export default function ReadingExperience({ relatedArticles }: Props) {
         return;
       }
       if (saved.phase === "reading" && saved.drawnCards?.length > 0) {
-        setDrawnCards(saved.drawnCards);
+        // 旧形式（image欠落）のセッションを名前から補完
+        const hydrated: DrawnCard[] = saved.drawnCards.map((c) => ({
+          ...c,
+          image: c.image ?? tarotCards.find((t) => t.name === c.name)?.image ?? "",
+        }));
+        setDrawnCards(hydrated);
         setSpreadType(saved.spreadType);
         setSelectedTheme(saved.selectedTheme);
         setUserQuestion(saved.userQuestion);
-        setFlippedIndices(saved.drawnCards.map((_, i) => i));
+        setFlippedIndices(hydrated.map((_, i) => i));
         setPhase("reading");
       }
     } catch {
@@ -184,11 +193,13 @@ export default function ReadingExperience({ relatedArticles }: Props) {
       for (let i = 0; i < count; i++) {
         let idx: number;
         do {
-          idx = Math.floor(Math.random() * tarotCardNames.length);
+          idx = Math.floor(Math.random() * tarotCards.length);
         } while (usedIndices.has(idx));
         usedIndices.add(idx);
+        const card = tarotCards[idx];
         drawn.push({
-          name: tarotCardNames[idx],
+          name: card.name,
+          image: card.image,
           reversed: Math.random() < 0.35,
           position: positions[i],
         });
@@ -447,7 +458,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
             {Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
-                className="h-24 w-16 rounded-lg border border-neon-red/40 bg-surface shadow-lg animate-shuffle sm:h-32 sm:w-20"
+                className="relative h-24 w-16 overflow-hidden rounded-lg border border-gold/40 shadow-lg animate-shuffle sm:h-32 sm:w-20"
                 style={{
                   ["--shuffle-x" as string]: `${(i - 3) * 15}px`,
                   ["--shuffle-y" as string]: `${Math.sin(i) * 20}px`,
@@ -455,9 +466,13 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                   animationDelay: `${i * 0.15}s`,
                 }}
               >
-                <div className="flex h-full w-full items-center justify-center font-yuji text-2xl text-neon-red/40 sm:text-3xl">
-                  {CARD_BACK}
-                </div>
+                <Image
+                  src="/images/tarot/back.webp"
+                  alt=""
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                />
               </div>
             ))}
           </div>
@@ -490,21 +505,42 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                   className={`${spreadType === "three" ? "card-flip-container-sm" : "card-flip-container"} border-0 bg-transparent p-0`}
                 >
                   <div className={`card-flip-inner ${flippedIndices.includes(i) ? "flipped" : ""}`}>
-                    {/* 裏面（占の文字） */}
-                    <div className="card-flip-front border-2 border-neon-red/50 bg-surface shadow-2xl shadow-neon-red/20 hover:border-neon-red hover:shadow-neon-red/40 transition-all" aria-hidden="true">
-                      <div className="flex h-full w-full items-center justify-center font-yuji text-3xl text-neon-red/60 sm:text-4xl">
-                        {CARD_BACK}
-                      </div>
+                    {/* 裏面（カード背面デザイン） */}
+                    <div className="card-flip-front overflow-hidden border-2 border-gold/40 shadow-2xl shadow-neon-red/20 hover:border-gold/70 hover:shadow-neon-red/40 transition-all" aria-hidden="true">
+                      <Image
+                        src="/images/tarot/back.webp"
+                        alt=""
+                        fill
+                        sizes="(max-width: 640px) 112px, 160px"
+                        className="object-cover"
+                      />
                     </div>
-                    {/* 表面（カード名 + 正逆） */}
-                    <div className="card-flip-back border-2 border-gold/50 bg-surface shadow-2xl shadow-gold/20">
-                      <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 px-2">
-                        <p className={`font-yuji text-gold ${spreadType === "three" ? "text-sm sm:text-base" : "text-lg sm:text-xl"}`}>
-                          {card.name}
-                        </p>
-                        <p className="text-[10px] text-neon-red sm:text-xs">
-                          {card.reversed ? "逆位置" : "正位置"}
-                        </p>
+                    {/* 表面（カード絵柄 + 名前/正逆ラベル） */}
+                    <div className="card-flip-back border-2 border-gold/50 bg-[#0a0408] shadow-2xl shadow-gold/20 overflow-hidden">
+                      <div className="flex h-full w-full flex-col">
+                        <div className="relative flex-1 overflow-hidden">
+                          {card.image ? (
+                            <Image
+                              src={card.image}
+                              alt={card.name}
+                              fill
+                              sizes="(max-width: 640px) 112px, 160px"
+                              className={`object-contain ${card.reversed ? "rotate-180" : ""}`}
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center font-yuji text-gold">
+                              {card.name}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex shrink-0 items-center justify-center gap-1 border-t border-gold/30 bg-[#0a0408]/90 px-1 py-1">
+                          <span className={`font-yuji text-gold ${spreadType === "three" ? "text-[10px] sm:text-xs" : "text-xs sm:text-sm"}`}>
+                            {card.name}
+                          </span>
+                          <span className="text-[9px] text-neon-red sm:text-[10px]">
+                            · {card.reversed ? "逆" : "正"}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -542,6 +578,17 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                 {drawnCards.map((card, i) => (
                   <div key={i} className="text-center">
                     <p className="mb-1 text-[10px] font-medium text-gold">{card.position}</p>
+                    {card.image && (
+                      <div className="relative mx-auto mb-1 aspect-[480/828] w-14 overflow-hidden rounded border border-gold/30 bg-[#0a0408]">
+                        <Image
+                          src={card.image}
+                          alt={card.name}
+                          fill
+                          sizes="56px"
+                          className={`object-contain ${card.reversed ? "rotate-180" : ""}`}
+                        />
+                      </div>
+                    )}
                     <p className="text-sm font-bold text-foreground">{card.name}</p>
                     <p className="text-[10px] text-neon-red">{card.reversed ? "逆位置" : "正位置"}</p>
                   </div>
@@ -549,6 +596,17 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               </div>
             ) : (
               <div className="text-center">
+                {drawnCards[0].image && (
+                  <div className="relative mx-auto mb-2 aspect-[480/828] w-24 overflow-hidden rounded border border-gold/30 bg-[#0a0408]">
+                    <Image
+                      src={drawnCards[0].image}
+                      alt={drawnCards[0].name}
+                      fill
+                      sizes="96px"
+                      className={`object-contain ${drawnCards[0].reversed ? "rotate-180" : ""}`}
+                    />
+                  </div>
+                )}
                 <p className="text-2xl font-bold text-gold">{drawnCards[0].name}</p>
                 <p className="mt-1 text-sm text-neon-red">{drawnCards[0].reversed ? "逆位置" : "正位置"}</p>
               </div>
