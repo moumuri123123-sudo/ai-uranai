@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { TwitterApi } from "twitter-api-v2";
 import {
+  generateArticlePromoTweet,
   generateTweetForSlot,
-  getDreamTrendsTweet,
-  shouldPromoteDreamTrends,
   type TweetSlot,
 } from "@/lib/auto-tweet";
 
@@ -57,10 +56,11 @@ async function handle(req: Request) {
     );
   }
 
-  // evening枠かつ3日周期の日は夢占いトレンド宣伝ツイートに差し替え
-  const useDreamPromo = slot === "evening" && shouldPromoteDreamTrends();
-  const tweetText = useDreamPromo
-    ? getDreamTrendsTweet()
+  // evening枠は記事/ページ紹介ツイート（blog 50記事＋夢占いトレンドからランダム、14日被り回避）
+  // midday/night枠は従来通り占い豆知識ツイート
+  const isPromoSlot = slot === "evening";
+  const tweetText = isPromoSlot
+    ? await generateArticlePromoTweet()
     : await generateTweetForSlot(slot);
 
   try {
@@ -69,7 +69,7 @@ async function handle(req: Request) {
       success: true,
       tweetId: result.data.id,
       slot,
-      type: useDreamPromo ? "dream-trends-promo" : "original",
+      type: isPromoSlot ? "article-promo" : "trivia",
       text: tweetText,
     });
   } catch (e) {

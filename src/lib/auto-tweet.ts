@@ -1,10 +1,15 @@
 import { GoogleGenAI } from "@google/genai";
+import { blogArticles } from "@/lib/blog-data";
+import { redis } from "@/lib/redis";
 
 export type TweetSlot = "midday" | "evening" | "night";
 
 const ai = process.env.GEMINI_API_KEY
   ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
   : null;
+
+const SITE_URL = "https://uranaidokoro.com";
+const TWEET_HISTORY_TTL_SEC = 14 * 24 * 60 * 60; // 14日
 
 // JSTでの日付取得
 export function getJstDate(): Date {
@@ -23,6 +28,151 @@ export function getDayOfYearJst(): number {
 export function getJstDateString(): string {
   const jst = getJstDate();
   return `${jst.getUTCFullYear()}-${String(jst.getUTCMonth() + 1).padStart(2, "0")}-${String(jst.getUTCDate()).padStart(2, "0")}`;
+}
+
+// =====================================================
+// 記事紹介ツイート（evening 18:00 枠）
+// 候補は blogArticles + 夢占いトレンドページ。
+// Redisで投稿履歴を14日保持し、被らないようランダム選択する。
+// =====================================================
+
+type PromoTarget = {
+  /** Redis投稿履歴キーに使うID */
+  key: string;
+  /** ツイート用タイトル（記事タイトルやページ名） */
+  title: string;
+  /** 紹介文生成用の概要 */
+  description: string;
+  /** 投稿先URL */
+  url: string;
+};
+
+function getPromoTargets(): PromoTarget[] {
+  const targets: PromoTarget[] = blogArticles.map((a) => ({
+    key: `blog:${a.slug}`,
+    title: a.title,
+    description: a.description,
+    url: `${SITE_URL}/blog/${a.slug}`,
+  }));
+  // 夢占いトレンドページもローテに含める（月次キャッシュバスト用クエリ付き）
+  const jst = getJstDate();
+  const monthQuery = `?m=${jst.getUTCFullYear()}-${String(jst.getUTCMonth() + 1).padStart(2, "0")}`;
+  targets.push({
+    key: "page:dream-trends",
+    title: "夢占いトレンド",
+    description:
+      "今月みんなが見た夢を匿名集計したワード雲とTOP20。気になる夢をクリックして即占える。",
+    url: `${SITE_URL}/dream-trends${monthQuery}`,
+  });
+  return targets;
+}
+
+async function selectFreshPromoTarget(): Promise<PromoTarget> {
+  const targets = getPromoTargets();
+  if (targets.length === 0) {
+    throw new Error("No promo targets available");
+  }
+
+  // Redisがない場合は単純ランダム
+  if (!redis) {
+    return targets[Math.floor(Math.random() * targets.length)];
+  }
+
+  try {
+    const historyKeys = targets.map((t) => `tweet:posted:${t.key}`);
+    const recent = await redis.mget<(string | null)[]>(...historyKeys);
+    const fresh = targets.filter((_, i) => !recent[i]);
+    // 全部投稿済みなら全候補から（14日経過待たずに古いほど再利用される運用上はOK）
+    const pool = fresh.length > 0 ? fresh : targets;
+    const chosen = pool[Math.floor(Math.random() * pool.length)];
+    // 投稿履歴を記録（TTL 14日）
+    await redis.set(`tweet:posted:${chosen.key}`, "1", { ex: TWEET_HISTORY_TTL_SEC });
+    return chosen;
+  } catch (err) {
+    console.error("selectFreshPromoTarget redis error:", err);
+    return targets[Math.floor(Math.random() * targets.length)];
+  }
+}
+
+function buildPromoTweet(target: PromoTarget, intro: string): string {
+  return `${intro}\n\n${target.url}\n\n#占処 #占い`;
+}
+
+export async function generateArticlePromoTweet(): Promise<string> {
+  const target = await selectFreshPromoTarget();
+
+  if (!ai) {
+    // Gemini不可時は説明文をそのまま使ったテンプレ
+    const intro = `🔮 占処コラム「${target.title}」\n\n${truncate(target.description, 60)}`;
+    return buildPromoTweet(target, ensureLength(intro, 100));
+  }
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `紹介する記事タイトル: ${target.title}
+記事の概要: ${target.description}
+
+このコンテンツに興味を持ってもらえる紹介ツイートの本文を1つ書いてください。`,
+      config: {
+        systemInstruction: `あなたは「占処（うらないどころ）」というAI占いサイトのX担当です。
+ブログ記事や占い機能ページへのリンクをツイートで紹介し、読者にクリックしてもらうのが目的です。
+
+【文体】
+- 物知りな友達が雑談で「これ読んでみて」と勧める温度感
+- 1〜2文、60〜85字程度（後でURLとハッシュタグが追加されるため）
+- 体言止め禁止。動詞・形容詞・助詞で文を締める
+- 語尾は「〜なんだよね」「〜なんです」「〜あったりする」「〜になっている」など会話的に
+- タイトルそのままを使うのではなく、「中身が気になる切り口」を一言で要約する
+- 読者が「気になるからクリックしてみよう」と思える書き方
+- 固有名詞（カード名、星座名、数字など）が記事に関係するなら積極的に使ってOK
+- 絵文字は0〜1個まで（🔮 ✨ 🌙 など。連打NG）
+
+【絶対NG】
+- 「そっと」「静かに」「しっとり」「ふと」「耳を澄ませ」
+- 「〜かもしれません」「〜ましょう」「〜ませんか」（詩的提案禁止）
+- 「心を整える」「運気を呼び込む」「ご縁」「神秘的」「想いを馳せる」「新たな気づき」
+- 体言止め
+- 押し付けポジティブ「きっと大丈夫」「素敵な一日を」
+- URLやハッシュタグは入れない（呼び出し側で付与する）
+- 「当たる」「絶対」「必ず」（景表法）
+
+【良い例】
+タロットの「死神」って怖そうな見た目で誤解されがちだけど、実は終わりと再生を示すカードで、転機を表すんだよね。意味の正しい読み方をまとめてみました。
+
+「○月生まれは○○な傾向」みたいな星座解説、根拠はギリシャ神話だったりするんです。2026年の年間運勢、自分の星座だけでもチェックしておくと話のネタにもなる感じ。
+
+🌙 「最近こんな夢をよく見る」って人、地味に世界中で似た解釈されてるパターンがあったりします。今月みんながどんな夢を見てるかワード雲で見られるよ。
+
+【悪い例】
+そっと心を整える、占いの世界へ。  ← 詩的禁止 体言止め禁止
+タロットの死神は終わりと再生の象徴。  ← 体言止め禁止
+当たる占いを今すぐ試そう  ← 「当たる」NG
+
+本文のみを返してください。挨拶や前置き、説明、URL、ハッシュタグは不要。`,
+      },
+    });
+
+    const intro = response.text?.trim() ?? "";
+    if (intro.length < 10 || intro.length > 100) {
+      // 想定外の長さならフォールバック
+      const fallback = `🔮 占処コラム「${target.title}」\n\n${truncate(target.description, 60)}`;
+      return buildPromoTweet(target, ensureLength(fallback, 100));
+    }
+    return buildPromoTweet(target, intro);
+  } catch (err) {
+    console.error("generateArticlePromoTweet error:", err);
+    const intro = `🔮 占処コラム「${target.title}」\n\n${truncate(target.description, 60)}`;
+    return buildPromoTweet(target, ensureLength(intro, 100));
+  }
+}
+
+function truncate(s: string, n: number): string {
+  return s.length <= n ? s : s.slice(0, n - 1) + "…";
+}
+
+function ensureLength(s: string, n: number): string {
+  return s.length <= n ? s : truncate(s, n);
 }
 
 // 夢占いトレンド宣伝ツイート（4日に1回evening枠で差し替え）
