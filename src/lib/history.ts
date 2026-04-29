@@ -19,7 +19,7 @@ function maskPII(label: string): string {
   // 生年月日らしきパターンをマスク（YYYY-MM-DD, YYYY/MM/DD, YYYY.MM.DD）
   let masked = label.replace(
     /(\d{2})(\d{2})([-/.])(\d{2})([-/.])(\d{2})/g,
-    (_m, y1, _y2, sep1, _mm, sep2, _dd) => `${y1}**${sep1}**${sep2}**`,
+    (_m, y1, _y2, sep1, _mm, sep2) => `${y1}**${sep1}**${sep2}**`,
   );
 
   // 日本語（ひらがな・カタカナ・漢字・長音記号）の名前らしき連続を
@@ -37,12 +37,36 @@ function maskPII(label: string): string {
   return masked;
 }
 
+const VALID_FORTUNE_TYPES: ReadonlySet<HistoryEntry["fortuneType"]> = new Set([
+  "tarot",
+  "zodiac",
+  "compatibility",
+  "mbti",
+  "dream",
+  "numerology",
+]);
+
+function isValidHistoryEntry(e: unknown): e is HistoryEntry {
+  if (typeof e !== "object" || e === null) return false;
+  const o = e as Record<string, unknown>;
+  return (
+    typeof o.id === "string" &&
+    typeof o.fortuneType === "string" &&
+    VALID_FORTUNE_TYPES.has(o.fortuneType as HistoryEntry["fortuneType"]) &&
+    typeof o.label === "string" &&
+    typeof o.firstResponse === "string" &&
+    typeof o.timestamp === "string"
+  );
+}
+
 export function getHistory(): HistoryEntry[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
-    return JSON.parse(raw) as HistoryEntry[];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(isValidHistoryEntry);
   } catch {
     return [];
   }

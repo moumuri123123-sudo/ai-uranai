@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import { TwitterApi } from "twitter-api-v2";
 import { NextResponse } from "next/server";
 import { formatRankingForTweet } from "@/lib/daily-ranking";
+import { isCronRequestAuthorized } from "@/lib/cron-auth";
 
 // Gemini生成に時間がかかる場合に備えて
 export const maxDuration = 30;
@@ -74,9 +75,9 @@ export async function POST(req: Request) {
 
 async function handleDailyPost(req: Request) {
   const authHeader = req.headers.get("authorization");
-  // CRON_SECRETが未設定、またはヘッダーが一致しない場合は401を返す
-  // （以前は未設定時に認証がバイパスされる脆弱性があった）
-  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
+  // CRON_SECRETが未設定、または timing-safe 比較で一致しない場合は401を返す
+  // （以前は未設定時に認証がバイパスされる脆弱性、および非timing-safe比較の懸念あり）
+  if (!isCronRequestAuthorized(authHeader, CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

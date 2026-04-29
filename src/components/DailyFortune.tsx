@@ -36,7 +36,7 @@ export default function DailyFortune() {
         <div
           className="flex items-center justify-center gap-1 mb-4"
           role="img"
-          aria-label={`運勢${fortune.starRating}段階中${fortune.starRating}`}
+          aria-label={`運勢5段階中${fortune.starRating}`}
         >
           {Array.from({ length: 5 }).map((_, i) => (
             <span

@@ -14,32 +14,30 @@ export default function ShareButtons({ title, resultData }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const baseUrl =
-    typeof window !== "undefined"
-      ? window.location.origin
-      : "https://uranaidokoro.com";
-
-  const shareUrl = resultData
-    ? buildShareUrl(baseUrl, resultData)
-    : typeof window !== "undefined"
-      ? window.location.href
-      : "";
+  // window.location はハンドラ内で都度取得（SSR/ハイドレーション境界に持ち込まない）
+  const computeShareUrl = (): string => {
+    if (resultData) return buildShareUrl(window.location.origin, resultData);
+    return window.location.href;
+  };
 
   const shareText = resultData
     ? `${title} - ${resultData.label} | 占処 AI占い`
     : `${title} | 占処 AI占い`;
 
   const handleTwitter = () => {
+    const shareUrl = computeShareUrl();
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
     window.open(url, "_blank", "width=600,height=400");
   };
 
   const handleLine = () => {
+    const shareUrl = computeShareUrl();
     const url = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
     window.open(url, "_blank", "width=600,height=400");
   };
 
   const handleCopy = async () => {
+    const shareUrl = computeShareUrl();
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);

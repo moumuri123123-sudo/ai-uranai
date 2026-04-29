@@ -6,14 +6,16 @@ type DailyFortuneShareProps = {
 
 export default function DailyFortuneShare({ message }: DailyFortuneShareProps) {
   const shareText = `今日の運勢: ${message} | 占処 AI占い`;
-  const shareUrl = typeof window !== "undefined" ? window.location.origin : "";
 
+  // window.location はハンドラ内で都度取得（SSR/ハイドレーション境界に持ち込まない）
   const handleTwitter = () => {
+    const shareUrl = window.location.origin;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
     window.open(url, "_blank", "width=600,height=400");
   };
 
   const handleLine = () => {
+    const shareUrl = window.location.origin;
     const url = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
     window.open(url, "_blank", "width=600,height=400");
   };

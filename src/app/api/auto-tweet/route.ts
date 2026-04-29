@@ -6,6 +6,7 @@ import {
   markPromoTargetPosted,
   type TweetSlot,
 } from "@/lib/auto-tweet";
+import { isCronRequestAuthorized } from "@/lib/cron-auth";
 
 export const maxDuration = 30;
 
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
 
 async function handle(req: Request) {
   const authHeader = req.headers.get("authorization");
-  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (!isCronRequestAuthorized(authHeader, CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

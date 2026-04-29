@@ -28,7 +28,10 @@ export async function generateResultCardImage(
   const canvas = document.createElement("canvas");
   canvas.width = WIDTH;
   canvas.height = HEIGHT;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Canvas 2D context unavailable (private browsing or unsupported environment)");
+  }
 
   const accent = accentColors[data.fortuneType];
   const typeName = fortuneTypeNames[data.fortuneType];
