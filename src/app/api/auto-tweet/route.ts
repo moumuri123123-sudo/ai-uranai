@@ -3,6 +3,7 @@ import { TwitterApi } from "twitter-api-v2";
 import {
   generateArticlePromoTweet,
   generateTweetForSlot,
+  markPromoTargetPosted,
   type TweetSlot,
 } from "@/lib/auto-tweet";
 
@@ -59,12 +60,22 @@ async function handle(req: Request) {
   // evening枠は記事/ページ紹介ツイート（blog 50記事＋夢占いトレンドからランダム、14日被り回避）
   // midday/night枠は従来通り占い豆知識ツイート
   const isPromoSlot = slot === "evening";
-  const tweetText = isPromoSlot
-    ? await generateArticlePromoTweet()
-    : await generateTweetForSlot(slot);
+  let tweetText: string;
+  let promoKey: string | null = null;
+  if (isPromoSlot) {
+    const promo = await generateArticlePromoTweet();
+    tweetText = promo.text;
+    promoKey = promo.key;
+  } else {
+    tweetText = await generateTweetForSlot(slot);
+  }
 
   try {
     const result = await twitter.v2.tweet({ text: tweetText });
+    // 投稿成功後にのみクールダウンを記録（投稿失敗時に被り回避から除外されないようにする）
+    if (promoKey) {
+      await markPromoTargetPosted(promoKey);
+    }
     return NextResponse.json({
       success: true,
       tweetId: result.data.id,

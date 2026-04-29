@@ -36,7 +36,7 @@ function decodeEntities(text: string): string {
 function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
   const decoded = decodeEntities(text);
   const parts: React.ReactNode[] = [];
-  const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const linkPattern = /\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
   let lastIndex = 0;
   let found: RegExpExecArray | null = linkPattern.exec(decoded);
 
@@ -44,32 +44,43 @@ function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
     if (found.index > lastIndex) {
       parts.push(decoded.slice(lastIndex, found.index));
     }
-    const linkKey = `${keyPrefix}-link-${found.index}`;
-    const href = found[2];
-    const label = found[1];
-    const isInternal = href.startsWith("/");
-    if (isInternal) {
+    if (found[1] !== undefined) {
       parts.push(
-        <Link
-          key={linkKey}
-          href={href}
-          className="inline-block font-bold text-gold underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold/80 hover:decoration-gold"
+        <strong
+          key={`${keyPrefix}-b-${found.index}`}
+          className="font-bold text-warm"
         >
-          {label}
-        </Link>,
+          {found[1]}
+        </strong>,
       );
     } else {
-      parts.push(
-        <a
-          key={linkKey}
-          href={href}
-          rel="noopener noreferrer"
-          target="_blank"
-          className="inline-block font-bold text-gold underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold/80 hover:decoration-gold"
-        >
-          {label}
-        </a>,
-      );
+      const linkKey = `${keyPrefix}-link-${found.index}`;
+      const href = found[3];
+      const label = found[2];
+      const isInternal = href.startsWith("/");
+      if (isInternal) {
+        parts.push(
+          <Link
+            key={linkKey}
+            href={href}
+            className="inline-block font-bold text-gold underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold/80 hover:decoration-gold"
+          >
+            {label}
+          </Link>,
+        );
+      } else {
+        parts.push(
+          <a
+            key={linkKey}
+            href={href}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="inline-block font-bold text-gold underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold/80 hover:decoration-gold"
+          >
+            {label}
+          </a>,
+        );
+      }
     }
     lastIndex = found.index + found[0].length;
     found = linkPattern.exec(decoded);
@@ -220,6 +231,7 @@ export function renderArticleContent(content: string): React.ReactNode[] {
  */
 export function extractPlainText(content: string, maxLength = 1500): string {
   const plain = decodeEntities(content)
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
     .replace(/【([^】]+)】/g, "$1 ")
     .replace(/^(?:-|\u30fb)\s+/gm, "")

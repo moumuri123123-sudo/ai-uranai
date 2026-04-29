@@ -84,13 +84,20 @@ async function selectFreshPromoTarget(): Promise<PromoTarget> {
     const fresh = targets.filter((_, i) => !recent[i]);
     // 全部投稿済みなら全候補から（14日経過待たずに古いほど再利用される運用上はOK）
     const pool = fresh.length > 0 ? fresh : targets;
-    const chosen = pool[Math.floor(Math.random() * pool.length)];
-    // 投稿履歴を記録（TTL 14日）
-    await redis.set(`tweet:posted:${chosen.key}`, "1", { ex: TWEET_HISTORY_TTL_SEC });
-    return chosen;
+    return pool[Math.floor(Math.random() * pool.length)];
   } catch (err) {
     console.error("selectFreshPromoTarget redis error:", err);
     return targets[Math.floor(Math.random() * targets.length)];
+  }
+}
+
+// 投稿成功後に呼び出して14日のクールダウンを記録する
+export async function markPromoTargetPosted(key: string): Promise<void> {
+  if (!redis) return;
+  try {
+    await redis.set(`tweet:posted:${key}`, "1", { ex: TWEET_HISTORY_TTL_SEC });
+  } catch (err) {
+    console.error("markPromoTargetPosted redis error:", err);
   }
 }
 
@@ -98,13 +105,18 @@ function buildPromoTweet(target: PromoTarget, intro: string): string {
   return `${intro}\n\n${target.url}\n\n#占処 #占い`;
 }
 
-export async function generateArticlePromoTweet(): Promise<string> {
+export type ArticlePromoTweet = {
+  text: string;
+  key: string;
+};
+
+export async function generateArticlePromoTweet(): Promise<ArticlePromoTweet> {
   const target = await selectFreshPromoTarget();
 
   if (!ai) {
     // Gemini不可時は説明文をそのまま使ったテンプレ
     const intro = `🔮 占処コラム「${target.title}」\n\n${truncate(target.description, 60)}`;
-    return buildPromoTweet(target, ensureLength(intro, 100));
+    return { text: buildPromoTweet(target, ensureLength(intro, 100)), key: target.key };
   }
 
   try {
@@ -157,13 +169,13 @@ export async function generateArticlePromoTweet(): Promise<string> {
     if (intro.length < 10 || intro.length > 100) {
       // 想定外の長さならフォールバック
       const fallback = `🔮 占処コラム「${target.title}」\n\n${truncate(target.description, 60)}`;
-      return buildPromoTweet(target, ensureLength(fallback, 100));
+      return { text: buildPromoTweet(target, ensureLength(fallback, 100)), key: target.key };
     }
-    return buildPromoTweet(target, intro);
+    return { text: buildPromoTweet(target, intro), key: target.key };
   } catch (err) {
     console.error("generateArticlePromoTweet error:", err);
     const intro = `🔮 占処コラム「${target.title}」\n\n${truncate(target.description, 60)}`;
-    return buildPromoTweet(target, ensureLength(intro, 100));
+    return { text: buildPromoTweet(target, ensureLength(intro, 100)), key: target.key };
   }
 }
 
@@ -173,51 +185,6 @@ function truncate(s: string, n: number): string {
 
 function ensureLength(s: string, n: number): string {
   return s.length <= n ? s : truncate(s, n);
-}
-
-// 夢占いトレンド宣伝ツイート（4日に1回evening枠で差し替え）
-export function getDreamTrendsTweet(): string {
-  // URLに月クエリを付与することでXのOGPキャッシュを月次でバスト
-  const jst = getJstDate();
-  const y = jst.getUTCFullYear();
-  const m = String(jst.getUTCMonth() + 1).padStart(2, "0");
-  const monthQuery = `?m=${y}-${m}`;
-
-  const patterns = [
-    `🌙 今月みんなが見た夢は？
-
-占処の「夢占いトレンド」で
-匿名集計されたワード雲をチェック。
-気になる夢を見た人が他にも…？
-
-https://uranaidokoro.com/dream-trends${monthQuery}
-
-#夢占い #占処`,
-    `✨ 夢占いトレンド更新中
-
-あなたが見た夢、実は今月流行ってるかも？
-ワードをタップで即占い。
-
-https://uranaidokoro.com/dream-trends${monthQuery}
-
-#夢占い #AI占い`,
-    `🌙 「最近こんな夢を見た」
-を匿名で共有する占処の新機能。
-
-今月よく見られている夢ランキング、
-トップの夢が意外すぎるかも…🔮
-
-https://uranaidokoro.com/dream-trends${monthQuery}
-
-#占い #夢占い`,
-  ];
-  const idx = Math.floor(getDayOfYearJst() / 4) % patterns.length;
-  return patterns[idx];
-}
-
-// evening枠で夢占いトレンド宣伝を出す日かどうか
-export function shouldPromoteDreamTrends(): boolean {
-  return getDayOfYearJst() % 4 === 0;
 }
 
 // Geminiでスロット別のオリジナルツイート生成
