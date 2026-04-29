@@ -55,31 +55,16 @@ export default function Home() {
             タロット ・ 星座 ・ 相性 ・ MBTI&reg; ・ 夢占い ・ 数秘術
           </p>
 
-          {/* 主要CTA：タロット占いを推奨入口に据えつつ、メニュー全体への導線も残す */}
-          <div className="flex flex-col items-center gap-4">
-            <Link
-              href="/tarot"
-              aria-label="タロット占いを始める（おすすめの入口）"
-              className="hero-cta-button inline-flex h-14 items-center justify-center gap-2 rounded-full border-2 border-neon-red bg-neon-red/10 px-10 text-base font-bold tracking-wider text-neon-red shadow-[0_0_32px_rgba(255,45,85,0.35)] transition-all hover:bg-neon-red/20 hover:shadow-[0_0_48px_rgba(255,45,85,0.6)] motion-safe:animate-pulse"
-            >
-              タロット占いを始める
-              <span aria-hidden="true">&rarr;</span>
-            </Link>
+          {/* 主要CTA */}
+          <div className="flex flex-col items-center">
             <Link
               href="#fortune-menu"
-              className="text-xs tracking-[0.2em] text-gold/70 underline-offset-4 transition-colors hover:text-gold hover:underline sm:text-sm"
+              aria-label="占いを始める（占いメニューへ）"
+              className="hero-cta-button inline-flex h-14 items-center justify-center gap-2 rounded-full border-2 border-neon-red bg-neon-red/10 px-10 text-base font-bold tracking-wider text-neon-red shadow-[0_0_32px_rgba(255,45,85,0.35)] transition-all hover:bg-neon-red/20 hover:shadow-[0_0_48px_rgba(255,45,85,0.6)] motion-safe:animate-pulse"
             >
-              他の占いから選ぶ
+              占いを始める
+              <span aria-hidden="true">&rarr;</span>
             </Link>
-          </div>
-
-          {/* スクロールヒント（アニメーションはmotion-safe） */}
-          <div className="mt-10 flex flex-col items-center gap-1 text-[11px] tracking-[0.2em] text-gold/50 sm:text-xs">
-            <span>↓ スクロールして占いを選ぶ</span>
-            <span
-              aria-hidden="true"
-              className="block h-4 w-px bg-gradient-to-b from-gold/40 to-transparent motion-safe:animate-bounce"
-            />
           </div>
         </div>
       </section>
