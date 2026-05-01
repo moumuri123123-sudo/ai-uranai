@@ -1,8 +1,8 @@
-import { GoogleGenAI } from "@google/genai";
-import { TwitterApi } from "twitter-api-v2";
-import { NextResponse } from "next/server";
-import { formatRankingForTweet } from "@/lib/daily-ranking";
-import { isCronRequestAuthorized } from "@/lib/cron-auth";
+import { GoogleGenAI } from '@google/genai';
+import { TwitterApi } from 'twitter-api-v2';
+import { NextResponse } from 'next/server';
+import { formatRankingForTweet } from '@/lib/daily-ranking';
+import { isCronRequestAuthorized } from '@/lib/cron-auth';
 
 // Gemini生成に時間がかかる場合に備えて
 export const maxDuration = 30;
@@ -14,10 +14,10 @@ const geminiApiKey = process.env.GEMINI_API_KEY;
 const ai = geminiApiKey ? new GoogleGenAI({ apiKey: geminiApiKey }) : null;
 
 function getTwitterClient() {
-  const apiKey = (process.env.X_API_KEY || "").trim();
-  const apiSecret = (process.env.X_API_SECRET || "").trim();
-  const accessToken = (process.env.X_ACCESS_TOKEN || "").trim();
-  const accessTokenSecret = (process.env.X_ACCESS_TOKEN_SECRET || "").trim();
+  const apiKey = (process.env.X_API_KEY || '').trim();
+  const apiSecret = (process.env.X_API_SECRET || '').trim();
+  const accessToken = (process.env.X_ACCESS_TOKEN || '').trim();
+  const accessTokenSecret = (process.env.X_ACCESS_TOKEN_SECRET || '').trim();
 
   if (!apiKey || !apiSecret || !accessToken || !accessTokenSecret) {
     return null;
@@ -32,14 +32,12 @@ function getTwitterClient() {
 }
 
 // Geminiで1位の一言コメントを生成
-async function generateFirstPlaceComment(
-  zodiacName: string,
-): Promise<string | null> {
+async function generateFirstPlaceComment(zodiacName: string): Promise<string | null> {
   if (!ai) return null;
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: 'gemini-2.5-flash',
       contents: `${zodiacName}が1位の日の一言コメントを書いてください。`,
       config: {
         systemInstruction: `あなたは占処（うらないどころ）の占い師です。
@@ -74,19 +72,16 @@ export async function POST(req: Request) {
 }
 
 async function handleDailyPost(req: Request) {
-  const authHeader = req.headers.get("authorization");
+  const authHeader = req.headers.get('authorization');
   // CRON_SECRETが未設定、または timing-safe 比較で一致しない場合は401を返す
   // （以前は未設定時に認証がバイパスされる脆弱性、および非timing-safe比較の懸念あり）
   if (!isCronRequestAuthorized(authHeader, CRON_SECRET)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const twitter = getTwitterClient();
   if (!twitter) {
-    return NextResponse.json(
-      { error: "X API credentials not configured" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'X API credentials not configured' }, { status: 500 });
   }
 
   try {
@@ -102,10 +97,7 @@ async function handleDailyPost(req: Request) {
     const errorMessage = e instanceof Error ? e.message : String(e);
     const errorData = (e as { data?: unknown })?.data;
     // 詳細なエラー情報はサーバーログのみに記録し、クライアントには返さない
-    console.error("投稿エラー:", errorMessage, errorData);
-    return NextResponse.json(
-      { error: "Failed to post tweet" },
-      { status: 500 },
-    );
+    console.error('投稿エラー:', errorMessage, errorData);
+    return NextResponse.json({ error: 'Failed to post tweet' }, { status: 500 });
   }
 }

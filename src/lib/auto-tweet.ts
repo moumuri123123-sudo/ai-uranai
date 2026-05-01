@@ -1,14 +1,14 @@
-import { GoogleGenAI } from "@google/genai";
-import { blogArticles } from "@/lib/blog-data";
-import { redis } from "@/lib/redis";
+import { GoogleGenAI } from '@google/genai';
+import { blogArticles } from '@/lib/blog-data';
+import { redis } from '@/lib/redis';
 
-export type TweetSlot = "midday" | "evening" | "night";
+export type TweetSlot = 'midday' | 'evening' | 'night';
 
 const ai = process.env.GEMINI_API_KEY
   ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
   : null;
 
-const SITE_URL = "https://uranaidokoro.com";
+const SITE_URL = 'https://uranaidokoro.com';
 const TWEET_HISTORY_TTL_SEC = 14 * 24 * 60 * 60; // 14日
 
 // JSTでの日付取得
@@ -27,7 +27,7 @@ export function getDayOfYearJst(): number {
 
 export function getJstDateString(): string {
   const jst = getJstDate();
-  return `${jst.getUTCFullYear()}-${String(jst.getUTCMonth() + 1).padStart(2, "0")}-${String(jst.getUTCDate()).padStart(2, "0")}`;
+  return `${jst.getUTCFullYear()}-${String(jst.getUTCMonth() + 1).padStart(2, '0')}-${String(jst.getUTCDate()).padStart(2, '0')}`;
 }
 
 // =====================================================
@@ -56,12 +56,12 @@ function getPromoTargets(): PromoTarget[] {
   }));
   // 夢占いトレンドページもローテに含める（月次キャッシュバスト用クエリ付き）
   const jst = getJstDate();
-  const monthQuery = `?m=${jst.getUTCFullYear()}-${String(jst.getUTCMonth() + 1).padStart(2, "0")}`;
+  const monthQuery = `?m=${jst.getUTCFullYear()}-${String(jst.getUTCMonth() + 1).padStart(2, '0')}`;
   targets.push({
-    key: "page:dream-trends",
-    title: "夢占いトレンド",
+    key: 'page:dream-trends',
+    title: '夢占いトレンド',
     description:
-      "今月みんなが見た夢を匿名集計したワード雲とTOP20。気になる夢をクリックして即占える。",
+      '今月みんなが見た夢を匿名集計したワード雲とTOP20。気になる夢をクリックして即占える。',
     url: `${SITE_URL}/dream-trends${monthQuery}`,
   });
   return targets;
@@ -70,7 +70,7 @@ function getPromoTargets(): PromoTarget[] {
 async function selectFreshPromoTarget(): Promise<PromoTarget> {
   const targets = getPromoTargets();
   if (targets.length === 0) {
-    throw new Error("No promo targets available");
+    throw new Error('No promo targets available');
   }
 
   // Redisがない場合は単純ランダム
@@ -86,7 +86,7 @@ async function selectFreshPromoTarget(): Promise<PromoTarget> {
     const pool = fresh.length > 0 ? fresh : targets;
     return pool[Math.floor(Math.random() * pool.length)];
   } catch (err) {
-    console.error("selectFreshPromoTarget redis error:", err);
+    console.error('selectFreshPromoTarget redis error:', err);
     return targets[Math.floor(Math.random() * targets.length)];
   }
 }
@@ -95,9 +95,9 @@ async function selectFreshPromoTarget(): Promise<PromoTarget> {
 export async function markPromoTargetPosted(key: string): Promise<void> {
   if (!redis) return;
   try {
-    await redis.set(`tweet:posted:${key}`, "1", { ex: TWEET_HISTORY_TTL_SEC });
+    await redis.set(`tweet:posted:${key}`, '1', { ex: TWEET_HISTORY_TTL_SEC });
   } catch (err) {
-    console.error("markPromoTargetPosted redis error:", err);
+    console.error('markPromoTargetPosted redis error:', err);
   }
 }
 
@@ -121,7 +121,7 @@ export async function generateArticlePromoTweet(): Promise<ArticlePromoTweet> {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: 'gemini-2.5-flash',
       contents: `紹介する記事タイトル: ${target.title}
 記事の概要: ${target.description}
 
@@ -165,7 +165,7 @@ export async function generateArticlePromoTweet(): Promise<ArticlePromoTweet> {
       },
     });
 
-    const intro = response.text?.trim() ?? "";
+    const intro = response.text?.trim() ?? '';
     if (intro.length < 10 || intro.length > 100) {
       // 想定外の長さならフォールバック
       const fallback = `🔮 占処コラム「${target.title}」\n\n${truncate(target.description, 60)}`;
@@ -173,14 +173,14 @@ export async function generateArticlePromoTweet(): Promise<ArticlePromoTweet> {
     }
     return { text: buildPromoTweet(target, intro), key: target.key };
   } catch (err) {
-    console.error("generateArticlePromoTweet error:", err);
+    console.error('generateArticlePromoTweet error:', err);
     const intro = `🔮 占処コラム「${target.title}」\n\n${truncate(target.description, 60)}`;
     return { text: buildPromoTweet(target, ensureLength(intro, 100)), key: target.key };
   }
 }
 
 function truncate(s: string, n: number): string {
-  return s.length <= n ? s : s.slice(0, n - 1) + "…";
+  return s.length <= n ? s : s.slice(0, n - 1) + '…';
 }
 
 function ensureLength(s: string, n: number): string {
@@ -194,41 +194,38 @@ export async function generateTweetForSlot(slot: TweetSlot): Promise<string> {
     return getFallbackTweet(slot);
   }
 
-  const slotConfig: Record<
-    TweetSlot,
-    { theme: string; style: string; topics: string[] }
-  > = {
+  const slotConfig: Record<TweetSlot, { theme: string; style: string; topics: string[] }> = {
     midday: {
-      theme: "お昼に読むちょっとした占い豆知識",
-      style: "物知りな友達が雑談ついでに教えてくれるトーン、会話的で温かい",
+      theme: 'お昼に読むちょっとした占い豆知識',
+      style: '物知りな友達が雑談ついでに教えてくれるトーン、会話的で温かい',
       topics: [
-        "タロットカードの意外な由来や誤解されがちな意味",
-        "数秘術で使う数字の面白い意味",
-        "星座の元になったギリシャ神話のちょっとした話",
-        "色や食べ物と運気の結びつきにまつわる昔からの言い伝え",
-        "誕生石にまつわる豆知識",
+        'タロットカードの意外な由来や誤解されがちな意味',
+        '数秘術で使う数字の面白い意味',
+        '星座の元になったギリシャ神話のちょっとした話',
+        '色や食べ物と運気の結びつきにまつわる昔からの言い伝え',
+        '誕生石にまつわる豆知識',
       ],
     },
     evening: {
-      theme: "夕方にゆるく読める占いの雑学",
-      style: "一日の終わりに「へえ」と思える軽い語り口、知ってたら得な温度感",
+      theme: '夕方にゆるく読める占いの雑学',
+      style: '一日の終わりに「へえ」と思える軽い語り口、知ってたら得な温度感',
       topics: [
-        "夢占いで昔から語られてきたシンボルの本当の意味",
-        "鏡が割れる・黒猫など身近な迷信のルーツ",
-        "東洋占い（九星気学・四柱推命）のわかりやすい豆知識",
-        "手相の有名な線にまつわる誤解と本当の見方",
-        "タロットの大アルカナの意外なエピソード",
+        '夢占いで昔から語られてきたシンボルの本当の意味',
+        '鏡が割れる・黒猫など身近な迷信のルーツ',
+        '東洋占い（九星気学・四柱推命）のわかりやすい豆知識',
+        '手相の有名な線にまつわる誤解と本当の見方',
+        'タロットの大アルカナの意外なエピソード',
       ],
     },
     night: {
-      theme: "寝る前にほっこりする占い小話",
-      style: "落ち着いた深夜トーン、押し付けがましくない語りかけ、温度低めで温かい",
+      theme: '寝る前にほっこりする占い小話',
+      style: '落ち着いた深夜トーン、押し付けがましくない語りかけ、温度低めで温かい',
       topics: [
-        "月の満ち欠けと昔からの習わしの話",
-        "夢と占いの古くからの関係",
-        "数秘術で見る「休む」意味を持つ数字の話",
-        "古代文明が夜空の星で何を占っていたか",
-        "寝る前に気が向いたら試したい占い的なおまじないの由来",
+        '月の満ち欠けと昔からの習わしの話',
+        '夢と占いの古くからの関係',
+        '数秘術で見る「休む」意味を持つ数字の話',
+        '古代文明が夜空の星で何を占っていたか',
+        '寝る前に気が向いたら試したい占い的なおまじないの由来',
       ],
     },
   };
@@ -240,7 +237,7 @@ export async function generateTweetForSlot(slot: TweetSlot): Promise<string> {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: 'gemini-2.5-flash',
       contents: `テーマ: ${cfg.theme}
 今日の話題: ${topic}
 本日の日付: ${getJstDateString()}
@@ -306,7 +303,7 @@ export async function generateTweetForSlot(slot: TweetSlot): Promise<string> {
     }
     return getFallbackTweet(slot);
   } catch (err) {
-    console.error("generateTweetForSlot error:", err);
+    console.error('generateTweetForSlot error:', err);
     return getFallbackTweet(slot);
   }
 }
@@ -315,19 +312,19 @@ export async function generateTweetForSlot(slot: TweetSlot): Promise<string> {
 function getFallbackTweet(slot: TweetSlot): string {
   const fallbacks: Record<TweetSlot, string[]> = {
     midday: [
-      "タロットの「愚者」は無謀なキャラに見えて、実は『何も決まってない真っ白な可能性』を表してるカードだったりするんだよね。人生の始まりを示す一枚です。\n\n#占処 #占い",
-      "誕生石のルーツは旧約聖書に出てくる胸当ての12の宝石って言われてて、意外と宗教的な背景から始まってるらしいですよ。\n\n#占処 #占い",
-      "数秘術で自分の誕生日を一桁まで足した数を「ライフパスナンバー」って呼ぶんだけど、これがけっこう性格を言い当ててて怖いんです。\n\n#占処 #占い",
+      'タロットの「愚者」は無謀なキャラに見えて、実は『何も決まってない真っ白な可能性』を表してるカードだったりするんだよね。人生の始まりを示す一枚です。\n\n#占処 #占い',
+      '誕生石のルーツは旧約聖書に出てくる胸当ての12の宝石って言われてて、意外と宗教的な背景から始まってるらしいですよ。\n\n#占処 #占い',
+      '数秘術で自分の誕生日を一桁まで足した数を「ライフパスナンバー」って呼ぶんだけど、これがけっこう性格を言い当ててて怖いんです。\n\n#占処 #占い',
     ],
     evening: [
-      "夢で歯が抜ける現象、日本でも海外でも昔から「身近な変化の前触れ」って語られてきたモチーフで、地味に世界中で似た解釈されてるんですよね。\n\n#占処 #占い",
-      "「鏡が割れると7年不幸になる」って迷信、ルーツは古代ローマで当時の鏡は魂が戻るのに7年かかると考えられてたからって言われてます。\n\n#占処 #占い",
-      "手相の生命線、短くても寿命が短いって意味じゃないんです。どちらかと言うと『エネルギーの使い方』を表す線だったりします。\n\n#占処 #占い",
+      '夢で歯が抜ける現象、日本でも海外でも昔から「身近な変化の前触れ」って語られてきたモチーフで、地味に世界中で似た解釈されてるんですよね。\n\n#占処 #占い',
+      '「鏡が割れると7年不幸になる」って迷信、ルーツは古代ローマで当時の鏡は魂が戻るのに7年かかると考えられてたからって言われてます。\n\n#占処 #占い',
+      '手相の生命線、短くても寿命が短いって意味じゃないんです。どちらかと言うと『エネルギーの使い方』を表す線だったりします。\n\n#占処 #占い',
     ],
     night: [
-      "満月の夜に眠りが浅くなる人、実は昔から世界中で報告されてて、占星術でも「月が感情を揺らす」と言われてきたんですよね。\n\n#占処 #占い",
-      "数秘術で「9」は一つのサイクルの終わりを示す数字で、区切りを意識するのにちょうどいいタイミングと言われてるんです。\n\n#占処 #占い",
-      "古代エジプトの人たちは夜空の星の並びで農作業の時期まで占ってたらしくて、占星術って元々すごく実用的なものだったんだよね。\n\n#占処 #占い",
+      '満月の夜に眠りが浅くなる人、実は昔から世界中で報告されてて、占星術でも「月が感情を揺らす」と言われてきたんですよね。\n\n#占処 #占い',
+      '数秘術で「9」は一つのサイクルの終わりを示す数字で、区切りを意識するのにちょうどいいタイミングと言われてるんです。\n\n#占処 #占い',
+      '古代エジプトの人たちは夜空の星の並びで農作業の時期まで占ってたらしくて、占星術って元々すごく実用的なものだったんだよね。\n\n#占処 #占い',
     ],
   };
   const list = fallbacks[slot];

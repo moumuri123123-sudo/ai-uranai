@@ -1,16 +1,16 @@
-import type { FortuneResultData, FortuneType } from "./share-utils";
-import { fortuneTypeNames, fortuneTypeIcons } from "./share-utils";
+import type { FortuneResultData, FortuneType } from './share-utils';
+import { fortuneTypeNames, fortuneTypeIcons } from './share-utils';
 
 const WIDTH = 1200;
 const HEIGHT = 630;
 
 const accentColors: Record<FortuneType, string> = {
-  tarot: "#ff2d55",
-  zodiac: "#ffd700",
-  compatibility: "#ff69b4",
-  mbti: "#00ddff",
-  dream: "#884898",
-  numerology: "#f0a030",
+  tarot: '#ff2d55',
+  zodiac: '#ffd700',
+  compatibility: '#ff69b4',
+  mbti: '#00ddff',
+  dream: '#884898',
+  numerology: '#f0a030',
 };
 
 function hexToRgba(hex: string, alpha: number): string {
@@ -20,17 +20,15 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-export async function generateResultCardImage(
-  data: FortuneResultData
-): Promise<Blob> {
+export async function generateResultCardImage(data: FortuneResultData): Promise<Blob> {
   await document.fonts.ready;
 
-  const canvas = document.createElement("canvas");
+  const canvas = document.createElement('canvas');
   canvas.width = WIDTH;
   canvas.height = HEIGHT;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   if (!ctx) {
-    throw new Error("Canvas 2D context unavailable (private browsing or unsupported environment)");
+    throw new Error('Canvas 2D context unavailable (private browsing or unsupported environment)');
   }
 
   const accent = accentColors[data.fortuneType];
@@ -39,9 +37,9 @@ export async function generateResultCardImage(
 
   // 背景グラデーション
   const gradient = ctx.createLinearGradient(0, 0, WIDTH, HEIGHT);
-  gradient.addColorStop(0, "#0a0408");
-  gradient.addColorStop(0.5, "#1a0a12");
-  gradient.addColorStop(1, "#0a0408");
+  gradient.addColorStop(0, '#0a0408');
+  gradient.addColorStop(0.5, '#1a0a12');
+  gradient.addColorStop(1, '#0a0408');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -73,12 +71,12 @@ export async function generateResultCardImage(
 
   ctx.fillStyle = accent;
   ctx.font = '32px "Yuji Syuku", serif';
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
   ctx.fillText(icon, WIDTH / 2, iconY);
 
   // 占いタイプ名
-  ctx.fillStyle = "rgba(245,230,208,0.8)";
+  ctx.fillStyle = 'rgba(245,230,208,0.8)';
   ctx.font = '24px "Zen Maru Gothic", sans-serif';
   ctx.fillText(typeName, WIDTH / 2, iconY + 64);
 
@@ -96,14 +94,14 @@ export async function generateResultCardImage(
   ctx.stroke();
 
   // 星マーク
-  ctx.fillStyle = "rgba(255,215,0,0.5)";
-  ctx.font = "18px serif";
-  ctx.fillText("\u2726", WIDTH / 2, lineY);
+  ctx.fillStyle = 'rgba(255,215,0,0.5)';
+  ctx.font = '18px serif';
+  ctx.fillText('\u2726', WIDTH / 2, lineY);
 
   // メインラベル（カード名など）
   const labelY = lineY + 56;
-  ctx.fillStyle = "#ffd700";
-  ctx.shadowColor = "rgba(255,215,0,0.5)";
+  ctx.fillStyle = '#ffd700';
+  ctx.shadowColor = 'rgba(255,215,0,0.5)';
   ctx.shadowBlur = 40;
   ctx.font = '56px "Shippori Mincho B1", serif';
   ctx.fillText(data.label.slice(0, 30), WIDTH / 2, labelY);
@@ -111,7 +109,7 @@ export async function generateResultCardImage(
 
   // 要約テキスト
   if (data.summary) {
-    ctx.fillStyle = "rgba(245,230,208,0.75)";
+    ctx.fillStyle = 'rgba(245,230,208,0.75)';
     ctx.font = '20px "Zen Maru Gothic", sans-serif';
     const lines = wrapText(ctx, data.summary.slice(0, 80), 680);
     lines.forEach((line, i) => {
@@ -132,30 +130,27 @@ export async function generateResultCardImage(
   ctx.lineTo(WIDTH / 2 + 100, bottomLineY);
   ctx.stroke();
 
-  ctx.fillStyle = "rgba(255,215,0,0.4)";
-  ctx.font = "14px serif";
-  ctx.fillText("\u2726", WIDTH / 2, bottomLineY);
+  ctx.fillStyle = 'rgba(255,215,0,0.4)';
+  ctx.font = '14px serif';
+  ctx.fillText('\u2726', WIDTH / 2, bottomLineY);
 
   // サイト名
-  ctx.fillStyle = "rgba(255,215,0,0.4)";
+  ctx.fillStyle = 'rgba(255,215,0,0.4)';
   ctx.font = '16px "Zen Maru Gothic", sans-serif';
-  ctx.letterSpacing = "3px";
-  ctx.fillText("占処 ── AI占い師", WIDTH / 2, HEIGHT - 50);
+  ctx.letterSpacing = '3px';
+  ctx.fillText('占処 ── AI占い師', WIDTH / 2, HEIGHT - 50);
 
   return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => {
-        if (blob) resolve(blob);
-        else reject(new Error("画像の生成に失敗しました"));
-      },
-      "image/png"
-    );
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob);
+      else reject(new Error('画像の生成に失敗しました'));
+    }, 'image/png');
   });
 }
 
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   a.href = url;
   a.download = filename;
   document.body.appendChild(a);
@@ -170,7 +165,7 @@ function roundRect(
   y: number,
   w: number,
   h: number,
-  r: number
+  r: number,
 ) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -185,13 +180,9 @@ function roundRect(
   ctx.closePath();
 }
 
-function wrapText(
-  ctx: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number
-): string[] {
+function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const lines: string[] = [];
-  let current = "";
+  let current = '';
 
   for (const char of text) {
     const test = current + char;

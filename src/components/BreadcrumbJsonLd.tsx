@@ -1,5 +1,5 @@
-import JsonLd from "./JsonLd";
-import { breadcrumbJsonLd } from "@/lib/jsonld";
+import JsonLd from './JsonLd';
+import { breadcrumbJsonLd } from '@/lib/jsonld';
 
 type Props = {
   id: string;

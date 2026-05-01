@@ -11,11 +11,11 @@
 
 3つのパッケージを一括実装する。
 
-| パック | 内容 | 工数目安 |
-|---|---|---|
-| A | 技術SEO即効パック | 1〜2日 |
-| B | コンテンツ運用強化パック | 3〜5日＋継続運用 |
-| C | 再訪導線パック（PWA・ブックマーク・通知導線のみ。LINEはスコープ外） | 1〜2日 |
+| パック | 内容                                                                | 工数目安         |
+| ------ | ------------------------------------------------------------------- | ---------------- |
+| A      | 技術SEO即効パック                                                   | 1〜2日           |
+| B      | コンテンツ運用強化パック                                            | 3〜5日＋継続運用 |
+| C      | 再訪導線パック（PWA・ブックマーク・通知導線のみ。LINEはスコープ外） | 1〜2日           |
 
 合計で5〜9日相当。段階リリース可。
 
@@ -24,6 +24,7 @@
 ## A案：技術SEO即効パック
 
 ### A-1. `src/app/robots.ts` の新規作成
+
 - Next.js App Router標準の `robots.ts` を作成
 - `disallow`: `/api/*`, `/share/*`, `/history`, `/api/og-result`
 - `allow`: `/`
@@ -31,9 +32,11 @@
 - User-agent別設定は不要（デフォルト1つ）
 
 ### A-2. 占い6ページのmetadata強化
+
 対象: `/tarot` `/zodiac` `/dream` `/love` `/name` `/birth`（実際のパスはコード確認時に確定）
 
 各ページに以下を追加：
+
 - `openGraph.images`: 占い種別ごとに専用画像
 - `twitter.card: 'summary_large_image'`
 - `twitter.images`: OG画像と同URL
@@ -41,6 +44,7 @@
 **OG画像の生成方法**: 静的画像を`public/og/{type}.png`に6枚配置する方式とする（動的生成は`og-result`で既に実装済みのため、占いトップページ用は静的でキャッシュ効率を優先）。1200x630、占処のレトロネオンデザインに統一。
 
 ### A-3. FAQPage JSON-LD追加
+
 対象: 占い6ページ＋`/about`＋主要ブログ記事（全52記事は工数過多なのでPV上位10記事を想定、実装時に確定）
 
 各占いページには「5問程度」のFAQを本文に含め、同内容を `FAQPage` schema として出力。JSON-LDとUI表示は**同じデータソース**を使う（二重管理回避）。実装形:
@@ -58,18 +62,22 @@ export const tarotFaqs = [
 - 両方とも同配列を参照
 
 ### A-4. Organization JSON-LD拡充
+
 `src/app/layout.tsx` の既存 Organization スキーマに以下を追加：
+
 - `logo`: `https://uranaidokoro.com/icon.png` 相当
 - `sameAs`: X公式アカウントURL、ブログRSSなど
 - `foundingDate`: サイト公開日
 - `name`: "占処"
 
 ### A-5. canonical URL絶対化の統一
+
 - 現状相対パスで指定されている箇所（share系/history系）を全て `metadataBase` ベースの絶対URLに修正
 - 確認対象: `src/app/**/page.tsx` の `alternates.canonical` 設定全て
 - 未設定ページには追加
 
 ### A-6. パンくず強化（JSON-LD `BreadcrumbList`）
+
 - 既存のUI上の記号`/`表記はそのまま活用
 - 全ページ（ホーム以外）で `BreadcrumbList` schema を追加
 - 共通コンポーネント `<BreadcrumbJsonLd segments={[...]} />` を新設
@@ -79,12 +87,14 @@ export const tarotFaqs = [
 ## B案：コンテンツ運用強化パック
 
 ### B-1. 記事内CTA増強
+
 - 新規コンポーネント `<OracleCTA type="tarot" position="middle|bottom" />`
 - 各ブログ記事のfrontmatterに `primaryOracle: tarot|zodiac|dream|love|name|birth` を追記
 - MDX/Markdown側で中盤と最下部に自動挿入
 - 中盤CTAは「文字数の50%地点」または「3つ目のH2の直前」で挿入（MDXプラグイン側で判定）
 
 ### B-2. 関連記事アルゴリズム改善
+
 - 現状: 3記事固定表示
 - 新: タグ＋カテゴリ重み付けで最大6記事
 - スコア式: `score = (共通タグ数 * 3) + (同カテゴリ ? 1 : 0) + (最近180日以内 ? 0.5 : 0)`
@@ -92,11 +102,13 @@ export const tarotFaqs = [
 - frontmatter未整備の記事には一括スクリプトで`tags: []`を最低1つ設定
 
 ### B-3. 占いページFAQ UIセクション
+
 - A-3 のFAQデータソースを使い、アコーディオンUIで表示
 - WCAG 2.1 AA準拠: `<button aria-expanded>` パターン、キーボード操作、`prefers-reduced-motion`対応
 - 占い6ページ＋`/about`
 
 ### B-4. 新記事運用テンプレ化
+
 - `src/content/_template.md` を作成
 - 推奨構成: H1（タイトル）→ 導入100字 → H2×3〜5 → CTA → H2 まとめ → 関連リンク
 - 目安字数: 1500-2000字
@@ -105,6 +117,7 @@ export const tarotFaqs = [
   - 補助スクリプト `scripts/draft-article.ts`（Gemini呼び出し、テンプレ注入、Markdown出力）も作成
 
 ### B-5. 既存記事の内部リンク一括増設
+
 - `scripts/add-internal-links.ts` で52記事を走査
 - キーワード→占いページURLのマッピング辞書を使用
 - 1記事あたり最大3箇所まで（過剰SEO回避）
@@ -116,6 +129,7 @@ export const tarotFaqs = [
 ## C案：再訪導線パック（LINE関連はスコープ外）
 
 ### C-1. PWA化（=元セクション3.3）
+
 - `public/manifest.json` を新規作成
   - `name`: "占処（うらないどころ）"
   - `short_name`: "占処"
@@ -133,6 +147,7 @@ export const tarotFaqs = [
   - 閉じたら7日間非表示（localStorage記録）
 
 ### C-2. ブックマーク誘導の軽量導線（=元セクション3.4）
+
 - 占い結果画面下部に「また明日の運勢を逃さないために」セクション追加
 - 3択UIの小カード：
   - 📖 ブックマーク（Ctrl+D案内、iOS/Android別々の手順）
@@ -141,6 +156,7 @@ export const tarotFaqs = [
 - デザインは既存シェアボタンと統一
 
 ### C-3. 通知導線整理（=元セクション3.5）
+
 - 全ページ共通フッターに以下のリンクを集約表示：
   - 「毎日の運勢 →」`/daily`（もしくは該当パス）
   - 「星座ランキング →」`/ranking`

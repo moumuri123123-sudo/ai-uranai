@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { blogArticles, getArticleBySlug } from "@/lib/blog-data";
-import AdBanner from "@/components/AdBanner";
-import AffiliateCTA from "@/components/AffiliateCTA";
-import FortuneIcon from "@/components/FortuneIcon";
-import RelatedArticles from "@/components/RelatedArticles";
-import { extractPlainText, renderArticleContent } from "@/lib/markdown";
-import { articleJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { blogArticles, getArticleBySlug } from '@/lib/blog-data';
+import AdBanner from '@/components/AdBanner';
+import AffiliateCTA from '@/components/AffiliateCTA';
+import FortuneIcon from '@/components/FortuneIcon';
+import RelatedArticles from '@/components/RelatedArticles';
+import { extractPlainText, renderArticleContent } from '@/lib/markdown';
+import { articleJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -17,36 +17,51 @@ type Props = {
 type FortuneLink = {
   label: string;
   path: string;
-  iconType: "tarot" | "zodiac" | "compatibility" | "mbti" | "dream" | "numerology";
+  iconType: 'tarot' | 'zodiac' | 'compatibility' | 'mbti' | 'dream' | 'numerology';
   desc: string;
 };
 
 const FORTUNE_LINKS: FortuneLink[] = [
-  { label: "タロット占い", path: "/tarot", iconType: "tarot", desc: "78枚のカードからあなたの運命を読み解く" },
-  { label: "星座占い", path: "/zodiac", iconType: "zodiac", desc: "12星座それぞれの今日の運勢" },
-  { label: "相性占い", path: "/compatibility", iconType: "compatibility", desc: "二人の相性をAIが鑑定" },
-  { label: "MBTI診断", path: "/mbti", iconType: "mbti", desc: "16タイプの性格診断" },
-  { label: "夢占い", path: "/dream", iconType: "dream", desc: "見た夢の深層心理を解釈" },
-  { label: "数秘術", path: "/numerology", iconType: "numerology", desc: "生年月日に宿る運命の数字" },
+  {
+    label: 'タロット占い',
+    path: '/tarot',
+    iconType: 'tarot',
+    desc: '78枚のカードからあなたの運命を読み解く',
+  },
+  { label: '星座占い', path: '/zodiac', iconType: 'zodiac', desc: '12星座それぞれの今日の運勢' },
+  {
+    label: '相性占い',
+    path: '/compatibility',
+    iconType: 'compatibility',
+    desc: '二人の相性をAIが鑑定',
+  },
+  { label: 'MBTI診断', path: '/mbti', iconType: 'mbti', desc: '16タイプの性格診断' },
+  { label: '夢占い', path: '/dream', iconType: 'dream', desc: '見た夢の深層心理を解釈' },
+  {
+    label: '数秘術',
+    path: '/numerology',
+    iconType: 'numerology',
+    desc: '生年月日に宿る運命の数字',
+  },
 ];
 
 const CATEGORY_FORTUNE_MAP: Record<string, string> = {
-  tarot: "/tarot",
-  zodiac: "/zodiac",
-  compatibility: "/compatibility",
-  mbti: "/mbti",
-  dream: "/dream",
-  numerology: "/numerology",
+  tarot: '/tarot',
+  zodiac: '/zodiac',
+  compatibility: '/compatibility',
+  mbti: '/mbti',
+  dream: '/dream',
+  numerology: '/numerology',
 };
 
 const CATEGORY_LINKS: Record<string, { label: string; path: string }> = {
-  tarot: { label: "タロット占いをする", path: "/tarot" },
-  zodiac: { label: "星座占いをする", path: "/zodiac" },
-  compatibility: { label: "相性占いをする", path: "/compatibility" },
-  mbti: { label: "MBTI診断をする", path: "/mbti" },
-  dream: { label: "夢占いをする", path: "/dream" },
-  numerology: { label: "数秘術をする", path: "/numerology" },
-  general: { label: "占いを始める", path: "/" },
+  tarot: { label: 'タロット占いをする', path: '/tarot' },
+  zodiac: { label: '星座占いをする', path: '/zodiac' },
+  compatibility: { label: '相性占いをする', path: '/compatibility' },
+  mbti: { label: 'MBTI診断をする', path: '/mbti' },
+  dream: { label: '夢占いをする', path: '/dream' },
+  numerology: { label: '数秘術をする', path: '/numerology' },
+  general: { label: '占いを始める', path: '/' },
 };
 
 export async function generateStaticParams() {
@@ -58,7 +73,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = getArticleBySlug(slug);
-  if (!article) return { title: "記事が見つかりません" };
+  if (!article) return { title: '記事が見つかりません' };
   // 記事ごとのOGPは同ディレクトリの opengraph-image.tsx で自動生成される。
   // JSON-LD や Twitter の明示画像URLとしてこのパスを指す。
   const articleOgImage = `https://uranaidokoro.com/blog/${article.slug}/opengraph-image`;
@@ -69,12 +84,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `https://uranaidokoro.com/blog/${article.slug}`,
     },
     openGraph: {
-      type: "article",
+      type: 'article',
       title: `${article.title} | 占処 AI占い`,
       description: article.description,
       url: `/blog/${article.slug}`,
-      siteName: "占処 AI占い",
-      locale: "ja_JP",
+      siteName: '占処 AI占い',
+      locale: 'ja_JP',
       publishedTime: article.publishedAt,
       modifiedTime: article.updatedAt,
       // 明示指定しなくても opengraph-image.tsx が優先されるが、
@@ -89,7 +104,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ],
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title: `${article.title} | 占処 AI占い`,
       description: article.description,
       images: [articleOgImage],
@@ -115,10 +130,10 @@ export default async function BlogDetailPage({ params }: Props) {
       updatedAt: article.updatedAt,
       image: articleOgImage,
       articleBody: articleBodyText,
-      authorName: "占処AI編集部",
+      authorName: '占処AI編集部',
     }),
     breadcrumbJsonLd([
-      { name: "コラム", path: "/blog" },
+      { name: 'コラム', path: '/blog' },
       { name: article.title, path: `/blog/${article.slug}` },
     ]),
   ]);
@@ -129,16 +144,10 @@ export default async function BlogDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#0a0408]">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdPayload }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdPayload }} />
       <div className="mx-auto max-w-3xl px-4 py-12">
-        <div className="mb-6 text-sm text-muted">
-          <Link
-            href="/blog"
-            className="transition-colors hover:text-gold"
-          >
+        <div className="text-muted mb-6 text-sm">
+          <Link href="/blog" className="hover:text-gold transition-colors">
             コラム
           </Link>
           <span className="mx-2">/</span>
@@ -146,7 +155,7 @@ export default async function BlogDetailPage({ params }: Props) {
         </div>
 
         <article>
-          <div className="relative mb-8 aspect-video w-full overflow-hidden rounded-2xl border border-border bg-[#0a0408] shadow-lg shadow-neon-red/10">
+          <div className="border-border shadow-neon-red/10 relative mb-8 aspect-video w-full overflow-hidden rounded-2xl border bg-[#0a0408] shadow-lg">
             <Image
               src={`/images/blog/${article.slug}.webp`}
               alt={article.title}
@@ -158,20 +167,18 @@ export default async function BlogDetailPage({ params }: Props) {
           </div>
 
           <div className="mb-8 text-center">
-            {article.category !== "general" ? (
+            {article.category !== 'general' ? (
               <FortuneIcon type={article.category} size="lg" />
             ) : (
               <FortuneIcon type="ai" size="lg" />
             )}
-            <h1 className="font-mincho mt-4 text-2xl font-bold text-gold sm:text-3xl">
+            <h1 className="font-mincho text-gold mt-4 text-2xl font-bold sm:text-3xl">
               {article.title}
             </h1>
-            <p className="mt-3 text-sm text-muted">
-              {article.publishedAt} 公開
-            </p>
+            <p className="text-muted mt-3 text-sm">{article.publishedAt} 公開</p>
           </div>
 
-          <div className="prose-like rounded-2xl border border-border bg-surface p-6 sm:p-8">
+          <div className="prose-like border-border bg-surface rounded-2xl border p-6 sm:p-8">
             {renderArticleContent(article.content)}
           </div>
         </article>
@@ -179,7 +186,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <div className="mt-8 text-center">
           <Link
             href={categoryLink.path}
-            className="inline-block rounded-full border-2 border-gold bg-transparent px-6 py-2 text-sm text-gold transition-all hover:bg-gold/10"
+            className="border-gold text-gold hover:bg-gold/10 inline-block rounded-full border-2 bg-transparent px-6 py-2 text-sm transition-all"
           >
             {categoryLink.label} &rarr;
           </Link>
@@ -201,7 +208,7 @@ export default async function BlogDetailPage({ params }: Props) {
         {/* 他の占いを試す */}
         {otherFortunes.length > 0 && (
           <section className="mt-12">
-            <h2 className="font-mincho mb-6 text-center text-lg font-bold text-gold">
+            <h2 className="font-mincho text-gold mb-6 text-center text-lg font-bold">
               他の占いを試す
             </h2>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -209,18 +216,16 @@ export default async function BlogDetailPage({ params }: Props) {
                 <Link
                   key={f.path}
                   href={f.path}
-                  className="group flex items-center gap-3 rounded-2xl border border-border bg-surface/80 p-4 transition-all hover:border-gold/50 hover:bg-surface"
+                  className="group border-border bg-surface/80 hover:border-gold/50 hover:bg-surface flex items-center gap-3 rounded-2xl border p-4 transition-all"
                 >
                   <FortuneIcon type={f.iconType} size="sm" />
                   <div className="flex-1">
-                    <div className="text-sm font-bold text-foreground/90 transition-colors group-hover:text-gold">
+                    <div className="text-foreground/90 group-hover:text-gold text-sm font-bold transition-colors">
                       {f.label}
                     </div>
-                    <div className="text-xs text-muted">{f.desc}</div>
+                    <div className="text-muted text-xs">{f.desc}</div>
                   </div>
-                  <span className="text-sm text-gold/60 group-hover:text-gold">
-                    &rarr;
-                  </span>
+                  <span className="text-gold/60 group-hover:text-gold text-sm">&rarr;</span>
                 </Link>
               ))}
             </div>
@@ -230,7 +235,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <div className="mt-10 text-center">
           <Link
             href="/blog"
-            className="inline-block text-sm text-muted transition-colors hover:text-gold"
+            className="text-muted hover:text-gold inline-block text-sm transition-colors"
           >
             &larr; コラム一覧に戻る
           </Link>

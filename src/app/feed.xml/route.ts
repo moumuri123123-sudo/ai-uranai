@@ -1,4 +1,4 @@
-import { blogArticles } from "@/lib/blog-data";
+import { blogArticles } from '@/lib/blog-data';
 
 // publishedAtをパースし、無効ならフォールバック日付を返す
 function safeParseDate(raw: string, fallback: Date, slug: string): Date {
@@ -16,13 +16,13 @@ function safeParseDate(raw: string, fallback: Date, slug: string): Date {
 }
 
 export async function GET() {
-  const baseUrl = "https://uranaidokoro.com";
+  const baseUrl = 'https://uranaidokoro.com';
   const now = new Date();
 
   const sorted = [...blogArticles].sort(
     (a, b) =>
       safeParseDate(b.publishedAt, now, b.slug).getTime() -
-      safeParseDate(a.publishedAt, now, a.slug).getTime()
+      safeParseDate(a.publishedAt, now, a.slug).getTime(),
   );
 
   const items = sorted
@@ -35,9 +35,9 @@ export async function GET() {
       <description><![CDATA[${article.description}]]></description>
       <pubDate>${safeParseDate(article.publishedAt, now, article.slug).toUTCString()}</pubDate>
       <category>${article.category}</category>
-    </item>`
+    </item>`,
     )
-    .join("\n");
+    .join('\n');
 
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -54,8 +54,8 @@ ${items}
 
   return new Response(feed, {
     headers: {
-      "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
     },
   });
 }

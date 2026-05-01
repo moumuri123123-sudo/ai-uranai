@@ -1,5 +1,5 @@
-import { Ratelimit } from "@upstash/ratelimit";
-import { redis } from "./redis";
+import { Ratelimit } from '@upstash/ratelimit';
+import { redis } from './redis';
 
 export type RateLimitResult = {
   allowed: boolean;
@@ -16,18 +16,18 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
 const minuteLimiter = redis
   ? new Ratelimit({
       redis,
-      limiter: Ratelimit.slidingWindow(RATE_LIMIT_MAX, "1 m"),
+      limiter: Ratelimit.slidingWindow(RATE_LIMIT_MAX, '1 m'),
       analytics: false,
-      prefix: "uranai:min",
+      prefix: 'uranai:min',
     })
   : null;
 
 const dailyLimiter = redis
   ? new Ratelimit({
       redis,
-      limiter: Ratelimit.slidingWindow(DAILY_LIMIT_MAX, "1 d"),
+      limiter: Ratelimit.slidingWindow(DAILY_LIMIT_MAX, '1 d'),
       analytics: false,
-      prefix: "uranai:day",
+      prefix: 'uranai:day',
     })
   : null;
 
@@ -36,7 +36,7 @@ type Entry = { count: number; resetTime: number };
 const minuteMap = new Map<string, Entry>();
 const dailyMap = new Map<string, Entry>();
 
-if (typeof setInterval !== "undefined") {
+if (typeof setInterval !== 'undefined') {
   setInterval(() => {
     const now = Date.now();
     for (const [k, e] of minuteMap) if (now > e.resetTime) minuteMap.delete(k);
@@ -49,7 +49,12 @@ function checkMemory(ip: string): RateLimitResult {
 
   const d = dailyMap.get(ip);
   if (d && now <= d.resetTime && d.count >= DAILY_LIMIT_MAX) {
-    return { allowed: false, retryAfter: Math.ceil((d.resetTime - now) / 1000), daily: true, remaining: 0 };
+    return {
+      allowed: false,
+      retryAfter: Math.ceil((d.resetTime - now) / 1000),
+      daily: true,
+      remaining: 0,
+    };
   }
 
   let minuteCount: number;
@@ -93,7 +98,7 @@ export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
       return await checkRedis(ip);
     } catch (err) {
       // Redis障害時はin-memoryにフォールバックして可用性を維持
-      console.error("rate-limit redis error, falling back:", err);
+      console.error('rate-limit redis error, falling back:', err);
       return checkMemory(ip);
     }
   }

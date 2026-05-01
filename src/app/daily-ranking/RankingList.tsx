@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ZodiacRanking, ZodiacDetail, RankingDiff } from "@/lib/daily-ranking";
-import { zodiacSigns } from "@/lib/fortune-data";
+import { useState } from 'react';
+import type { ZodiacRanking, ZodiacDetail, RankingDiff } from '@/lib/daily-ranking';
+import { zodiacSigns } from '@/lib/fortune-data';
 
 const RANK_STYLES = [
-  "border-gold bg-gold/10 text-gold",
-  "border-warm/60 bg-warm/10 text-warm",
-  "border-neon-amber/50 bg-neon-amber/10 text-neon-amber",
+  'border-gold bg-gold/10 text-gold',
+  'border-warm/60 bg-warm/10 text-warm',
+  'border-neon-amber/50 bg-neon-amber/10 text-neon-amber',
 ];
 
-const RANK_LABELS = ["🥇", "🥈", "🥉"];
+const RANK_LABELS = ['🥇', '🥈', '🥉'];
 
 interface RankingItem extends ZodiacRanking {
   oneLiner: string;
@@ -30,7 +30,7 @@ function DiffBadge({ diff }: { diff: RankingDiff }) {
   if (diff === null) {
     return (
       <span
-        className="text-[11px] font-bold leading-none text-warm"
+        className="text-warm text-[11px] leading-none font-bold"
         aria-label="前日データなし（新しく登場）"
       >
         NEW
@@ -39,39 +39,28 @@ function DiffBadge({ diff }: { diff: RankingDiff }) {
   }
   if (diff === 0) {
     return (
-      <span className="text-sm text-muted" aria-label="順位変動なし">
+      <span className="text-muted text-sm" aria-label="順位変動なし">
         <span aria-hidden="true">→</span>
       </span>
     );
   }
   if (diff > 0) {
     return (
-      <span
-        className="text-sm font-bold text-gold"
-        aria-label={`前日より${diff}位上昇`}
-      >
+      <span className="text-gold text-sm font-bold" aria-label={`前日より${diff}位上昇`}>
         <span aria-hidden="true">↑{diff}</span>
       </span>
     );
   }
   const down = Math.abs(diff);
   return (
-    <span
-      className="text-sm font-bold text-neon-red"
-      aria-label={`前日より${down}位下降`}
-    >
+    <span className="text-neon-red text-sm font-bold" aria-label={`前日より${down}位下降`}>
       <span aria-hidden="true">↓{down}</span>
     </span>
   );
 }
 
-function GradeDisplay({ grade }: { grade: "◎" | "○" | "△" }) {
-  const color =
-    grade === "◎"
-      ? "text-gold"
-      : grade === "○"
-      ? "text-foreground"
-      : "text-muted";
+function GradeDisplay({ grade }: { grade: '◎' | '○' | '△' }) {
+  const color = grade === '◎' ? 'text-gold' : grade === '○' ? 'text-foreground' : 'text-muted';
   return <span className={`text-2xl font-bold ${color}`}>{grade}</span>;
 }
 
@@ -83,10 +72,10 @@ export default function RankingList({ items }: Props) {
     const diffParam = item.diff ?? 0;
     const ogUrl = `https://uranaidokoro.com/api/og-ranking?name=${encodeURIComponent(item.name)}&emoji=${encodeURIComponent(item.emoji)}&rank=${item.rank}&diff=${diffParam}&work=${encodeURIComponent(item.detail.work)}&love=${encodeURIComponent(item.detail.love)}&money=${encodeURIComponent(item.detail.money)}`;
     const text = `${item.name} 今日${item.rank}位！\n仕事${item.detail.work} 恋愛${item.detail.love} 金運${item.detail.money}\n\n#今日の運勢 #星座占い`;
-    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent("https://uranaidokoro.com/daily-ranking")}`;
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent('https://uranaidokoro.com/daily-ranking')}`;
     // OGP画像が反映されるよう一度プリフェッチ
     fetch(ogUrl).catch(() => {});
-    window.open(shareUrl, "_blank", "noopener,noreferrer");
+    window.open(shareUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -94,23 +83,16 @@ export default function RankingList({ items }: Props) {
       {items.map((zodiac, i) => {
         const signData = zodiacSigns[zodiac.key as keyof typeof zodiacSigns];
         const isTop3 = i < 3;
-        const borderStyle = isTop3
-          ? RANK_STYLES[i]
-          : "border-border bg-surface text-foreground";
+        const borderStyle = isTop3 ? RANK_STYLES[i] : 'border-border bg-surface text-foreground';
         const isOpen = openKey === zodiac.key;
 
         return (
-          <div
-            key={zodiac.key}
-            className={`rounded-xl border transition-colors ${borderStyle}`}
-          >
+          <div key={zodiac.key} className={`rounded-xl border transition-colors ${borderStyle}`}>
             {/* ヘッダー（タップで展開） */}
             <button
               type="button"
-              onClick={() =>
-                setOpenKey(isOpen ? null : zodiac.key)
-              }
-              className="flex w-full items-center gap-3 p-3 text-left hover:bg-surface-hover sm:gap-4 sm:p-4"
+              onClick={() => setOpenKey(isOpen ? null : zodiac.key)}
+              className="hover:bg-surface-hover flex w-full items-center gap-3 p-3 text-left sm:gap-4 sm:p-4"
               aria-expanded={isOpen}
               aria-controls={`detail-${zodiac.key}`}
             >
@@ -119,9 +101,7 @@ export default function RankingList({ items }: Props) {
                 {isTop3 ? (
                   <span className="text-2xl">{RANK_LABELS[i]}</span>
                 ) : (
-                  <span className="text-lg font-bold text-muted">
-                    {i + 1}位
-                  </span>
+                  <span className="text-muted text-lg font-bold">{i + 1}位</span>
                 )}
                 <DiffBadge diff={zodiac.diff} />
               </div>
@@ -131,79 +111,63 @@ export default function RankingList({ items }: Props) {
 
               {/* 星座名と期間 */}
               <div className="min-w-0 flex-1">
-                <p className="whitespace-nowrap text-lg font-bold">
-                  {zodiac.name}
-                </p>
+                <p className="text-lg font-bold whitespace-nowrap">{zodiac.name}</p>
                 {signData && (
-                  <p className="truncate text-xs text-muted">
+                  <p className="text-muted truncate text-xs">
                     {signData.period} / {signData.element}の星座
                   </p>
                 )}
               </div>
 
               {/* 一言コメント */}
-              <p className="hidden shrink-0 text-sm text-muted sm:block">
-                {zodiac.oneLiner}
-              </p>
+              <p className="text-muted hidden shrink-0 text-sm sm:block">{zodiac.oneLiner}</p>
 
               {/* 展開アイコン */}
-              <span className="shrink-0 text-muted">
-                {isOpen ? "▲" : "▼"}
-              </span>
+              <span className="text-muted shrink-0">{isOpen ? '▲' : '▼'}</span>
             </button>
 
             {/* モバイル時の一言コメント */}
-            <p className="px-4 pb-2 text-sm text-muted sm:hidden">
-              {zodiac.oneLiner}
-            </p>
+            <p className="text-muted px-4 pb-2 text-sm sm:hidden">{zodiac.oneLiner}</p>
 
             {/* 展開部 */}
             {isOpen && (
               <div
                 id={`detail-${zodiac.key}`}
                 role="region"
-                className="animate-[fadeSlideUp_0.3s_ease-out] border-t border-border/50 px-4 py-4 text-foreground"
+                className="border-border/50 text-foreground animate-[fadeSlideUp_0.3s_ease-out] border-t px-4 py-4"
               >
                 {/* 運勢3種 */}
                 <div className="mb-4 grid grid-cols-3 gap-2 text-center">
-                  <div className="rounded-lg border border-border/40 bg-background/30 py-2">
-                    <p className="mb-1 text-xs text-muted">💼 仕事運</p>
+                  <div className="border-border/40 bg-background/30 rounded-lg border py-2">
+                    <p className="text-muted mb-1 text-xs">💼 仕事運</p>
                     <GradeDisplay grade={zodiac.detail.work} />
                   </div>
-                  <div className="rounded-lg border border-border/40 bg-background/30 py-2">
-                    <p className="mb-1 text-xs text-muted">💕 恋愛運</p>
+                  <div className="border-border/40 bg-background/30 rounded-lg border py-2">
+                    <p className="text-muted mb-1 text-xs">💕 恋愛運</p>
                     <GradeDisplay grade={zodiac.detail.love} />
                   </div>
-                  <div className="rounded-lg border border-border/40 bg-background/30 py-2">
-                    <p className="mb-1 text-xs text-muted">💰 金運</p>
+                  <div className="border-border/40 bg-background/30 rounded-lg border py-2">
+                    <p className="text-muted mb-1 text-xs">💰 金運</p>
                     <GradeDisplay grade={zodiac.detail.money} />
                   </div>
                 </div>
 
                 {/* 解説文 */}
-                <p className="mb-4 text-sm leading-relaxed">
-                  {zodiac.detail.detail}
-                </p>
+                <p className="mb-4 text-sm leading-relaxed">{zodiac.detail.detail}</p>
 
                 {/* ラッキー要素 */}
                 <div className="mb-4 grid grid-cols-3 gap-2 text-center text-xs">
                   <div>
                     <p className="text-muted">ラッキーカラー</p>
-                    <p className="mt-1 font-bold text-gold">
-                      {zodiac.detail.lucky_color}
-                    </p>
+                    <p className="text-gold mt-1 font-bold">{zodiac.detail.lucky_color}</p>
                   </div>
                   <div>
                     <p className="text-muted">ラッキーアイテム</p>
-                    <p className="mt-1 font-bold text-gold">
-                      {zodiac.detail.lucky_item}
-                    </p>
+                    <p className="text-gold mt-1 font-bold">{zodiac.detail.lucky_item}</p>
                   </div>
                   <div>
                     <p className="text-muted">ラッキータイム</p>
-                    <p className="mt-1 font-bold text-gold">
-                      {zodiac.detail.lucky_time}
-                    </p>
+                    <p className="text-gold mt-1 font-bold">{zodiac.detail.lucky_time}</p>
                   </div>
                 </div>
 
@@ -211,7 +175,7 @@ export default function RankingList({ items }: Props) {
                 <button
                   type="button"
                   onClick={() => handleShare(zodiac)}
-                  className="w-full rounded-full border border-neon-red/40 bg-neon-red/5 py-2 text-sm text-neon-red transition-colors hover:bg-neon-red/15"
+                  className="border-neon-red/40 bg-neon-red/5 text-neon-red hover:bg-neon-red/15 w-full rounded-full border py-2 text-sm transition-colors"
                 >
                   Xでシェアする
                 </button>

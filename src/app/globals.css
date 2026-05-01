@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #0a0408;
@@ -68,11 +68,23 @@ body {
 
 /* ネオンフリッカー（ネオン管の点滅） */
 @keyframes neonFlicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
     opacity: 1;
-    text-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red), 0 0 40px var(--neon-red);
+    text-shadow:
+      0 0 10px var(--neon-red),
+      0 0 20px var(--neon-red),
+      0 0 40px var(--neon-red);
   }
-  20%, 24%, 55% {
+  20%,
+  24%,
+  55% {
     opacity: 0.7;
     text-shadow: none;
   }
@@ -80,21 +92,32 @@ body {
 
 /* ネオンパルス（柔らかい脈動） */
 @keyframes neonPulse {
-  0%, 100% {
-    text-shadow: 0 0 8px var(--neon-red), 0 0 16px var(--neon-red);
+  0%,
+  100% {
+    text-shadow:
+      0 0 8px var(--neon-red),
+      0 0 16px var(--neon-red);
   }
   50% {
-    text-shadow: 0 0 16px var(--neon-red), 0 0 32px var(--neon-red), 0 0 48px var(--neon-red);
+    text-shadow:
+      0 0 16px var(--neon-red),
+      0 0 32px var(--neon-red),
+      0 0 48px var(--neon-red);
   }
 }
 
 /* ゴールドパルス */
 @keyframes goldPulse {
-  0%, 100% {
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.4), 0 0 16px rgba(255, 215, 0, 0.2);
+  0%,
+  100% {
+    text-shadow:
+      0 0 8px rgba(255, 215, 0, 0.4),
+      0 0 16px rgba(255, 215, 0, 0.2);
   }
   50% {
-    text-shadow: 0 0 16px rgba(255, 215, 0, 0.6), 0 0 32px rgba(255, 215, 0, 0.3);
+    text-shadow:
+      0 0 16px rgba(255, 215, 0, 0.6),
+      0 0 32px rgba(255, 215, 0, 0.3);
   }
 }
 
@@ -196,32 +219,45 @@ body {
 
 /* 各メニューカードの色別グロー */
 .card-glow-red:hover {
-  box-shadow: 0 0 24px rgba(255, 45, 85, 0.3), 0 0 48px rgba(255, 45, 85, 0.1);
+  box-shadow:
+    0 0 24px rgba(255, 45, 85, 0.3),
+    0 0 48px rgba(255, 45, 85, 0.1);
 }
 
 .card-glow-gold:hover {
-  box-shadow: 0 0 24px rgba(255, 215, 0, 0.3), 0 0 48px rgba(255, 215, 0, 0.1);
+  box-shadow:
+    0 0 24px rgba(255, 215, 0, 0.3),
+    0 0 48px rgba(255, 215, 0, 0.1);
 }
 
 .card-glow-pink:hover {
-  box-shadow: 0 0 24px rgba(255, 105, 180, 0.3), 0 0 48px rgba(255, 105, 180, 0.1);
+  box-shadow:
+    0 0 24px rgba(255, 105, 180, 0.3),
+    0 0 48px rgba(255, 105, 180, 0.1);
 }
 
 .card-glow-cyan:hover {
-  box-shadow: 0 0 24px rgba(0, 221, 255, 0.3), 0 0 48px rgba(0, 221, 255, 0.1);
+  box-shadow:
+    0 0 24px rgba(0, 221, 255, 0.3),
+    0 0 48px rgba(0, 221, 255, 0.1);
 }
 
 .card-glow-purple:hover {
-  box-shadow: 0 0 24px rgba(136, 72, 152, 0.3), 0 0 48px rgba(136, 72, 152, 0.1);
+  box-shadow:
+    0 0 24px rgba(136, 72, 152, 0.3),
+    0 0 48px rgba(136, 72, 152, 0.1);
 }
 
 .card-glow-amber:hover {
-  box-shadow: 0 0 24px rgba(240, 160, 48, 0.3), 0 0 48px rgba(240, 160, 48, 0.1);
+  box-shadow:
+    0 0 24px rgba(240, 160, 48, 0.3),
+    0 0 48px rgba(240, 160, 48, 0.1);
 }
 
 /* ヒーロー ネオン看板 */
 @keyframes neonSignGlow {
-  0%, 100% {
+  0%,
+  100% {
     text-shadow:
       0 0 10px var(--neon-red),
       0 0 30px var(--neon-red),
@@ -266,12 +302,28 @@ body {
 
 /* シャッフルアニメーション */
 @keyframes shuffleCard {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  20% { transform: translate(calc(var(--shuffle-x, 30px) * 1), calc(var(--shuffle-y, -20px) * 1)) rotate(calc(var(--shuffle-r, 8deg) * 1)); }
-  40% { transform: translate(calc(var(--shuffle-x, 30px) * -0.7), calc(var(--shuffle-y, -20px) * -0.5)) rotate(calc(var(--shuffle-r, 8deg) * -0.6)); }
-  60% { transform: translate(calc(var(--shuffle-x, 30px) * 0.4), calc(var(--shuffle-y, -20px) * 0.8)) rotate(calc(var(--shuffle-r, 8deg) * 0.3)); }
-  80% { transform: translate(calc(var(--shuffle-x, 30px) * -0.2), calc(var(--shuffle-y, -20px) * -0.3)) rotate(calc(var(--shuffle-r, 8deg) * -0.1)); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  20% {
+    transform: translate(calc(var(--shuffle-x, 30px) * 1), calc(var(--shuffle-y, -20px) * 1))
+      rotate(calc(var(--shuffle-r, 8deg) * 1));
+  }
+  40% {
+    transform: translate(calc(var(--shuffle-x, 30px) * -0.7), calc(var(--shuffle-y, -20px) * -0.5))
+      rotate(calc(var(--shuffle-r, 8deg) * -0.6));
+  }
+  60% {
+    transform: translate(calc(var(--shuffle-x, 30px) * 0.4), calc(var(--shuffle-y, -20px) * 0.8))
+      rotate(calc(var(--shuffle-r, 8deg) * 0.3));
+  }
+  80% {
+    transform: translate(calc(var(--shuffle-x, 30px) * -0.2), calc(var(--shuffle-y, -20px) * -0.3))
+      rotate(calc(var(--shuffle-r, 8deg) * -0.1));
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
 }
 
 .animate-shuffle {
@@ -281,8 +333,12 @@ body {
 
 /* フェードイン */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .animate-fade-in {
@@ -320,7 +376,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;

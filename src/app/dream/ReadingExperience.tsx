@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
-import ShareButtons from "@/components/ShareButtons";
-import AffiliateCTA from "@/components/AffiliateCTA";
-import NextFortuneCTA from "@/components/NextFortuneCTA";
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
+import ShareButtons from '@/components/ShareButtons';
+import AffiliateCTA from '@/components/AffiliateCTA';
+import NextFortuneCTA from '@/components/NextFortuneCTA';
 
 // ChatBoxはchatフェーズでのみ使用する重量コンポーネント。初期ロードを軽くするため動的インポート。
-const ChatBox = dynamic(() => import("@/components/ChatBox"), {
+const ChatBox = dynamic(() => import('@/components/ChatBox'), {
   ssr: false,
   loading: () => (
     <div
-      className="mx-auto my-6 h-24 w-full max-w-2xl animate-pulse rounded-2xl border border-neon-purple/30 bg-surface"
+      className="border-neon-purple/30 bg-surface mx-auto my-6 h-24 w-full max-w-2xl animate-pulse rounded-2xl border"
       aria-label="チャットを読み込み中"
     />
   ),
@@ -23,39 +23,36 @@ type Props = {
 };
 
 export default function ReadingExperience({ relatedArticles }: Props) {
-  const [phase, setPhase] = useState<"input" | "chat">("input");
-  const [keyword, setKeyword] = useState("");
-  const [submittedKeyword, setSubmittedKeyword] = useState("");
-  const [resultSummary, setResultSummary] = useState("");
   const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const q = searchParams.get("q");
-    if (q && typeof q === "string" && q.trim()) {
-      setKeyword(q.trim().slice(0, 100));
-    }
-  }, [searchParams]);
+  const [phase, setPhase] = useState<'input' | 'chat'>('input');
+  // URLの ?q= は外部リンクからの初期キーワード。マウント時に1度だけ反映する（以降はユーザー編集を優先）
+  const [keyword, setKeyword] = useState(() => {
+    const q = searchParams.get('q');
+    return q && q.trim() ? q.trim().slice(0, 100) : '';
+  });
+  const [submittedKeyword, setSubmittedKeyword] = useState('');
+  const [resultSummary, setResultSummary] = useState('');
 
   const quickDreams = [
-    "空を飛ぶ夢",
-    "落ちる夢",
-    "追いかけられる夢",
-    "海の夢",
-    "亡くなった人の夢",
-    "歯が抜ける夢",
-    "遅刻する夢",
-    "蛇の夢",
+    '空を飛ぶ夢',
+    '落ちる夢',
+    '追いかけられる夢',
+    '海の夢',
+    '亡くなった人の夢',
+    '歯が抜ける夢',
+    '遅刻する夢',
+    '蛇の夢',
   ];
 
   const handleSubmit = (text: string) => {
     const trimmed = text.trim();
     if (!trimmed) return;
     setSubmittedKeyword(trimmed);
-    setPhase("chat");
+    setPhase('chat');
     // 匿名ワード雲のために特徴語のみ集計に送信（原文は送らず、キーワード抽出のみ）
-    fetch("/api/dream-words", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    fetch('/api/dream-words', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ keyword: trimmed }),
     }).catch(() => {
       // 記録失敗はユーザー体験に影響しないので無視
@@ -65,11 +62,11 @@ export default function ReadingExperience({ relatedArticles }: Props) {
   return (
     <>
       {/* 入力フェーズ */}
-      {phase === "input" && (
+      {phase === 'input' && (
         <div className="mx-auto max-w-md space-y-8">
           {/* テキスト入力 */}
           <div>
-            <label htmlFor="dream-keyword" className="mb-2 block text-sm text-warm">
+            <label htmlFor="dream-keyword" className="text-warm mb-2 block text-sm">
               夢の内容やキーワードを入力してください
             </label>
             <div className="flex gap-3">
@@ -79,17 +76,17 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") handleSubmit(keyword);
+                  if (e.key === 'Enter') handleSubmit(keyword);
                 }}
                 placeholder="例: 海で泳いでいた"
                 maxLength={100}
-                className="flex-1 rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted/50 outline-none transition-colors focus:border-neon-purple/50"
+                className="border-border bg-surface text-foreground placeholder:text-muted/50 focus:border-neon-purple/50 flex-1 rounded-xl border px-4 py-3 text-sm transition-colors outline-none"
               />
               <button
                 type="button"
                 onClick={() => handleSubmit(keyword)}
                 disabled={!keyword.trim()}
-                className="min-h-11 rounded-xl border-2 border-neon-purple px-6 py-3 text-sm font-semibold text-neon-purple transition-all hover:bg-neon-purple/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 min-h-11 rounded-xl border-2 px-6 py-3 text-sm font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-30"
               >
                 占う
               </button>
@@ -98,16 +95,14 @@ export default function ReadingExperience({ relatedArticles }: Props) {
 
           {/* クイック選択 */}
           <div>
-            <p className="mb-3 text-center text-xs text-muted">
-              よく見る夢から選ぶ
-            </p>
+            <p className="text-muted mb-3 text-center text-xs">よく見る夢から選ぶ</p>
             <div className="flex flex-wrap justify-center gap-2">
               {quickDreams.map((dream) => (
                 <button
                   key={dream}
                   type="button"
                   onClick={() => handleSubmit(dream)}
-                  className="min-h-11 rounded-full border border-border bg-surface px-4 py-2 text-xs text-foreground/80 transition-all hover:border-neon-purple/40 hover:bg-surface-hover hover:text-neon-purple"
+                  className="border-border bg-surface text-foreground/80 hover:border-neon-purple/40 hover:bg-surface-hover hover:text-neon-purple min-h-11 rounded-full border px-4 py-2 text-xs transition-all"
                 >
                   {dream}
                 </button>
@@ -118,13 +113,11 @@ export default function ReadingExperience({ relatedArticles }: Props) {
       )}
 
       {/* チャットフェーズ */}
-      {phase === "chat" && submittedKeyword && (
+      {phase === 'chat' && submittedKeyword && (
         <div>
-          <div className="mx-auto mb-8 max-w-sm rounded-2xl border border-neon-purple/30 bg-surface p-6 text-center shadow-lg shadow-neon-purple/10">
-            <p className="mb-1 text-xs text-muted">あなたが見た夢</p>
-            <p className="text-xl font-bold text-gold">
-              {submittedKeyword}
-            </p>
+          <div className="border-neon-purple/30 bg-surface shadow-neon-purple/10 mx-auto mb-8 max-w-sm rounded-2xl border p-6 text-center shadow-lg">
+            <p className="text-muted mb-1 text-xs">あなたが見た夢</p>
+            <p className="text-gold text-xl font-bold">{submittedKeyword}</p>
           </div>
 
           <ChatBox
@@ -138,11 +131,15 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           />
           <ShareButtons
             title="夢占い結果"
-            resultData={resultSummary ? {
-              fortuneType: "dream",
-              label: submittedKeyword,
-              summary: resultSummary,
-            } : undefined}
+            resultData={
+              resultSummary
+                ? {
+                    fortuneType: 'dream',
+                    label: submittedKeyword,
+                    summary: resultSummary,
+                  }
+                : undefined
+            }
           />
 
           <AffiliateCTA fortuneType="dream" />
@@ -150,12 +147,12 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           <button
             type="button"
             onClick={() => {
-              setPhase("input");
-              setKeyword("");
-              setSubmittedKeyword("");
-              setResultSummary("");
+              setPhase('input');
+              setKeyword('');
+              setSubmittedKeyword('');
+              setResultSummary('');
             }}
-            className="mx-auto mt-4 block text-sm text-muted hover:text-warm transition-colors"
+            className="text-muted hover:text-warm mx-auto mt-4 block text-sm transition-colors"
           >
             &#x2190; 別の夢を占う
           </button>
@@ -163,7 +160,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
       )}
 
       {/* 関連コラム（入力フェーズのみ） */}
-      {phase === "input" && relatedArticles}
+      {phase === 'input' && relatedArticles}
     </>
   );
 }

@@ -1,20 +1,16 @@
-"use client";
+'use client';
 
 type ChatMessageProps = {
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
   isStreaming?: boolean;
 };
 
-export default function ChatMessage({
-  role,
-  content,
-  isStreaming,
-}: ChatMessageProps) {
-  if (role === "user") {
+export default function ChatMessage({ role, content, isStreaming }: ChatMessageProps) {
+  if (role === 'user') {
     return (
-      <div className="flex justify-end mb-4">
-        <div className="max-w-[80%] rounded-2xl rounded-br-sm px-4 py-3 bg-neon-red/90 text-white shadow-md">
+      <div className="mb-4 flex justify-end">
+        <div className="bg-neon-red/90 max-w-[80%] rounded-2xl rounded-br-sm px-4 py-3 text-white shadow-md">
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{content}</p>
         </div>
       </div>
@@ -22,21 +18,21 @@ export default function ChatMessage({
   }
 
   return (
-    <div className="flex items-start gap-3 mb-4">
+    <div className="mb-4 flex items-start gap-3">
       <div
-        className="flex-shrink-0 w-9 h-9 rounded-full bg-neon-red flex items-center justify-center text-base text-white shadow-lg shadow-neon-red/30"
+        className="bg-neon-red shadow-neon-red/30 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-base text-white shadow-lg"
         aria-hidden="true"
       >
         &#x2726;
       </div>
-      <div className="max-w-[80%] rounded-2xl rounded-bl-sm px-4 py-3 bg-surface border border-border text-foreground shadow-md">
+      <div className="bg-surface border-border text-foreground max-w-[80%] rounded-2xl rounded-bl-sm border px-4 py-3 shadow-md">
         <p className="text-sm leading-relaxed whitespace-pre-wrap">
           {content}
           {isStreaming && (
-            <span className="inline-flex ml-1" aria-hidden="true">
-              <span className="animate-pulse text-neon-red">.</span>
-              <span className="animate-pulse text-neon-red [animation-delay:200ms]">.</span>
-              <span className="animate-pulse text-neon-red [animation-delay:400ms]">.</span>
+            <span className="ml-1 inline-flex" aria-hidden="true">
+              <span className="text-neon-red animate-pulse">.</span>
+              <span className="text-neon-red animate-pulse [animation-delay:200ms]">.</span>
+              <span className="text-neon-red animate-pulse [animation-delay:400ms]">.</span>
             </span>
           )}
           {isStreaming && <span className="sr-only">鑑定中です</span>}

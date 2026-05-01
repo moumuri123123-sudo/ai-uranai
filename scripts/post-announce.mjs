@@ -1,15 +1,21 @@
-import { TwitterApi } from "twitter-api-v2";
-import { readFileSync } from "node:fs";
+import { TwitterApi } from 'twitter-api-v2';
+import { readFileSync } from 'node:fs';
 
 // .env.local から認証情報を読む
-const envText = readFileSync(new URL("../.env.local", import.meta.url), "utf8");
+const envText = readFileSync(new URL('../.env.local', import.meta.url), 'utf8');
 const env = Object.fromEntries(
   envText
     .split(/\r?\n/)
-    .filter((line) => line && !line.startsWith("#") && line.includes("="))
+    .filter((line) => line && !line.startsWith('#') && line.includes('='))
     .map((line) => {
-      const idx = line.indexOf("=");
-      return [line.slice(0, idx).trim(), line.slice(idx + 1).trim().replace(/^"|"$/g, "")];
+      const idx = line.indexOf('=');
+      return [
+        line.slice(0, idx).trim(),
+        line
+          .slice(idx + 1)
+          .trim()
+          .replace(/^"|"$/g, ''),
+      ];
     }),
 );
 
@@ -34,9 +40,9 @@ https://uranaidokoro.com/dream-trends
 
 try {
   const result = await client.v2.tweet(tweet);
-  console.log("投稿成功:", result.data.id);
-  console.log("URL: https://twitter.com/i/web/status/" + result.data.id);
+  console.log('投稿成功:', result.data.id);
+  console.log('URL: https://twitter.com/i/web/status/' + result.data.id);
 } catch (err) {
-  console.error("投稿失敗:", err);
+  console.error('投稿失敗:', err);
   process.exit(1);
 }

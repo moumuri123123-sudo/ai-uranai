@@ -1,18 +1,18 @@
-import { GoogleGenAI } from "@google/genai";
-import type { FortuneGrade, ZodiacDetail, ZodiacRanking } from "./daily-ranking";
+import { GoogleGenAI } from '@google/genai';
+import type { FortuneGrade, ZodiacDetail, ZodiacRanking } from './daily-ranking';
 
 // 順位に応じたフォールバック評価
 function fallbackGrade(rank: number, offset: number): FortuneGrade {
   const adjusted = rank + offset;
-  if (adjusted <= 4) return "◎";
-  if (adjusted <= 8) return "○";
-  return "△";
+  if (adjusted <= 4) return '◎';
+  if (adjusted <= 8) return '○';
+  return '△';
 }
 
 function fallbackDetail(name: string, rank: number): ZodiacDetail {
-  const colors = ["赤", "青", "金", "白", "緑", "紫", "黄", "ピンク"];
-  const items = ["手帳", "ペン", "ハンカチ", "時計", "ノート", "アクセサリー", "香水", "お守り"];
-  const times = ["午前中", "正午", "午後3時頃", "夕方", "夜"];
+  const colors = ['赤', '青', '金', '白', '緑', '紫', '黄', 'ピンク'];
+  const items = ['手帳', 'ペン', 'ハンカチ', '時計', 'ノート', 'アクセサリー', '香水', 'お守り'];
+  const times = ['午前中', '正午', '午後3時頃', '夕方', '夜'];
   const seed = (name.charCodeAt(0) + rank) % 8;
 
   return {
@@ -24,15 +24,15 @@ function fallbackDetail(name: string, rank: number): ZodiacDetail {
     lucky_time: times[seed % times.length],
     detail:
       rank <= 4
-        ? "積極的に行動することで運気が上がりそう。チャンスを見逃さないで。"
+        ? '積極的に行動することで運気が上がりそう。チャンスを見逃さないで。'
         : rank <= 8
-        ? "穏やかに過ごすのが吉。小さな幸せに目を向けて。"
-        : "焦らず一歩ずつ進もう。周囲への感謝を忘れずに。",
+          ? '穏やかに過ごすのが吉。小さな幸せに目を向けて。'
+          : '焦らず一歩ずつ進もう。周囲への感謝を忘れずに。',
   };
 }
 
 function isValidGrade(s: unknown): s is FortuneGrade {
-  return s === "◎" || s === "○" || s === "△";
+  return s === '◎' || s === '○' || s === '△';
 }
 
 // Geminiで12星座分の詳細運勢を一括生成
@@ -49,12 +49,10 @@ export async function generateAllDetails(
 
   try {
     const ai = new GoogleGenAI({ apiKey });
-    const zodiacList = rankings
-      .map((z) => `${z.rank}位: ${z.name}`)
-      .join("\n");
+    const zodiacList = rankings.map((z) => `${z.rank}位: ${z.name}`).join('\n');
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: 'gemini-2.5-flash',
       contents: `以下の12星座の今日の運勢ランキングに、それぞれ詳細運勢を生成してください。\n\n${zodiacList}\n\nJSON形式で返してください。`,
       config: {
         systemInstruction: `あなたは占処（うらないどころ）の占い師です。
@@ -83,7 +81,7 @@ export async function generateAllDetails(
 - lucky_time は「午前中」「夕方」など時間帯の表現
 - detail は40〜60文字、前向きなアドバイス、絵文字・マークダウン不使用
 - JSONのみ返す、説明文や\`\`\`は不要`,
-        responseMimeType: "application/json",
+        responseMimeType: 'application/json',
       },
     });
 
@@ -92,16 +90,16 @@ export async function generateAllDetails(
       const parsed = JSON.parse(text) as Record<string, unknown>;
       for (const z of rankings) {
         const d = parsed[z.name];
-        if (d && typeof d === "object") {
+        if (d && typeof d === 'object') {
           const obj = d as Record<string, unknown>;
           if (
             isValidGrade(obj.work) &&
             isValidGrade(obj.love) &&
             isValidGrade(obj.money) &&
-            typeof obj.lucky_color === "string" &&
-            typeof obj.lucky_item === "string" &&
-            typeof obj.lucky_time === "string" &&
-            typeof obj.detail === "string"
+            typeof obj.lucky_color === 'string' &&
+            typeof obj.lucky_item === 'string' &&
+            typeof obj.lucky_time === 'string' &&
+            typeof obj.detail === 'string'
           ) {
             result.set(z.key, {
               work: obj.work,

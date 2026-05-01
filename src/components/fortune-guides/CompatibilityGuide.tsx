@@ -1,23 +1,20 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function CompatibilityGuide() {
   return (
-    <article className="mt-16 border-t border-border pt-12">
-      <div className="mx-auto max-w-3xl space-y-8 text-sm leading-relaxed text-foreground/85">
-
+    <article className="border-border mt-16 border-t pt-12">
+      <div className="text-foreground/85 mx-auto max-w-3xl space-y-8 text-sm leading-relaxed">
         <header className="text-center">
-          <h2 className="font-mincho mb-3 text-2xl font-bold text-neon-pink sm:text-3xl">
+          <h2 className="font-mincho text-neon-pink mb-3 text-2xl font-bold sm:text-3xl">
             相性占いを知る
           </h2>
-          <p className="text-xs text-muted">
+          <p className="text-muted text-xs">
             占処の相性占いをより深く楽しむための基礎知識と関係別の見方
           </p>
         </header>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-pink">
-            相性占いとは
-          </h3>
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-pink mb-4 text-lg font-semibold">相性占いとは</h3>
           <p>
             相性占いは、自分と相手との関係性や、二人の間に流れる空気感を読み解く占術の総称です。
             恋人・友人・同僚・家族など、あらゆる人間関係において、
@@ -33,8 +30,8 @@ export default function CompatibilityGuide() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-pink">
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-pink mb-4 text-lg font-semibold">
             星座による相性の基本
           </h3>
           <p>
@@ -49,13 +46,13 @@ export default function CompatibilityGuide() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-pink">
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-pink mb-4 text-lg font-semibold">
             関係別・相性の見方
           </h3>
           <div className="space-y-4">
             <div>
-              <h4 className="mb-2 font-semibold text-gold">恋愛の相性</h4>
+              <h4 className="text-gold mb-2 font-semibold">恋愛の相性</h4>
               <p>
                 恋愛では、価値観の一致だけでなく、感情表現の仕方や距離感のとり方が重要になります。
                 情熱的にぶつかり合うのが心地よい二人もいれば、
@@ -64,7 +61,7 @@ export default function CompatibilityGuide() {
               </p>
             </div>
             <div>
-              <h4 className="mb-2 font-semibold text-gold">友情の相性</h4>
+              <h4 className="text-gold mb-2 font-semibold">友情の相性</h4>
               <p>
                 友情においては、一緒にいて疲れないかどうか、
                 お互いの違いを楽しめるかどうかが鍵になります。
@@ -73,7 +70,7 @@ export default function CompatibilityGuide() {
               </p>
             </div>
             <div>
-              <h4 className="mb-2 font-semibold text-gold">仕事の相性</h4>
+              <h4 className="text-gold mb-2 font-semibold">仕事の相性</h4>
               <p>
                 仕事の相性では、コミュニケーションのスタイル、意思決定のスピード、
                 役割分担のバランスを見ていきます。気が合わなくても補完関係が築ければ成果は上がるもの。
@@ -83,84 +80,84 @@ export default function CompatibilityGuide() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-pink">
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-pink mb-4 text-lg font-semibold">
             相性が悪いと言われたときの考え方
           </h3>
           <ul className="list-disc space-y-2 pl-5">
             <li>
-              <span className="font-semibold text-gold">違いを理解の入り口にする</span>
+              <span className="text-gold font-semibold">違いを理解の入り口にする</span>
               ──「合わない」とされる部分は、裏を返せばお互いに持っていない魅力でもあります。
               相手の世界を知るきっかけとして捉え直してみましょう。
             </li>
             <li>
-              <span className="font-semibold text-gold">努力で歩み寄れる余地を探す</span>
+              <span className="text-gold font-semibold">努力で歩み寄れる余地を探す</span>
               ── 占いの結果は固定された運命ではなく現在の傾向。
               小さな気遣いの積み重ねで、関係は必ず変化していきます。
             </li>
             <li>
-              <span className="font-semibold text-gold">距離感を調整する</span>
+              <span className="text-gold font-semibold">距離感を調整する</span>
               ── すべての人と深く関わる必要はありません。
               心地よい距離を見つけることも、相性を活かす立派な方法です。
             </li>
             <li>
-              <span className="font-semibold text-gold">自分自身の状態を振り返る</span>
+              <span className="text-gold font-semibold">自分自身の状態を振り返る</span>
               ── 同じ相手でも、自分の心の余裕次第で関係は大きく変わります。
               まずは自分を整えることが、相性を良くする第一歩になることも多いです。
             </li>
           </ul>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-pink">
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-pink mb-4 text-lg font-semibold">
             よくある質問（FAQ）
           </h3>
           <div className="space-y-3">
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. 相性が悪いと絶対にうまくいかないのでしょうか？
               </summary>
-              <p className="mt-3 text-foreground/80">
+              <p className="text-foreground/80 mt-3">
                 A. いいえ、そんなことはありません。相性占いはあくまで傾向を示すもので、
                 実際の関係はお互いの思いやりやコミュニケーションで大きく変わります。
                 「合わないから気をつけよう」と意識するだけでも関係性は前向きに動き出します。
               </p>
             </details>
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. 同じ星座同士の相性はいいのですか？
               </summary>
-              <p className="mt-3 text-foreground/80">
+              <p className="text-foreground/80 mt-3">
                 A. 同じ星座同士は価値観が似ており、一緒にいて楽という良さがあります。
                 一方で、似すぎていて刺激が少なかったり、同じ弱点を抱え込みやすかったりする面も。
                 心地よさと成長、どちらを大切にしたいかで受け取り方は変わります。
               </p>
             </details>
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. 家族や上司との相性も占えますか？
               </summary>
-              <p className="mt-3 text-foreground/80">
+              <p className="text-foreground/80 mt-3">
                 A. はい、相性占いは恋愛に限らず、どんな人間関係にも応用できます。
                 家族や上司のように選べない関係こそ、相手の特性を知っておくことが役立ちます。
                 違いを理解して接し方を工夫するヒントとしてご活用ください。
               </p>
             </details>
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. 血液型の相性は扱っていますか？
               </summary>
-              <p className="mt-3 text-foreground/80">
+              <p className="text-foreground/80 mt-3">
                 A. 占処の相性占いは星座をベースにしており、血液型は使用していません。
                 血液型による性格分類は文化として親しまれていますが、
                 当サイトでは占星術的な切り口を大切にしています。
               </p>
             </details>
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. 相性占いの結果を気になる相手に伝えてもいいですか？
               </summary>
-              <p className="mt-3 text-foreground/80">
+              <p className="text-foreground/80 mt-3">
                 A. 楽しい話題として共有するのは素敵ですが、結果を押しつけるのは避けましょう。
                 「こう出たから仲良くしてほしい」ではなく、会話のきっかけやお互いを知る材料として使うのがおすすめ。
                 相性占いは関係を深める入り口であって、ゴールではありません。
@@ -169,15 +166,13 @@ export default function CompatibilityGuide() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-pink">
-            関連する占い
-          </h3>
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-pink mb-4 text-lg font-semibold">関連する占い</h3>
           <ul className="flex flex-wrap gap-3">
             <li>
               <Link
                 href="/zodiac"
-                className="inline-block rounded-lg border border-border bg-[#0a0408]/50 px-4 py-2 text-sm text-foreground/85 transition-colors hover:border-neon-pink hover:text-neon-pink"
+                className="border-border text-foreground/85 hover:border-neon-pink hover:text-neon-pink inline-block rounded-lg border bg-[#0a0408]/50 px-4 py-2 text-sm transition-colors"
               >
                 星座占い
               </Link>
@@ -185,7 +180,7 @@ export default function CompatibilityGuide() {
             <li>
               <Link
                 href="/mbti"
-                className="inline-block rounded-lg border border-border bg-[#0a0408]/50 px-4 py-2 text-sm text-foreground/85 transition-colors hover:border-neon-pink hover:text-neon-pink"
+                className="border-border text-foreground/85 hover:border-neon-pink hover:text-neon-pink inline-block rounded-lg border bg-[#0a0408]/50 px-4 py-2 text-sm transition-colors"
               >
                 MBTI診断
               </Link>
@@ -193,16 +188,18 @@ export default function CompatibilityGuide() {
           </ul>
         </section>
 
-        <div className="text-center text-xs text-muted">
+        <div className="text-muted text-center text-xs">
           <p>
             さらに深く学びたい方は、
-            <Link href="/blog" className="mx-1 text-gold underline underline-offset-4 hover:text-neon-red">
+            <Link
+              href="/blog"
+              className="text-gold hover:text-neon-red mx-1 underline underline-offset-4"
+            >
               コラム記事
             </Link>
             もご覧ください。星座ごとの性格や関係の築き方を詳しく解説した記事を掲載しています。
           </p>
         </div>
-
       </div>
     </article>
   );

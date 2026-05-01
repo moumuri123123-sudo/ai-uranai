@@ -61,20 +61,19 @@ export default function CookieBanner() {
       {/* 半透明スクリム風の薄いグラデ（ページ下に落ち着いたトーン） */}
       <div className="pointer-events-none absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-[#0a0408] to-transparent" />
 
-      <div className="border-t border-border/80 bg-[#0a0408]/95 backdrop-blur supports-[backdrop-filter]:bg-[#0a0408]/80">
+      <div className="border-border/80 border-t bg-[#0a0408]/95 backdrop-blur supports-[backdrop-filter]:bg-[#0a0408]/80">
         <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:py-5">
-          <div className="text-xs leading-relaxed text-foreground/85 sm:text-sm">
+          <div className="text-foreground/85 text-xs leading-relaxed sm:text-sm">
             <p>
-              <span className="font-mincho text-gold">占処</span>
-              {' '}はサイトの改善や広告配信のため
+              <span className="font-mincho text-gold">占処</span> はサイトの改善や広告配信のため
               <span className="text-neon-red">Cookie</span>
               を使用しています。利用を続けると、同意したものとみなします。
             </p>
-            <p className="mt-1 text-[11px] text-muted">
+            <p className="text-muted mt-1 text-[11px]">
               詳細は
               <Link
                 href="/privacy"
-                className="mx-1 text-warm underline underline-offset-2 hover:text-gold"
+                className="text-warm hover:text-gold mx-1 underline underline-offset-2"
               >
                 プライバシーポリシー
               </Link>
@@ -85,14 +84,14 @@ export default function CookieBanner() {
           <div className="flex shrink-0 flex-wrap items-center gap-2 sm:gap-3">
             <Link
               href="/privacy"
-              className="rounded-full border border-border px-4 py-2 text-xs text-warm transition-colors hover:border-gold/60 hover:text-gold sm:text-sm"
+              className="border-border text-warm hover:border-gold/60 hover:text-gold rounded-full border px-4 py-2 text-xs transition-colors sm:text-sm"
             >
               プライバシーポリシーを見る
             </Link>
             <button
               type="button"
               onClick={() => persist('accepted')}
-              className="rounded-full border border-gold/60 bg-gold/10 px-5 py-2 text-xs font-semibold text-gold transition-colors hover:bg-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:text-sm"
+              className="border-gold/60 bg-gold/10 text-gold hover:bg-gold/20 focus-visible:ring-gold rounded-full border px-5 py-2 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none sm:text-sm"
             >
               同意する
             </button>

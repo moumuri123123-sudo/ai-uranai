@@ -1,6 +1,6 @@
-import JsonLd from "./JsonLd";
-import { faqPageJsonLd } from "@/lib/jsonld";
-import type { FaqItem } from "@/lib/faqs";
+import JsonLd from './JsonLd';
+import { faqPageJsonLd } from '@/lib/jsonld';
+import type { FaqItem } from '@/lib/faqs';
 
 type Props = {
   id: string;

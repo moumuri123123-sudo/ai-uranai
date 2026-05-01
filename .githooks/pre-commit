@@ -1,10 +1,13 @@
 #!/bin/bash
-# APIキー・秘密情報の漏洩を防ぐpre-commitフック
+# APIキー・秘密情報の漏洩防止 + Prettier自動整形
 
 echo "セキュリティチェック中..."
 
-# ステージされたファイルの差分をチェック（フックスクリプト自身を除外）
-DIFF=$(git diff --cached --diff-filter=ACMR -- ':!.githooks/')
+# ステージされた差分のうち「追加された行」のみをチェック（削除行や--- +++ ヘッダは除外）
+# フックスクリプト自身は対象外
+DIFF=$(git diff --cached --diff-filter=ACMR -- ':!.githooks/' \
+  | grep -E '^\+' \
+  | grep -vE '^\+\+\+')
 
 # チェックするパターン（実際のキーのプレフィックスや一般的なパターン）
 PATTERNS=(
@@ -40,4 +43,27 @@ if [ $FOUND -eq 1 ]; then
 fi
 
 echo "セキュリティチェック OK"
+
+# ===== Prettier 自動整形 =====
+# ステージ済みのソース系ファイルを抽出（削除ファイルは除く）
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR \
+  | grep -E '\.(ts|tsx|js|jsx|mjs|cjs|json|md|css|scss|html|yaml|yml)$' \
+  || true)
+
+if [ -n "$STAGED_FILES" ]; then
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "!! npx が見つからないためPrettier整形をスキップ"
+    exit 0
+  fi
+  echo "Prettierで整形中..."
+  # .prettierignore は prettier が自動で参照するため改めて指定不要
+  echo "$STAGED_FILES" | xargs npx --no-install prettier --write --ignore-unknown --log-level warn || {
+    echo "!! Prettier実行に失敗しました（npm install されていますか？）"
+    exit 1
+  }
+  # 整形後のファイルを再ステージ
+  echo "$STAGED_FILES" | xargs git add
+  echo "整形完了"
+fi
+
 exit 0

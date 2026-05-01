@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 type AdBannerProps = {
   slot?: string;
-  format?: "auto" | "horizontal" | "vertical" | "rectangle";
+  format?: 'auto' | 'horizontal' | 'vertical' | 'rectangle';
 };
 
-export default function AdBanner({ slot, format = "auto" }: AdBannerProps) {
+export default function AdBanner({ slot, format = 'auto' }: AdBannerProps) {
   const adRef = useRef<HTMLDivElement>(null);
   const pushed = useRef(false);
   const pubId = process.env.NEXT_PUBLIC_ADSENSE_ID;
@@ -50,7 +50,7 @@ export default function AdBanner({ slot, format = "auto" }: AdBannerProps) {
           observer.disconnect();
         }
       },
-      { rootMargin: "200px" },
+      { rootMargin: '200px' },
     );
     observer.observe(el);
 
@@ -68,13 +68,11 @@ export default function AdBanner({ slot, format = "auto" }: AdBannerProps) {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-8">
-      <p className="mb-1 text-center text-[10px] tracking-widest text-muted/80">
-        スポンサーリンク
-      </p>
+      <p className="text-muted/80 mb-1 text-center text-[10px] tracking-widest">スポンサーリンク</p>
       <div ref={adRef}>
         <ins
           className="adsbygoogle"
-          style={{ display: "block" }}
+          style={{ display: 'block' }}
           data-ad-client={pubId}
           data-ad-slot={slot}
           data-ad-format={format}

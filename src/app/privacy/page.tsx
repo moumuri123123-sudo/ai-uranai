@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: "プライバシーポリシー",
-  description: "占処 AI占いのプライバシーポリシーです。収集する情報、利用目的、第三者提供等についてご確認ください。",
+  title: 'プライバシーポリシー',
+  description:
+    '占処 AI占いのプライバシーポリシーです。収集する情報、利用目的、第三者提供等についてご確認ください。',
   alternates: {
-    canonical: "https://uranaidokoro.com/privacy",
+    canonical: 'https://uranaidokoro.com/privacy',
   },
 };
 
@@ -13,13 +14,13 @@ export default function PrivacyPage() {
   return (
     <div className="bg-[#0a0408] px-4 py-12 sm:py-16">
       <div className="mx-auto max-w-3xl">
-        <h1 className="font-mincho mb-10 text-center text-2xl font-bold text-gold sm:text-3xl">
+        <h1 className="font-mincho text-gold mb-10 text-center text-2xl font-bold sm:text-3xl">
           プライバシーポリシー
         </h1>
 
-        <div className="space-y-10 text-sm leading-relaxed text-foreground/80">
+        <div className="text-foreground/80 space-y-10 text-sm leading-relaxed">
           {/* 前文 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
+          <section className="border-border bg-surface rounded-xl border p-6">
             <p>
               「占処 AI占い」（以下「本サービス」）は、ユーザーのプライバシーを尊重し、
               個人情報の保護に努めます。本プライバシーポリシーは、本サービスにおける情報の取扱いについて定めるものです。
@@ -27,10 +28,8 @@ export default function PrivacyPage() {
           </section>
 
           {/* 1. 個人情報の定義 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              1. 個人情報の定義
-            </h2>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">1. 個人情報の定義</h2>
             <p>
               本ポリシーにおける「個人情報」とは、個人情報保護法に定める個人情報を指し、
               特定の個人を識別できる情報（氏名、メールアドレス、IPアドレス等）をいいます。
@@ -38,23 +37,21 @@ export default function PrivacyPage() {
           </section>
 
           {/* 2. 収集する情報 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              2. 収集する情報
-            </h2>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">2. 収集する情報</h2>
             <p className="mb-3">本サービスでは、以下の情報を取得する場合があります。</p>
             <ul className="list-disc space-y-3 pl-5">
               <li>
-                <span className="font-semibold text-foreground">占い利用時のチャット内容:</span>{" "}
+                <span className="text-foreground font-semibold">占い利用時のチャット内容:</span>{' '}
                 ユーザーが入力した質問や選択内容。これらの情報はサーバーに保存されず、
                 占い結果の生成にのみ使用されます。
               </li>
               <li>
-                <span className="font-semibold text-foreground">アクセスログ:</span>{" "}
+                <span className="text-foreground font-semibold">アクセスログ:</span>{' '}
                 IPアドレス、ブラウザの種類、アクセス日時、参照元URL等のサーバーログ情報。
               </li>
               <li>
-                <span className="font-semibold text-foreground">アクセス解析情報:</span>{" "}
+                <span className="text-foreground font-semibold">アクセス解析情報:</span>{' '}
                 本サービスでは、サービスの品質向上を目的として、Google Analytics等の
                 アクセス解析ツールを使用する場合があります。これらのツールはCookieを利用して、
                 匿名の統計データを収集します。
@@ -63,10 +60,8 @@ export default function PrivacyPage() {
           </section>
 
           {/* 3. 利用目的 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              3. 利用目的
-            </h2>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">3. 利用目的</h2>
             <p className="mb-3">収集した情報は、以下の目的で利用します。</p>
             <ul className="list-disc space-y-2 pl-5">
               <li>占い結果の生成およびサービスの提供</li>
@@ -77,25 +72,36 @@ export default function PrivacyPage() {
           </section>
 
           {/* 4. 第三者提供 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              4. 第三者への提供
-            </h2>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">4. 第三者への提供</h2>
             <p>
               運営者は、原則としてユーザーの個人情報を第三者に提供しません。
               ただし、以下の場合を除きます。
             </p>
             <ul className="mt-3 list-disc space-y-3 pl-5">
               <li>
-                <span className="font-semibold text-foreground">AI占い結果の生成:</span>{" "}
+                <span className="text-foreground font-semibold">AI占い結果の生成:</span>{' '}
                 本サービスは占い結果の生成にGoogle Gemini APIを使用しています。
-                ユーザーが入力したチャット内容は、AI による回答生成のため Google LLC のサーバーに送信されます。
-                Google のデータ取扱いについては、
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">Google プライバシーポリシー</a>
+                ユーザーが入力したチャット内容は、AI による回答生成のため Google LLC
+                のサーバーに送信されます。 Google のデータ取扱いについては、
+                <a
+                  href="https://policies.google.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-warm hover:text-gold underline underline-offset-4 transition-colors"
+                >
+                  Google プライバシーポリシー
+                </a>
                 および
-                <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">Gemini API 利用規約</a>
-                をご参照ください。
-                センシティブな個人情報の入力はお控えください。
+                <a
+                  href="https://ai.google.dev/gemini-api/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-warm hover:text-gold underline underline-offset-4 transition-colors"
+                >
+                  Gemini API 利用規約
+                </a>
+                をご参照ください。 センシティブな個人情報の入力はお控えください。
               </li>
               <li>法令に基づく開示が求められた場合</li>
               <li>人の生命、身体または財産の保護のために必要がある場合</li>
@@ -103,8 +109,8 @@ export default function PrivacyPage() {
           </section>
 
           {/* 4-2. 外国にある第三者への個人データの提供について */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">
               4-2. 外国にある第三者への個人データの提供について
             </h2>
             <p className="mb-3">
@@ -112,67 +118,66 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc space-y-3 pl-5">
               <li>
-                <span className="font-semibold text-foreground">提供先:</span>{" "}
-                Google LLC（米国）
+                <span className="text-foreground font-semibold">提供先:</span> Google LLC（米国）
               </li>
               <li>
-                <span className="font-semibold text-foreground">所在国:</span>{" "}
-                アメリカ合衆国
+                <span className="text-foreground font-semibold">所在国:</span> アメリカ合衆国
               </li>
               <li>
-                <span className="font-semibold text-foreground">提供される個人情報の種類:</span>{" "}
+                <span className="text-foreground font-semibold">提供される個人情報の種類:</span>{' '}
                 ユーザーがチャットで入力したテキスト（占い質問・悩みの内容など）、およびAPI呼び出しに伴う通信情報。
               </li>
               <li>
-                <span className="font-semibold text-foreground">提供の目的:</span>{" "}
-                Google Gemini APIを用いたAI占い結果の生成。
+                <span className="text-foreground font-semibold">提供の目的:</span> Google Gemini
+                APIを用いたAI占い結果の生成。
               </li>
               <li>
-                <span className="font-semibold text-foreground">当該外国における個人情報保護制度:</span>{" "}
+                <span className="text-foreground font-semibold">
+                  当該外国における個人情報保護制度:
+                </span>{' '}
                 アメリカ合衆国における個人情報の保護に関する制度は、日本の個人情報保護法と同等の水準にあるとは限らない可能性があります。
                 各国の個人情報保護制度の概要については、個人情報保護委員会のウェブサイト（
                 <a
                   href="https://www.ppc.go.jp/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+                  className="text-warm hover:text-gold underline underline-offset-4 transition-colors"
                 >
                   https://www.ppc.go.jp/
                 </a>
                 ）にて確認することができます。
               </li>
               <li>
-                <span className="font-semibold text-foreground">提供先が講ずる個人情報保護のための措置:</span>{" "}
-                提供先であるGoogle LLCは、自社のプライバシーポリシーおよびGemini API利用規約に基づき、
+                <span className="text-foreground font-semibold">
+                  提供先が講ずる個人情報保護のための措置:
+                </span>{' '}
+                提供先であるGoogle LLCは、自社のプライバシーポリシーおよびGemini
+                API利用規約に基づき、
                 個人情報の安全管理のための措置を講じています。詳細は前項のリンク先をご参照ください。
               </li>
             </ul>
           </section>
 
           {/* 5. Cookieの使用 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              5. Cookieの使用
-            </h2>
-            <p className="mb-3">
-              本サービスでは、以下の目的でCookieを使用する場合があります。
-            </p>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">5. Cookieの使用</h2>
+            <p className="mb-3">本サービスでは、以下の目的でCookieを使用する場合があります。</p>
             <ul className="list-disc space-y-2 pl-5">
               <li>
-                <span className="font-semibold text-foreground">必須Cookie:</span>{" "}
+                <span className="text-foreground font-semibold">必須Cookie:</span>{' '}
                 サイトの正常な動作に必要なCookie
               </li>
               <li>
-                <span className="font-semibold text-foreground">分析Cookie:</span>{" "}
-                Google Analytics等によるアクセス解析のためのCookie
+                <span className="text-foreground font-semibold">分析Cookie:</span> Google
+                Analytics等によるアクセス解析のためのCookie
               </li>
               <li>
-                <span className="font-semibold text-foreground">広告Cookie:</span>{" "}
-                Google AdSenseによるパーソナライズ広告の配信のためのCookie
+                <span className="text-foreground font-semibold">広告Cookie:</span> Google
+                AdSenseによるパーソナライズ広告の配信のためのCookie
               </li>
             </ul>
 
-            <h3 className="font-mincho mt-5 mb-3 text-base font-semibold text-foreground">
+            <h3 className="font-mincho text-foreground mt-5 mb-3 text-base font-semibold">
               Google AdSenseについて
             </h3>
             <p className="mb-3">
@@ -183,12 +188,12 @@ export default function PrivacyPage() {
               Googleによる広告Cookieの使用により、ユーザーが当サイトや他のサイトにアクセスした際の情報に基づき、適切な広告が表示されることがあります。
             </p>
             <p className="mb-3">
-              ユーザーは{" "}
+              ユーザーは{' '}
               <a
                 href="https://www.google.com/settings/ads"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gold underline hover:text-neon-red"
+                className="text-gold hover:text-neon-red underline"
               >
                 Google広告設定ページ
               </a>
@@ -197,28 +202,27 @@ export default function PrivacyPage() {
                 href="https://www.aboutads.info/choices/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gold underline hover:text-neon-red"
+                className="text-gold hover:text-neon-red underline"
               >
                 aboutads.info
               </a>
               にて、第三者配信事業者のCookieを無効にすることも可能です。
             </p>
 
-            <h3 className="font-mincho mt-5 mb-3 text-base font-semibold text-foreground">
+            <h3 className="font-mincho text-foreground mt-5 mb-3 text-base font-semibold">
               Google Analyticsについて
             </h3>
             <p className="mb-3">
-              本サービスでは、アクセス解析のためにGoogle
-              Analyticsを利用しています。Google
+              本サービスでは、アクセス解析のためにGoogle Analyticsを利用しています。Google
               Analyticsはデータの収集のためにCookieを使用しています。このデータは匿名で収集されており、個人を特定するものではありません。
             </p>
             <p className="mb-3">
-              詳しくは{" "}
+              詳しくは{' '}
               <a
                 href="https://policies.google.com/technologies/partner-sites"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gold underline hover:text-neon-red"
+                className="text-gold hover:text-neon-red underline"
               >
                 Googleのプライバシーポリシー
               </a>
@@ -232,8 +236,8 @@ export default function PrivacyPage() {
           </section>
 
           {/* 6. データの保管期間 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">
               6. データの保管期間
             </h2>
             <p>
@@ -247,13 +251,9 @@ export default function PrivacyPage() {
           </section>
 
           {/* 7. ユーザーの権利 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              7. ユーザーの権利
-            </h2>
-            <p>
-              ユーザーは、運営者に対して以下の請求を行うことができます。
-            </p>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">7. ユーザーの権利</h2>
+            <p>ユーザーは、運営者に対して以下の請求を行うことができます。</p>
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>保有する個人情報の開示</li>
               <li>個人情報の訂正・追加・削除</li>
@@ -266,18 +266,14 @@ export default function PrivacyPage() {
           </section>
 
           {/* 8. お問い合わせ先 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              8. お問い合わせ先
-            </h2>
-            <p>
-              本ポリシーに関するお問い合わせは、下記までご連絡ください。
-            </p>
-            <p className="mt-3 font-semibold text-foreground">
-              メール:{" "}
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">8. お問い合わせ先</h2>
+            <p>本ポリシーに関するお問い合わせは、下記までご連絡ください。</p>
+            <p className="text-foreground mt-3 font-semibold">
+              メール:{' '}
               <a
                 href="mailto:oyasumi6964@gmail.com"
-                className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+                className="text-warm hover:text-gold underline underline-offset-4 transition-colors"
               >
                 oyasumi6964@gmail.com
               </a>
@@ -285,10 +281,8 @@ export default function PrivacyPage() {
           </section>
 
           {/* 9. ポリシーの変更 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              9. ポリシーの変更
-            </h2>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">9. ポリシーの変更</h2>
             <p>
               運営者は、必要に応じて本ポリシーを変更する場合があります。
               変更があった場合は、本ページ上で通知いたします。
@@ -297,31 +291,29 @@ export default function PrivacyPage() {
           </section>
 
           {/* 10. 個人情報保護管理者 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">
               10. 個人情報保護管理者
             </h2>
-            <p>
-              本サービスにおける個人情報の取扱いに関する責任者は、以下のとおりです。
-            </p>
+            <p>本サービスにおける個人情報の取扱いに関する責任者は、以下のとおりです。</p>
             <div className="mt-3 space-y-2">
               <div className="flex">
-                <span className="w-32 shrink-0 text-muted">責任者</span>
+                <span className="text-muted w-32 shrink-0">責任者</span>
                 <span className="text-foreground">占処運営事務局 個人情報取扱責任者</span>
               </div>
               <div className="flex">
-                <span className="w-32 shrink-0 text-muted">お問い合わせ</span>
+                <span className="text-muted w-32 shrink-0">お問い合わせ</span>
                 <span className="text-foreground">
                   <Link
                     href="/contact"
-                    className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+                    className="text-warm hover:text-gold underline underline-offset-4 transition-colors"
                   >
                     お問い合わせページ
-                  </Link>
-                  {" "}または{" "}
+                  </Link>{' '}
+                  または{' '}
                   <a
                     href="mailto:oyasumi6964@gmail.com"
-                    className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+                    className="text-warm hover:text-gold underline underline-offset-4 transition-colors"
                   >
                     oyasumi6964@gmail.com
                   </a>
@@ -331,12 +323,12 @@ export default function PrivacyPage() {
           </section>
 
           {/* フッター情報 */}
-          <div className="border-t border-border pt-6 text-center">
+          <div className="border-border border-t pt-6 text-center">
             <p className="text-muted">最終更新日: 2026年3月18日</p>
             <p className="mt-4">
               <Link
                 href="/terms"
-                className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+                className="text-warm hover:text-gold underline underline-offset-4 transition-colors"
               >
                 利用規約はこちら
               </Link>

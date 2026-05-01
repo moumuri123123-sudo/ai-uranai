@@ -1,5 +1,5 @@
-import type React from "react";
-import Link from "next/link";
+import type React from 'react';
+import Link from 'next/link';
 
 /**
  * 占処ブログ用の軽量マークダウンレンダラ。
@@ -23,11 +23,11 @@ const NUMBERED_LINE_REGEX = /^(\d+)\.\s+(.+)$/;
 
 function decodeEntities(text: string): string {
   return text
-    .replace(/&reg;/g, "\u00AE")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&nbsp;/g, " ");
+    .replace(/&reg;/g, '\u00AE')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ');
 }
 
 /**
@@ -46,10 +46,7 @@ function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
     }
     if (found[1] !== undefined) {
       parts.push(
-        <strong
-          key={`${keyPrefix}-b-${found.index}`}
-          className="font-bold text-warm"
-        >
+        <strong key={`${keyPrefix}-b-${found.index}`} className="text-warm font-bold">
           {found[1]}
         </strong>,
       );
@@ -57,13 +54,13 @@ function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
       const linkKey = `${keyPrefix}-link-${found.index}`;
       const href = found[3];
       const label = found[2];
-      const isInternal = href.startsWith("/");
+      const isInternal = href.startsWith('/');
       if (isInternal) {
         parts.push(
           <Link
             key={linkKey}
             href={href}
-            className="inline-block font-bold text-gold underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold/80 hover:decoration-gold"
+            className="text-gold decoration-gold/40 hover:text-gold/80 hover:decoration-gold inline-block font-bold underline underline-offset-2 transition-colors"
           >
             {label}
           </Link>,
@@ -75,7 +72,7 @@ function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
             href={href}
             rel="noopener noreferrer"
             target="_blank"
-            className="inline-block font-bold text-gold underline decoration-gold/40 underline-offset-2 transition-colors hover:text-gold/80 hover:decoration-gold"
+            className="text-gold decoration-gold/40 hover:text-gold/80 hover:decoration-gold inline-block font-bold underline underline-offset-2 transition-colors"
           >
             {label}
           </a>,
@@ -93,7 +90,7 @@ function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
 
 function renderBlock(block: string, index: number): React.ReactNode {
   const rawLines = block
-    .split("\n")
+    .split('\n')
     .map((line) => line.trim())
     .filter(Boolean);
   if (rawLines.length === 0) return null;
@@ -102,16 +99,12 @@ function renderBlock(block: string, index: number): React.ReactNode {
     return (
       <ul
         key={`ul-${index}`}
-        className="mb-4 list-disc space-y-2 pl-6 text-sm leading-relaxed text-foreground/80 marker:text-gold/60 last:mb-0"
+        className="text-foreground/80 marker:text-gold/60 mb-4 list-disc space-y-2 pl-6 text-sm leading-relaxed last:mb-0"
       >
         {rawLines.map((l, i) => {
           const m = l.match(BULLET_LINE_REGEX);
           const text = m ? m[1] : l;
-          return (
-            <li key={`li-${index}-${i}`}>
-              {renderInline(text, `p${index}-li${i}`)}
-            </li>
-          );
+          return <li key={`li-${index}-${i}`}>{renderInline(text, `p${index}-li${i}`)}</li>;
         })}
       </ul>
     );
@@ -121,16 +114,12 @@ function renderBlock(block: string, index: number): React.ReactNode {
     return (
       <ol
         key={`ol-${index}`}
-        className="mb-4 list-decimal space-y-2 pl-6 text-sm leading-relaxed text-foreground/80 marker:text-gold/70 last:mb-0"
+        className="text-foreground/80 marker:text-gold/70 mb-4 list-decimal space-y-2 pl-6 text-sm leading-relaxed last:mb-0"
       >
         {rawLines.map((l, i) => {
           const m = l.match(NUMBERED_LINE_REGEX);
           const text = m ? m[2] : l;
-          return (
-            <li key={`li-${index}-${i}`}>
-              {renderInline(text, `p${index}-oli${i}`)}
-            </li>
-          );
+          return <li key={`li-${index}-${i}`}>{renderInline(text, `p${index}-oli${i}`)}</li>;
         })}
       </ol>
     );
@@ -140,20 +129,18 @@ function renderBlock(block: string, index: number): React.ReactNode {
     const headingLine = rawLines[0];
     const bodyLines = rawLines.slice(1);
     const isQaBody =
-      bodyLines.length >= 2 &&
-      /^Q\.\s/.test(bodyLines[0]) &&
-      /^A\.\s/.test(bodyLines[1]);
+      bodyLines.length >= 2 && /^Q\.\s/.test(bodyLines[0]) && /^A\.\s/.test(bodyLines[1]);
     return (
       <div key={`sec-${index}`} className="mb-6 last:mb-0">
-        <h2 className="font-mincho mb-3 border-l-2 border-neon-red/70 pl-3 text-base font-semibold text-gold sm:text-lg">
+        <h2 className="font-mincho border-neon-red/70 text-gold mb-3 border-l-2 pl-3 text-base font-semibold sm:text-lg">
           {renderInline(headingLine, `p${index}-h`)}
         </h2>
         {isQaBody ? (
-          <div className="rounded-xl border border-border/60 bg-surface/40 p-4">
-            <p className="mb-2 text-sm font-semibold text-warm">
+          <div className="border-border/60 bg-surface/40 rounded-xl border p-4">
+            <p className="text-warm mb-2 text-sm font-semibold">
               {renderInline(bodyLines[0], `p${index}-q`)}
             </p>
-            <p className="text-sm leading-relaxed text-foreground/80">
+            <p className="text-foreground/80 text-sm leading-relaxed">
               {bodyLines.slice(1).map((l, i) => (
                 <span key={`qa-${index}-${i}`}>
                   {renderInline(l, `p${index}-a${i}`)}
@@ -163,7 +150,7 @@ function renderBlock(block: string, index: number): React.ReactNode {
             </p>
           </div>
         ) : bodyLines.length > 0 ? (
-          <p className="text-sm leading-relaxed text-foreground/80">
+          <p className="text-foreground/80 text-sm leading-relaxed">
             {bodyLines.map((line, i) => (
               <span key={`bl-${index}-${i}`}>
                 {renderInline(line, `p${index}-b${i}`)}
@@ -176,20 +163,16 @@ function renderBlock(block: string, index: number): React.ReactNode {
     );
   }
 
-  if (
-    rawLines.length >= 2 &&
-    /^Q\.\s/.test(rawLines[0]) &&
-    /^A\.\s/.test(rawLines[1])
-  ) {
+  if (rawLines.length >= 2 && /^Q\.\s/.test(rawLines[0]) && /^A\.\s/.test(rawLines[1])) {
     return (
       <div
         key={`qa-${index}`}
-        className="mb-4 rounded-xl border border-border/60 bg-surface/40 p-4 last:mb-0"
+        className="border-border/60 bg-surface/40 mb-4 rounded-xl border p-4 last:mb-0"
       >
-        <p className="mb-2 text-sm font-semibold text-warm">
+        <p className="text-warm mb-2 text-sm font-semibold">
           {renderInline(rawLines[0], `p${index}-q`)}
         </p>
-        <p className="text-sm leading-relaxed text-foreground/80">
+        <p className="text-foreground/80 text-sm leading-relaxed">
           {rawLines.slice(1).map((l, i) => (
             <span key={`qa-${index}-${i}`}>
               {renderInline(l, `p${index}-a${i}`)}
@@ -202,10 +185,7 @@ function renderBlock(block: string, index: number): React.ReactNode {
   }
 
   return (
-    <p
-      key={`p-${index}`}
-      className="mb-4 text-sm leading-relaxed text-foreground/80 last:mb-0"
-    >
+    <p key={`p-${index}`} className="text-foreground/80 mb-4 text-sm leading-relaxed last:mb-0">
       {rawLines.map((line, i) => (
         <span key={`pl-${index}-${i}`}>
           {renderInline(line, `p${index}-l${i}`)}
@@ -231,12 +211,12 @@ export function renderArticleContent(content: string): React.ReactNode[] {
  */
 export function extractPlainText(content: string, maxLength = 1500): string {
   const plain = decodeEntities(content)
-    .replace(/\*\*([^*]+)\*\*/g, "$1")
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
-    .replace(/【([^】]+)】/g, "$1 ")
-    .replace(/^(?:-|\u30fb)\s+/gm, "")
-    .replace(/^\d+\.\s+/gm, "")
-    .replace(/\s+/g, " ")
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
+    .replace(/【([^】]+)】/g, '$1 ')
+    .replace(/^(?:-|\u30fb)\s+/gm, '')
+    .replace(/^\d+\.\s+/gm, '')
+    .replace(/\s+/g, ' ')
     .trim();
   if (plain.length <= maxLength) return plain;
   return plain.slice(0, maxLength);

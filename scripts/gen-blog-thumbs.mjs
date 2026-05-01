@@ -10,24 +10,24 @@
 //   - PNG中間: /tmp/blog_thumbs_gen/{slug}.png（残しておくと再実行時にスキップされる）
 //   - WebP本体: public/images/blog/{slug}.webp（800x450, q=85, 16:9）
 
-import { GoogleGenAI } from "@google/genai";
-import sharp from "sharp";
-import fs from "node:fs";
-import path from "node:path";
+import { GoogleGenAI } from '@google/genai';
+import sharp from 'sharp';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const TARGET_WIDTH = 800;
 const QUALITY = 85;
-const PNG_CACHE_DIR = "/tmp/blog_thumbs_gen";
-const OUT_DIR = path.join(process.cwd(), "public", "images", "blog");
+const PNG_CACHE_DIR = '/tmp/blog_thumbs_gen';
+const OUT_DIR = path.join(process.cwd(), 'public', 'images', 'blog');
 const THROTTLE_MS = 1500;
 
 fs.mkdirSync(PNG_CACHE_DIR, { recursive: true });
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 // blog-data.ts からslug/title/categoryを抽出（read-only）
-const dataSrc = fs.readFileSync("src/lib/blog-data.ts", "utf-8");
+const dataSrc = fs.readFileSync('src/lib/blog-data.ts', 'utf-8');
 const articles = [];
 const objRe = /\{\s*slug:\s*"([^"]+)",[\s\S]*?title:\s*"([^"]+)",[\s\S]*?category:\s*"([^"]+)"/g;
 let m;
@@ -37,13 +37,19 @@ while ((m = objRe.exec(dataSrc)) !== null) {
 console.log(`Parsed ${articles.length} articles from blog-data.ts`);
 
 const CATEGORY_GUIDE = {
-  tarot: "Feature stylized tarot cards arranged elegantly, mystical hands holding cards, sacred geometry, candlelight",
-  zodiac: "Feature constellations and zodiac signs arranged across a starry sky, celestial bodies, planetary alignment",
-  compatibility: "Feature two intertwined symbols (hearts, ribbons, threads of fate), paired harmonious patterns",
-  mbti: "Feature a 16-piece geometric mosaic representing personality types, abstract balanced composition",
-  dream: "Feature a surreal dreamscape with a floating moon, drifting clouds, gentle ethereal atmosphere, soft glow",
-  numerology: "Feature sacred numbers, geometric patterns, ancient script-like glyphs, mathematical sigils",
-  general: "Feature mystical divination tools (crystal ball, runes, candles), sacred occult symbols, ornate patterns",
+  tarot:
+    'Feature stylized tarot cards arranged elegantly, mystical hands holding cards, sacred geometry, candlelight',
+  zodiac:
+    'Feature constellations and zodiac signs arranged across a starry sky, celestial bodies, planetary alignment',
+  compatibility:
+    'Feature two intertwined symbols (hearts, ribbons, threads of fate), paired harmonious patterns',
+  mbti: 'Feature a 16-piece geometric mosaic representing personality types, abstract balanced composition',
+  dream:
+    'Feature a surreal dreamscape with a floating moon, drifting clouds, gentle ethereal atmosphere, soft glow',
+  numerology:
+    'Feature sacred numbers, geometric patterns, ancient script-like glyphs, mathematical sigils',
+  general:
+    'Feature mystical divination tools (crystal ball, runes, candles), sacred occult symbols, ornate patterns',
 };
 
 function buildPrompt(article) {
@@ -75,15 +81,17 @@ async function generateOne(article) {
     pngBuffer = fs.readFileSync(pngPath);
   } else {
     const response = await ai.models.generateImages({
-      model: "imagen-4.0-generate-001",
+      model: 'imagen-4.0-generate-001',
       prompt: buildPrompt(article),
-      config: { numberOfImages: 1, aspectRatio: "16:9" },
+      config: { numberOfImages: 1, aspectRatio: '16:9' },
     });
     const img = response.generatedImages?.[0];
     if (!img?.image?.imageBytes) {
-      throw new Error(`no image returned${img?.raiFilteredReason ? " (RAI: " + img.raiFilteredReason + ")" : ""}`);
+      throw new Error(
+        `no image returned${img?.raiFilteredReason ? ' (RAI: ' + img.raiFilteredReason + ')' : ''}`,
+      );
     }
-    pngBuffer = Buffer.from(img.image.imageBytes, "base64");
+    pngBuffer = Buffer.from(img.image.imageBytes, 'base64');
     fs.writeFileSync(pngPath, pngBuffer);
   }
 
@@ -95,20 +103,24 @@ async function generateOne(article) {
   return fs.statSync(webpPath).size;
 }
 
-const mode = process.argv[2] ?? "missing";
+const mode = process.argv[2] ?? 'missing';
 let targets;
 
-if (mode === "sample") {
-  const sampleSlugs = ["tarot-major-arcana-meanings", "zodiac-2026-horoscope", "dream-interpretation-guide"];
+if (mode === 'sample') {
+  const sampleSlugs = [
+    'tarot-major-arcana-meanings',
+    'zodiac-2026-horoscope',
+    'dream-interpretation-guide',
+  ];
   targets = articles.filter((a) => sampleSlugs.includes(a.slug));
-} else if (mode === "missing") {
+} else if (mode === 'missing') {
   targets = articles.filter((a) => !fs.existsSync(path.join(OUT_DIR, `${a.slug}.webp`)));
-} else if (mode === "all") {
+} else if (mode === 'all') {
   targets = articles.filter((a) => !fs.existsSync(path.join(PNG_CACHE_DIR, `${a.slug}.png`)));
-} else if (mode === "only") {
+} else if (mode === 'only') {
   const slug = process.argv[3];
   if (!slug) {
-    console.error("Usage: node scripts/gen-blog-thumbs.mjs only <slug>");
+    console.error('Usage: node scripts/gen-blog-thumbs.mjs only <slug>');
     process.exit(1);
   }
   targets = articles.filter((a) => a.slug === slug);
@@ -122,7 +134,7 @@ if (mode === "sample") {
     if (fs.existsSync(p)) fs.unlinkSync(p);
   }
 } else {
-  console.error("Mode required: sample | missing | all | only <slug>");
+  console.error('Mode required: sample | missing | all | only <slug>');
   process.exit(1);
 }
 
@@ -147,6 +159,6 @@ for (let i = 0; i < targets.length; i++) {
 
 console.log(`\nDone: ${okCount}/${targets.length} OK`);
 if (errors.length > 0) {
-  console.log("Failures:", JSON.stringify(errors, null, 2));
+  console.log('Failures:', JSON.stringify(errors, null, 2));
   process.exit(1);
 }

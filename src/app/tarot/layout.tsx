@@ -1,22 +1,21 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "タロット占い",
+  title: 'タロット占い',
   description:
-    "AIタロット占い師があなたのためにカードを引き、過去・現在・未来を読み解きます。恋愛、仕事、人間関係の悩みに。",
+    'AIタロット占い師があなたのためにカードを引き、過去・現在・未来を読み解きます。恋愛、仕事、人間関係の悩みに。',
   alternates: {
-    canonical: "https://uranaidokoro.com/tarot",
+    canonical: 'https://uranaidokoro.com/tarot',
   },
   openGraph: {
-    title: "タロット占い | 占処 AI占い",
-    description:
-      "AIタロット占い師があなたのためにカードを引き、過去・現在・未来を読み解きます。",
-    url: "https://uranaidokoro.com/tarot",
+    title: 'タロット占い | 占処 AI占い',
+    description: 'AIタロット占い師があなたのためにカードを引き、過去・現在・未来を読み解きます。',
+    url: 'https://uranaidokoro.com/tarot',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "タロット占い | 占処 AI占い",
-    description: "AIタロット占い師があなたのためにカードを引き、過去・現在・未来を読み解きます。",
+    card: 'summary_large_image',
+    title: 'タロット占い | 占処 AI占い',
+    description: 'AIタロット占い師があなたのためにカードを引き、過去・現在・未来を読み解きます。',
   },
 };
 

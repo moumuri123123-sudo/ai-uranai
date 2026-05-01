@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: "利用規約",
-  description: "占処 AI占いの利用規約です。サービスの利用条件、免責事項、禁止事項等をご確認ください。",
+  title: '利用規約',
+  description:
+    '占処 AI占いの利用規約です。サービスの利用条件、免責事項、禁止事項等をご確認ください。',
   alternates: {
-    canonical: "https://uranaidokoro.com/terms",
+    canonical: 'https://uranaidokoro.com/terms',
   },
 };
 
@@ -13,18 +14,19 @@ export default function TermsPage() {
   return (
     <div className="bg-[#0a0408] px-4 py-12 sm:py-16">
       <div className="mx-auto max-w-3xl">
-        <h1 className="font-mincho mb-10 text-center text-2xl font-bold text-gold sm:text-3xl">
+        <h1 className="font-mincho text-gold mb-10 text-center text-2xl font-bold sm:text-3xl">
           利用規約
         </h1>
 
-        <div className="space-y-10 text-sm leading-relaxed text-foreground/80">
+        <div className="text-foreground/80 space-y-10 text-sm leading-relaxed">
           {/* 第1条 サービスの概要 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">
               第1条（サービスの概要）
             </h2>
             <p>
-              「占処 AI占い」（以下「本サービス」）は、AI技術（Google Gemini API）を利用した占いエンターテインメントサービスです。
+              「占処 AI占い」（以下「本サービス」）は、AI技術（Google Gemini
+              API）を利用した占いエンターテインメントサービスです。
               タロット占い、星座占い、相性占い、MBTI&reg;診断、夢占い、数秘術等のコンテンツを提供します。
             </p>
             <p className="mt-3">
@@ -32,22 +34,23 @@ export default function TermsPage() {
               科学的根拠に基づく助言や予測ではありません。
               医療診断・法的判断・金銭判断・人生の重大な判断の根拠として使用しないでください。
             </p>
-            <p className="mt-3 text-xs text-muted">
-              ※ MBTI&reg;（Myers-Briggs Type Indicator）はThe Myers-Briggs Companyの登録商標です。本サービスで提供するMBTI関連コンテンツは、同社公認のものではありません。
+            <p className="text-muted mt-3 text-xs">
+              ※ MBTI&reg;（Myers-Briggs Type Indicator）はThe Myers-Briggs
+              Companyの登録商標です。本サービスで提供するMBTI関連コンテンツは、同社公認のものではありません。
             </p>
           </section>
 
           {/* 第2条 利用条件 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              第2条（利用条件）
-            </h2>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">第2条（利用条件）</h2>
             <p>
               本サービスは、下記の利用資格を満たす方であれば、どなたでも無料でご利用いただけます。
             </p>
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>
-                <span className="font-semibold text-foreground">13歳未満の方は、本サービスを利用することができません。</span>
+                <span className="text-foreground font-semibold">
+                  13歳未満の方は、本サービスを利用することができません。
+                </span>
               </li>
               <li>
                 13歳以上の未成年者が本サービスを利用する場合は、保護者（親権者または法定代理人）の同意を得たうえでご利用ください。
@@ -60,10 +63,8 @@ export default function TermsPage() {
           </section>
 
           {/* 第3条 免責事項 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              第3条（免責事項）
-            </h2>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">第3条（免責事項）</h2>
             <ul className="list-disc space-y-3 pl-5">
               <li>
                 占い結果はAIによる自動生成であり、エンターテインメント目的で提供されます。
@@ -85,10 +86,8 @@ export default function TermsPage() {
           </section>
 
           {/* 第4条 禁止事項 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
-              第4条（禁止事項）
-            </h2>
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">第4条（禁止事項）</h2>
             <p className="mb-3">本サービスの利用にあたり、以下の行為を禁止します。</p>
             <ul className="list-disc space-y-3 pl-5">
               <li>本サービスのシステムに対する不正アクセスまたは不正アクセスの試み</li>
@@ -100,8 +99,8 @@ export default function TermsPage() {
           </section>
 
           {/* 第5条 知的財産権 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">
               第5条（知的財産権）
             </h2>
             <p>
@@ -115,13 +114,16 @@ export default function TermsPage() {
           </section>
 
           {/* 第6条 個人情報の取扱い */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">
               第6条（個人情報の取扱い）
             </h2>
             <p>
               本サービスにおける個人情報の取扱いについては、
-              <Link href="/privacy" className="text-warm underline underline-offset-4 transition-colors hover:text-gold">
+              <Link
+                href="/privacy"
+                className="text-warm hover:text-gold underline underline-offset-4 transition-colors"
+              >
                 プライバシーポリシー
               </Link>
               をご確認ください。
@@ -129,8 +131,8 @@ export default function TermsPage() {
           </section>
 
           {/* 第7条 サービスの変更・終了 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">
               第7条（サービスの変更・終了）
             </h2>
             <p>
@@ -141,8 +143,8 @@ export default function TermsPage() {
           </section>
 
           {/* 第8条 規約の変更 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">
               第8条（規約の変更）
             </h2>
             <p>
@@ -153,8 +155,8 @@ export default function TermsPage() {
           </section>
 
           {/* 第9条 準拠法・管轄 */}
-          <section className="rounded-xl border border-border bg-surface p-6">
-            <h2 className="font-mincho mb-4 text-lg font-semibold text-gold">
+          <section className="border-border bg-surface rounded-xl border p-6">
+            <h2 className="font-mincho text-gold mb-4 text-lg font-semibold">
               第9条（準拠法・管轄裁判所）
             </h2>
             <p>
@@ -164,12 +166,12 @@ export default function TermsPage() {
           </section>
 
           {/* フッター情報 */}
-          <div className="border-t border-border pt-6 text-center">
+          <div className="border-border border-t pt-6 text-center">
             <p className="text-muted">最終更新日: 2026年3月18日</p>
             <p className="mt-4">
               <Link
                 href="/privacy"
-                className="text-warm underline underline-offset-4 transition-colors hover:text-gold"
+                className="text-warm hover:text-gold underline underline-offset-4 transition-colors"
               >
                 プライバシーポリシーはこちら
               </Link>

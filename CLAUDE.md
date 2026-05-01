@@ -1,6 +1,7 @@
 # 占処（うらないどころ） - AI占いサイト
 
 ## プロジェクト概要
+
 Gemini APIを使ったAI占いWebアプリ。レトロネオンなデザインで6種類の占いを提供。
 
 - 本番URL: https://uranaidokoro.com
@@ -8,11 +9,13 @@ Gemini APIを使ったAI占いWebアプリ。レトロネオンなデザイン�
 - ホスティング: Vercel
 
 ## 技術スタック
+
 - Next.js 16 (App Router) + TypeScript + Tailwind CSS 4
 - Gemini API (`@google/genai`, gemini-2.5-flash)
 - Vercelデプロイ
 
 ## コマンド
+
 ```bash
 npm run dev    # 開発サーバー起動
 npm run build  # ビルド
@@ -21,6 +24,7 @@ npm run lint   # ESLint
 ```
 
 ## ディレクトリ構成
+
 ```
 src/
 ├── app/
@@ -65,18 +69,21 @@ src/
 ```
 
 ## デザイン
+
 - テーマ: レトロネオン「占処」
 - 配色: 黒(#0a0408) + ネオンレッド(#ff2d55) + ゴールド(#ffd700) + ベージュ(#f5e6d0)
 - フォント: Shippori Mincho B1（見出し）、Zen Maru Gothic（本文）、Yuji Syuku（装飾）
 - 和風レトロな雰囲気を崩さないこと
 
 ## 環境変数
+
 ```
-GEMINI_API_KEY=        # Gemini APIキー（必須）
-NEXT_PUBLIC_GA_ID=     # Google Analytics 4（任意）
+GEMINI_API_KEY=your_gemini_api_key        # Gemini APIキー（必須）
+NEXT_PUBLIC_GA_ID=your_ga_measurement_id  # Google Analytics 4（任意）
 ```
 
 ## git push前の必須チェック
+
 - **APIキー・シークレットの漏洩確認を必ず行うこと**
 - `git diff --cached` でステージ済みの変更を確認し、以下が含まれていないことをチェック:
   - `GEMINI_API_KEY` の値
@@ -85,6 +92,7 @@ NEXT_PUBLIC_GA_ID=     # Google Analytics 4（任意）
 - 少しでも怪しい文字列があればコミットしない
 
 ## 注意事項
+
 - 占い結果にはAI免責注意書きを必ず表示する
 - AdBannerには「スポンサーリンク」ラベルを付ける
 - MBTI®は登録商標表記が必要

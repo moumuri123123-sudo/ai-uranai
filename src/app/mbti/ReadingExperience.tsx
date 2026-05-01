@@ -1,42 +1,42 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import dynamic from "next/dynamic";
-import ShareButtons from "@/components/ShareButtons";
-import AffiliateCTA from "@/components/AffiliateCTA";
-import NextFortuneCTA from "@/components/NextFortuneCTA";
-import { mbtiTypes, mbtiQuestions } from "@/lib/fortune-data";
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import ShareButtons from '@/components/ShareButtons';
+import AffiliateCTA from '@/components/AffiliateCTA';
+import NextFortuneCTA from '@/components/NextFortuneCTA';
+import { mbtiTypes, mbtiQuestions } from '@/lib/fortune-data';
 
 // ChatBoxはchatフェーズでのみ使用する重量コンポーネント。初期ロードを軽くするため動的インポート。
-const ChatBox = dynamic(() => import("@/components/ChatBox"), {
+const ChatBox = dynamic(() => import('@/components/ChatBox'), {
   ssr: false,
   loading: () => (
     <div
-      className="mx-auto my-6 h-24 w-full max-w-2xl animate-pulse rounded-2xl border border-neon-cyan/30 bg-surface"
+      className="border-neon-cyan/30 bg-surface mx-auto my-6 h-24 w-full max-w-2xl animate-pulse rounded-2xl border"
       aria-label="チャットを読み込み中"
     />
   ),
 });
 
-type Phase = "select" | "quiz" | "chat";
+type Phase = 'select' | 'quiz' | 'chat';
 
 type Props = {
   relatedArticles: React.ReactNode;
 };
 
 export default function ReadingExperience({ relatedArticles }: Props) {
-  const [phase, setPhase] = useState<Phase>("select");
+  const [phase, setPhase] = useState<Phase>('select');
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<("A" | "B")[]>([]);
+  const [answers, setAnswers] = useState<('A' | 'B')[]>([]);
   const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [resultSummary, setResultSummary] = useState("");
+  const [resultSummary, setResultSummary] = useState('');
 
-  function calculateMbtiType(ans: ("A" | "B")[]): string {
+  function calculateMbtiType(ans: ('A' | 'B')[]): string {
     const scores = { EI: 0, SN: 0, TF: 0, JP: 0 };
 
     ans.forEach((a, i) => {
       const q = mbtiQuestions[i];
-      if (a === "A") {
+      if (a === 'A') {
         scores[q.axis]++;
       }
     });
@@ -46,15 +46,15 @@ export default function ReadingExperience({ relatedArticles }: Props) {
       axisCount[q.axis]++;
     });
 
-    const e = scores.EI > axisCount.EI / 2 ? "E" : "I";
-    const s = scores.SN > axisCount.SN / 2 ? "S" : "N";
-    const t = scores.TF > axisCount.TF / 2 ? "T" : "F";
-    const j = scores.JP > axisCount.JP / 2 ? "J" : "P";
+    const e = scores.EI > axisCount.EI / 2 ? 'E' : 'I';
+    const s = scores.SN > axisCount.SN / 2 ? 'S' : 'N';
+    const t = scores.TF > axisCount.TF / 2 ? 'T' : 'F';
+    const j = scores.JP > axisCount.JP / 2 ? 'J' : 'P';
 
     return `${e}${s}${t}${j}`;
   }
 
-  function handleAnswer(choice: "A" | "B") {
+  function handleAnswer(choice: 'A' | 'B') {
     const newAnswers = [...answers, choice];
     setAnswers(newAnswers);
 
@@ -63,20 +63,20 @@ export default function ReadingExperience({ relatedArticles }: Props) {
     } else {
       const type = calculateMbtiType(newAnswers);
       setSelectedType(type);
-      setPhase("chat");
+      setPhase('chat');
     }
   }
 
   function handleSelectType(typeCode: string) {
     setSelectedType(typeCode);
-    setPhase("chat");
+    setPhase('chat');
   }
 
   const typeGroups = [
-    { label: "分析家", codes: ["INTJ", "INTP", "ENTJ", "ENTP"] },
-    { label: "外交官", codes: ["INFJ", "INFP", "ENFJ", "ENFP"] },
-    { label: "番人", codes: ["ISTJ", "ISFJ", "ESTJ", "ESFJ"] },
-    { label: "探検家", codes: ["ISTP", "ISFP", "ESTP", "ESFP"] },
+    { label: '分析家', codes: ['INTJ', 'INTP', 'ENTJ', 'ENTP'] },
+    { label: '外交官', codes: ['INFJ', 'INFP', 'ENFJ', 'ENFP'] },
+    { label: '番人', codes: ['ISTJ', 'ISFJ', 'ESTJ', 'ESFJ'] },
+    { label: '探検家', codes: ['ISTP', 'ISFP', 'ESTP', 'ESFP'] },
   ];
 
   const typeData = selectedType ? mbtiTypes[selectedType] : null;
@@ -84,19 +84,21 @@ export default function ReadingExperience({ relatedArticles }: Props) {
   return (
     <>
       {/* ===== フェーズ: select ===== */}
-      {phase === "select" && (
+      {phase === 'select' && (
         <div className="space-y-8">
           <div className="grid gap-4 sm:grid-cols-2">
             <button
               type="button"
-              onClick={() => setPhase("quiz")}
-              className="group rounded-2xl border border-border bg-surface p-8 text-left transition-all hover:border-neon-cyan/40 hover:shadow-lg hover:shadow-neon-cyan/10"
+              onClick={() => setPhase('quiz')}
+              className="group border-border bg-surface hover:border-neon-cyan/40 hover:shadow-neon-cyan/10 rounded-2xl border p-8 text-left transition-all hover:shadow-lg"
             >
-              <div className="mb-3 font-yuji text-3xl text-neon-cyan" aria-hidden="true">問</div>
-              <h3 className="mb-2 text-lg font-bold text-neon-cyan transition-colors group-hover:brightness-125">
+              <div className="font-yuji text-neon-cyan mb-3 text-3xl" aria-hidden="true">
+                問
+              </div>
+              <h3 className="text-neon-cyan mb-2 text-lg font-bold transition-colors group-hover:brightness-125">
                 診断する
               </h3>
-              <p className="text-sm text-muted">
+              <p className="text-muted text-sm">
                 10個の質問に答えて、あなたのMBTIタイプを診断します
               </p>
             </button>
@@ -104,31 +106,27 @@ export default function ReadingExperience({ relatedArticles }: Props) {
             <button
               type="button"
               onClick={() => {
-                const el = document.getElementById("type-grid");
-                if (el) el.scrollIntoView({ behavior: "smooth" });
+                const el = document.getElementById('type-grid');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="group rounded-2xl border border-border bg-surface p-8 text-left transition-all hover:border-gold/40 hover:shadow-lg hover:shadow-gold/10"
+              className="group border-border bg-surface hover:border-gold/40 hover:shadow-gold/10 rounded-2xl border p-8 text-left transition-all hover:shadow-lg"
             >
-              <div className="mb-3 font-yuji text-3xl text-gold" aria-hidden="true">選</div>
-              <h3 className="mb-2 text-lg font-bold text-gold transition-colors group-hover:brightness-125">
+              <div className="font-yuji text-gold mb-3 text-3xl" aria-hidden="true">
+                選
+              </div>
+              <h3 className="text-gold mb-2 text-lg font-bold transition-colors group-hover:brightness-125">
                 タイプを選ぶ
               </h3>
-              <p className="text-sm text-muted">
-                自分のMBTIタイプを知っている方はこちら
-              </p>
+              <p className="text-muted text-sm">自分のMBTIタイプを知っている方はこちら</p>
             </button>
           </div>
 
           {/* 16タイプのグリッド */}
           <div id="type-grid" className="space-y-6">
-            <h2 className="font-yuji text-center text-lg text-warm">
-              16タイプから選ぶ
-            </h2>
+            <h2 className="font-yuji text-warm text-center text-lg">16タイプから選ぶ</h2>
             {typeGroups.map((group) => (
               <div key={group.label}>
-                <h3 className="mb-3 text-sm font-semibold text-gold">
-                  {group.label}
-                </h3>
+                <h3 className="text-gold mb-3 text-sm font-semibold">{group.label}</h3>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {group.codes.map((code) => {
                     const t = mbtiTypes[code];
@@ -137,12 +135,12 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                         key={code}
                         type="button"
                         onClick={() => handleSelectType(code)}
-                        className="group min-h-11 rounded-xl border border-border bg-surface p-4 text-left transition-all hover:border-neon-cyan/40 hover:bg-surface-hover"
+                        className="group border-border bg-surface hover:border-neon-cyan/40 hover:bg-surface-hover min-h-11 rounded-xl border p-4 text-left transition-all"
                       >
-                        <div className="mb-1 text-sm font-bold text-neon-cyan transition-colors group-hover:brightness-125">
+                        <div className="text-neon-cyan mb-1 text-sm font-bold transition-colors group-hover:brightness-125">
                           {t.code}
                         </div>
-                        <div className="text-xs text-muted">{t.name}</div>
+                        <div className="text-muted text-xs">{t.name}</div>
                       </button>
                     );
                   })}
@@ -154,16 +152,18 @@ export default function ReadingExperience({ relatedArticles }: Props) {
       )}
 
       {/* ===== フェーズ: quiz ===== */}
-      {phase === "quiz" && (
+      {phase === 'quiz' && (
         <div className="mx-auto max-w-lg">
           {/* 進捗バー */}
           <div className="mb-6">
-            <div className="mb-2 flex justify-between text-xs text-muted">
-              <span>質問 {currentQuestion + 1} / {mbtiQuestions.length}</span>
-              <span>{Math.round(((currentQuestion) / mbtiQuestions.length) * 100)}%</span>
+            <div className="text-muted mb-2 flex justify-between text-xs">
+              <span>
+                質問 {currentQuestion + 1} / {mbtiQuestions.length}
+              </span>
+              <span>{Math.round((currentQuestion / mbtiQuestions.length) * 100)}%</span>
             </div>
             <div
-              className="h-2 overflow-hidden rounded-full bg-surface"
+              className="bg-surface h-2 overflow-hidden rounded-full"
               role="progressbar"
               aria-valuemin={0}
               aria-valuemax={mbtiQuestions.length}
@@ -171,34 +171,40 @@ export default function ReadingExperience({ relatedArticles }: Props) {
               aria-label="診断進捗"
             >
               <div
-                className="h-full rounded-full bg-gradient-to-r from-neon-red to-gold transition-all duration-500"
+                className="from-neon-red to-gold h-full rounded-full bg-gradient-to-r transition-all duration-500"
                 style={{ width: `${(currentQuestion / mbtiQuestions.length) * 100}%` }}
               />
             </div>
           </div>
 
           {/* 質問 */}
-          <div className="rounded-2xl border border-border bg-surface p-8">
-            <h2 className="mb-8 text-center text-lg font-bold text-foreground">
+          <div className="border-border bg-surface rounded-2xl border p-8">
+            <h2 className="text-foreground mb-8 text-center text-lg font-bold">
               {mbtiQuestions[currentQuestion].question}
             </h2>
             <div className="space-y-4">
               <button
                 type="button"
-                onClick={() => handleAnswer("A")}
-                className="w-full min-h-11 rounded-xl border border-border bg-[#0a0408] px-6 py-4 text-left text-sm transition-all hover:border-neon-red/50 hover:bg-surface-hover"
+                onClick={() => handleAnswer('A')}
+                className="border-border hover:border-neon-red/50 hover:bg-surface-hover min-h-11 w-full rounded-xl border bg-[#0a0408] px-6 py-4 text-left text-sm transition-all"
               >
-                <span className="mr-3 inline-block rounded-full bg-neon-red/20 px-2.5 py-0.5 text-xs font-bold text-neon-red" aria-hidden="true">
+                <span
+                  className="bg-neon-red/20 text-neon-red mr-3 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold"
+                  aria-hidden="true"
+                >
                   A
                 </span>
                 {mbtiQuestions[currentQuestion].choiceA}
               </button>
               <button
                 type="button"
-                onClick={() => handleAnswer("B")}
-                className="w-full min-h-11 rounded-xl border border-border bg-[#0a0408] px-6 py-4 text-left text-sm transition-all hover:border-gold/50 hover:bg-surface-hover"
+                onClick={() => handleAnswer('B')}
+                className="border-border hover:border-gold/50 hover:bg-surface-hover min-h-11 w-full rounded-xl border bg-[#0a0408] px-6 py-4 text-left text-sm transition-all"
               >
-                <span className="mr-3 inline-block rounded-full bg-gold/20 px-2.5 py-0.5 text-xs font-bold text-gold" aria-hidden="true">
+                <span
+                  className="bg-gold/20 text-gold mr-3 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold"
+                  aria-hidden="true"
+                >
                   B
                 </span>
                 {mbtiQuestions[currentQuestion].choiceB}
@@ -213,29 +219,32 @@ export default function ReadingExperience({ relatedArticles }: Props) {
                 setCurrentQuestion(currentQuestion - 1);
                 setAnswers(answers.slice(0, -1));
               } else {
-                setPhase("select");
+                setPhase('select');
                 setAnswers([]);
                 setCurrentQuestion(0);
               }
             }}
-            className="mt-4 text-sm text-muted hover:text-warm transition-colors"
+            className="text-muted hover:text-warm mt-4 text-sm transition-colors"
           >
-            &#x2190; {currentQuestion > 0 ? "前の質問に戻る" : "選択画面に戻る"}
+            &#x2190; {currentQuestion > 0 ? '前の質問に戻る' : '選択画面に戻る'}
           </button>
         </div>
       )}
 
       {/* ===== フェーズ: chat ===== */}
-      {phase === "chat" && selectedType && typeData && (
+      {phase === 'chat' && selectedType && typeData && (
         <div className="space-y-6">
           {/* 判定結果 */}
-          <div className="rounded-2xl border border-gold/30 bg-surface p-6 text-center shadow-lg shadow-gold/10">
-            <p className="mb-1 text-sm text-muted">あなたのタイプ</p>
-            <h2 className="mb-1 text-3xl font-bold text-gold animate-gold-pulse">{typeData.code}</h2>
-            <p className="mb-3 text-lg font-semibold text-neon-cyan">{typeData.name}</p>
-            <p className="text-sm text-muted">{typeData.traits}</p>
-            <div className="mt-3 text-xs text-muted">
-              相性の良いタイプ: {typeData.compatibleTypes.map(c => `${c}（${mbtiTypes[c]?.name}）`).join("、")}
+          <div className="border-gold/30 bg-surface shadow-gold/10 rounded-2xl border p-6 text-center shadow-lg">
+            <p className="text-muted mb-1 text-sm">あなたのタイプ</p>
+            <h2 className="text-gold animate-gold-pulse mb-1 text-3xl font-bold">
+              {typeData.code}
+            </h2>
+            <p className="text-neon-cyan mb-3 text-lg font-semibold">{typeData.name}</p>
+            <p className="text-muted text-sm">{typeData.traits}</p>
+            <div className="text-muted mt-3 text-xs">
+              相性の良いタイプ:{' '}
+              {typeData.compatibleTypes.map((c) => `${c}（${mbtiTypes[c]?.name}）`).join('、')}
             </div>
           </div>
 
@@ -250,11 +259,15 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           />
           <ShareButtons
             title="MBTI診断結果"
-            resultData={resultSummary ? {
-              fortuneType: "mbti",
-              label: `${typeData.code} ${typeData.name}`,
-              summary: resultSummary,
-            } : undefined}
+            resultData={
+              resultSummary
+                ? {
+                    fortuneType: 'mbti',
+                    label: `${typeData.code} ${typeData.name}`,
+                    summary: resultSummary,
+                  }
+                : undefined
+            }
           />
 
           <AffiliateCTA fortuneType="mbti" />
@@ -262,12 +275,12 @@ export default function ReadingExperience({ relatedArticles }: Props) {
           <button
             type="button"
             onClick={() => {
-              setPhase("select");
+              setPhase('select');
               setSelectedType(null);
               setAnswers([]);
               setCurrentQuestion(0);
             }}
-            className="mx-auto block text-sm text-muted hover:text-warm transition-colors"
+            className="text-muted hover:text-warm mx-auto block text-sm transition-colors"
           >
             &#x2190; 最初からやり直す
           </button>
@@ -275,7 +288,7 @@ export default function ReadingExperience({ relatedArticles }: Props) {
       )}
 
       {/* 関連コラム（選択フェーズのみ） */}
-      {phase === "select" && relatedArticles}
+      {phase === 'select' && relatedArticles}
     </>
   );
 }

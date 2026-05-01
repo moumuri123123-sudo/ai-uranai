@@ -1,23 +1,20 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function TarotGuide() {
   return (
-    <article className="mt-16 border-t border-border pt-12">
-      <div className="mx-auto max-w-3xl space-y-8 text-sm leading-relaxed text-foreground/85">
-
+    <article className="border-border mt-16 border-t pt-12">
+      <div className="text-foreground/85 mx-auto max-w-3xl space-y-8 text-sm leading-relaxed">
         <header className="text-center">
-          <h2 className="font-mincho mb-3 text-2xl font-bold text-neon-red sm:text-3xl">
+          <h2 className="font-mincho text-neon-red mb-3 text-2xl font-bold sm:text-3xl">
             タロット占いを知る
           </h2>
-          <p className="text-xs text-muted">
+          <p className="text-muted text-xs">
             占処のタロット占いをより深く楽しむための基礎知識と使い方
           </p>
         </header>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-red">
-            タロット占いとは
-          </h3>
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-red mb-4 text-lg font-semibold">タロット占いとは</h3>
           <p>
             タロット占いは、78枚のカード（大アルカナ22枚・小アルカナ56枚）を使って、
             質問者の過去・現在・未来や、心の奥底にある想い、取るべき行動のヒントを読み解く
@@ -33,13 +30,13 @@ export default function TarotGuide() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-red">
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-red mb-4 text-lg font-semibold">
             大アルカナと小アルカナの違い
           </h3>
           <div className="space-y-4">
             <div>
-              <h4 className="mb-2 font-semibold text-gold">大アルカナ（22枚）</h4>
+              <h4 className="text-gold mb-2 font-semibold">大アルカナ（22枚）</h4>
               <p>
                 0番「愚者」から21番「世界」まで、人生の重要なテーマや大きな流れを象徴するカードです。
                 愛・死・運命・変化など、普遍的な概念を扱っており、
@@ -48,7 +45,7 @@ export default function TarotGuide() {
               </p>
             </div>
             <div>
-              <h4 className="mb-2 font-semibold text-gold">小アルカナ（56枚）</h4>
+              <h4 className="text-gold mb-2 font-semibold">小アルカナ（56枚）</h4>
               <p>
                 ワンド（棍棒）・カップ（聖杯）・ソード（剣）・ペンタクル（金貨）の4つのスートに分かれ、
                 それぞれ14枚ずつで構成されます。日常の出来事や身近な人間関係、
@@ -58,8 +55,8 @@ export default function TarotGuide() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-red">
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-red mb-4 text-lg font-semibold">
             正位置と逆位置の読み方
           </h3>
           <p>
@@ -74,13 +71,13 @@ export default function TarotGuide() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-red">
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-red mb-4 text-lg font-semibold">
             ワンオラクルとスリーカードの使い分け
           </h3>
           <div className="space-y-4">
             <div>
-              <h4 className="mb-2 font-semibold text-gold">ワンオラクル（1枚引き）</h4>
+              <h4 className="text-gold mb-2 font-semibold">ワンオラクル（1枚引き）</h4>
               <p>
                 質問に対して1枚のカードを引き、シンプルに答えを得る方法です。
                 「今日はどんな1日になる？」「この選択肢で大丈夫？」といった
@@ -89,7 +86,7 @@ export default function TarotGuide() {
               </p>
             </div>
             <div>
-              <h4 className="mb-2 font-semibold text-gold">スリーカード（3枚引き）</h4>
+              <h4 className="text-gold mb-2 font-semibold">スリーカード（3枚引き）</h4>
               <p>
                 過去・現在・未来の3枚を引き、時間の流れや状況の推移を読み解く展開法です。
                 恋愛の行方、仕事の転機、人間関係の変化など、
@@ -100,86 +97,89 @@ export default function TarotGuide() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-red">
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-red mb-4 text-lg font-semibold">
             よい占いをするためのコツ
           </h3>
           <ul className="list-disc space-y-2 pl-5">
             <li>
-              <span className="font-semibold text-gold">質問を具体的にする</span>
+              <span className="text-gold font-semibold">質問を具体的にする</span>
               ──「恋愛運は？」より「気になる相手に連絡してもいい？」のように、
               行動レベルで絞った質問のほうが的確なメッセージを得られます。
             </li>
             <li>
-              <span className="font-semibold text-gold">結果を鵜呑みにしない</span>
+              <span className="text-gold font-semibold">結果を鵜呑みにしない</span>
               ── タロットは未来を決定するものではなく、
               今のエネルギーを映す鏡のようなもの。最終的に決めるのはあなた自身です。
             </li>
             <li>
-              <span className="font-semibold text-gold">同じ質問を繰り返さない</span>
+              <span className="text-gold font-semibold">同じ質問を繰り返さない</span>
               ── 同じ質問を短時間で何度も占うと、カードの答えが散漫になりがちです。
               最低でも数日は間を空けるのがおすすめ。
             </li>
             <li>
-              <span className="font-semibold text-gold">落ち着いた気持ちで臨む</span>
+              <span className="text-gold font-semibold">落ち着いた気持ちで臨む</span>
               ── 焦りや不安が強すぎると読み取りが偏りがち。深呼吸をして、
               静かな気持ちでカードに向き合いましょう。
             </li>
           </ul>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-red">
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-red mb-4 text-lg font-semibold">
             よくある質問（FAQ）
           </h3>
           <div className="space-y-3">
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. 毎日タロット占いをしてもいいですか？
               </summary>
-              <p className="mt-3 text-foreground/80">
+              <p className="text-foreground/80 mt-3">
                 A. 「今日はどう過ごすか」のようなデイリーな問いなら毎日でも問題ありません。
                 ただし、同じ悩みを何度も占うのは避けたほうがよいでしょう。
                 カードが同じ答えを出しにくくなり、かえって迷いが深まることがあります。
               </p>
             </details>
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. 逆位置が出たら悪いことが起こるのでしょうか？
               </summary>
-              <p className="mt-3 text-foreground/80">
-                A. いいえ、必ずしもそうではありません。逆位置は「別の視点」「注意点」「裏側の意味」を示すもので、
+              <p className="text-foreground/80 mt-3">
+                A.
+                いいえ、必ずしもそうではありません。逆位置は「別の視点」「注意点」「裏側の意味」を示すもので、
                 カードによってはむしろ解放や転換を意味することもあります。
                 出たカード全体の流れと質問内容を踏まえて読み解くことが大切です。
               </p>
             </details>
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. AIによるタロット占いは本物の占い師と違いますか？
               </summary>
-              <p className="mt-3 text-foreground/80">
-                A. 占処のAI占いは、伝統的なカード解釈と大量の占いテキストを学習したAIが回答を生成します。
+              <p className="text-foreground/80 mt-3">
+                A.
+                占処のAI占いは、伝統的なカード解釈と大量の占いテキストを学習したAIが回答を生成します。
                 対面の占い師のような直感的な読みとは違いますが、
                 24時間いつでも相談できること、気軽に複数の質問を投げられることが強みです。
                 本格的な鑑定は対面やオンラインの占い師を利用し、
                 日常の気持ちの整理にはAI占いを、というように使い分けるのもおすすめです。
               </p>
             </details>
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. 結果が気に入らないときはどうすればいい？
               </summary>
-              <p className="mt-3 text-foreground/80">
-                A. タロットの結果は「避けられない未来」ではなく、現時点での流れや気をつけるべきポイントを示すものです。
+              <p className="text-foreground/80 mt-3">
+                A.
+                タロットの結果は「避けられない未来」ではなく、現時点での流れや気をつけるべきポイントを示すものです。
                 気に入らない結果が出たときは、そこから何を学び、どう行動を変えるかが大切。
                 カードはあなたの味方であり、警告してくれる存在だと考えてみてください。
               </p>
             </details>
-            <details className="group rounded-lg border border-border/60 bg-[#0a0408]/50 p-4">
-              <summary className="cursor-pointer font-semibold text-foreground">
+            <details className="group border-border/60 rounded-lg border bg-[#0a0408]/50 p-4">
+              <summary className="text-foreground cursor-pointer font-semibold">
                 Q. タロットの結果は科学的に根拠がありますか？
               </summary>
-              <p className="mt-3 text-foreground/80">
+              <p className="text-foreground/80 mt-3">
                 A. タロット占いはエンターテインメントであり、科学的な予測手段ではありません。
                 ただ、カードと向き合うことで自分の考えが整理されたり、気づきを得られることは多くあります。
                 結果に振り回されず、自分自身の心を見つめるきっかけとして活用してください。
@@ -188,15 +188,13 @@ export default function TarotGuide() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border bg-surface p-6">
-          <h3 className="font-mincho mb-4 text-lg font-semibold text-neon-red">
-            関連する占い
-          </h3>
+        <section className="border-border bg-surface rounded-2xl border p-6">
+          <h3 className="font-mincho text-neon-red mb-4 text-lg font-semibold">関連する占い</h3>
           <ul className="flex flex-wrap gap-3">
             <li>
               <Link
                 href="/zodiac"
-                className="inline-block rounded-lg border border-border bg-[#0a0408]/50 px-4 py-2 text-sm text-foreground/85 transition-colors hover:border-neon-red hover:text-neon-red"
+                className="border-border text-foreground/85 hover:border-neon-red hover:text-neon-red inline-block rounded-lg border bg-[#0a0408]/50 px-4 py-2 text-sm transition-colors"
               >
                 星座占い
               </Link>
@@ -204,7 +202,7 @@ export default function TarotGuide() {
             <li>
               <Link
                 href="/compatibility"
-                className="inline-block rounded-lg border border-border bg-[#0a0408]/50 px-4 py-2 text-sm text-foreground/85 transition-colors hover:border-neon-red hover:text-neon-red"
+                className="border-border text-foreground/85 hover:border-neon-red hover:text-neon-red inline-block rounded-lg border bg-[#0a0408]/50 px-4 py-2 text-sm transition-colors"
               >
                 相性占い
               </Link>
@@ -212,16 +210,18 @@ export default function TarotGuide() {
           </ul>
         </section>
 
-        <div className="text-center text-xs text-muted">
+        <div className="text-muted text-center text-xs">
           <p>
             さらに深く学びたい方は、
-            <Link href="/blog" className="mx-1 text-gold underline underline-offset-4 hover:text-neon-red">
+            <Link
+              href="/blog"
+              className="text-gold hover:text-neon-red mx-1 underline underline-offset-4"
+            >
               コラム記事
             </Link>
             もご覧ください。大アルカナ22枚の意味を1枚ずつ解説した記事などを掲載しています。
           </p>
         </div>
-
       </div>
     </article>
   );

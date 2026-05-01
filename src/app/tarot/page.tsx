@@ -1,25 +1,26 @@
-import AdBanner from "@/components/AdBanner";
-import RelatedArticles from "@/components/RelatedArticles";
-import TarotGuide from "@/components/fortune-guides/TarotGuide";
-import { webApplicationJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
-import FAQSection from "@/components/FAQSection";
-import FAQJsonLd from "@/components/FAQJsonLd";
-import { tarotFaqs } from "@/lib/faqs/tarot";
-import ReadingExperience from "./ReadingExperience";
+import AdBanner from '@/components/AdBanner';
+import RelatedArticles from '@/components/RelatedArticles';
+import TarotGuide from '@/components/fortune-guides/TarotGuide';
+import { webApplicationJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
+import FAQSection from '@/components/FAQSection';
+import FAQJsonLd from '@/components/FAQJsonLd';
+import { tarotFaqs } from '@/lib/faqs/tarot';
+import ReadingExperience from './ReadingExperience';
 
 // JSON-LDは静的なデータのみで構成（XSSリスクなし）
 const jsonLdData = JSON.stringify([
-  webApplicationJsonLd({ name: "タロット占い", description: "78枚のタロットカードからAIがあなたの運命を読み解きます", path: "/tarot" }),
-  breadcrumbJsonLd([{ name: "タロット占い", path: "/tarot" }]),
+  webApplicationJsonLd({
+    name: 'タロット占い',
+    description: '78枚のタロットカードからAIがあなたの運命を読み解きます',
+    path: '/tarot',
+  }),
+  breadcrumbJsonLd([{ name: 'タロット占い', path: '/tarot' }]),
 ]);
 
 export default function TarotPage() {
   return (
     <div className="min-h-screen bg-[#0a0408]">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdData }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdData }} />
       <div className="mx-auto max-w-4xl px-4 py-12">
         <ReadingExperience relatedArticles={<RelatedArticles category="tarot" />} />
 
@@ -27,9 +28,10 @@ export default function TarotPage() {
         <FAQSection title={tarotFaqs.title} items={tarotFaqs.items} idPrefix="faq-tarot" />
 
         {/* 注意書き */}
-        <div className="mt-12 rounded-xl border border-border bg-surface/30 px-6 py-4">
-          <p className="text-xs leading-relaxed text-muted">
-            ※ この占い結果はAIが生成したエンターテインメントであり、科学的根拠はありません。医療・健康・法律・金銭に関する重大な判断は、必ず専門家にご相談ください。結果を過度に信頼したり、依存しないようご注意ください。
+        <div className="border-border bg-surface/30 mt-12 rounded-xl border px-6 py-4">
+          <p className="text-muted text-xs leading-relaxed">
+            ※
+            この占い結果はAIが生成したエンターテインメントであり、科学的根拠はありません。医療・健康・法律・金銭に関する重大な判断は、必ず専門家にご相談ください。結果を過度に信頼したり、依存しないようご注意ください。
           </p>
         </div>
         {/* 広告 */}

@@ -1,4 +1,4 @@
-import { Redis } from "@upstash/redis";
+import { Redis } from '@upstash/redis';
 
 // Vercel Marketplace統合で自動設定される環境変数の複数パターンに対応。
 // 優先度順:

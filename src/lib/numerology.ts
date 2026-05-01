@@ -6,7 +6,7 @@
 // "2000-01-05" / "20000105" / "2000/01/05" など多様な形式を受け付けます。
 
 export function calculateLifePath(birthDate: string): number {
-  const digits = birthDate.replace(/\D/g, "");
+  const digits = birthDate.replace(/\D/g, '');
   let sum = 0;
   for (const d of digits) {
     sum += parseInt(d, 10);

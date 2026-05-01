@@ -8,7 +8,7 @@ export interface ZodiacRanking {
   rank: number;
 }
 
-export type FortuneGrade = "◎" | "○" | "△";
+export type FortuneGrade = '◎' | '○' | '△';
 
 export interface ZodiacDetail {
   work: FortuneGrade;
@@ -21,18 +21,18 @@ export interface ZodiacDetail {
 }
 
 const ZODIACS = [
-  { key: "aries", name: "牡羊座", emoji: "\u2648" },
-  { key: "taurus", name: "牡牛座", emoji: "\u2649" },
-  { key: "gemini", name: "双子座", emoji: "\u264A" },
-  { key: "cancer", name: "蟹座", emoji: "\u264B" },
-  { key: "leo", name: "獅子座", emoji: "\u264C" },
-  { key: "virgo", name: "乙女座", emoji: "\u264D" },
-  { key: "libra", name: "天秤座", emoji: "\u264E" },
-  { key: "scorpio", name: "蠍座", emoji: "\u264F" },
-  { key: "sagittarius", name: "射手座", emoji: "\u2650" },
-  { key: "capricorn", name: "山羊座", emoji: "\u2651" },
-  { key: "aquarius", name: "水瓶座", emoji: "\u2652" },
-  { key: "pisces", name: "魚座", emoji: "\u2653" },
+  { key: 'aries', name: '牡羊座', emoji: '\u2648' },
+  { key: 'taurus', name: '牡牛座', emoji: '\u2649' },
+  { key: 'gemini', name: '双子座', emoji: '\u264A' },
+  { key: 'cancer', name: '蟹座', emoji: '\u264B' },
+  { key: 'leo', name: '獅子座', emoji: '\u264C' },
+  { key: 'virgo', name: '乙女座', emoji: '\u264D' },
+  { key: 'libra', name: '天秤座', emoji: '\u264E' },
+  { key: 'scorpio', name: '蠍座', emoji: '\u264F' },
+  { key: 'sagittarius', name: '射手座', emoji: '\u2650' },
+  { key: 'capricorn', name: '山羊座', emoji: '\u2651' },
+  { key: 'aquarius', name: '水瓶座', emoji: '\u2652' },
+  { key: 'pisces', name: '魚座', emoji: '\u2653' },
 ];
 
 // 日付文字列からシード値を生成
@@ -65,20 +65,20 @@ function getJstParts(date: Date = new Date()): {
   month: number;
   day: number;
 } {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
   }).formatToParts(date);
 
   let year = 0;
   let month = 0;
   let day = 0;
   for (const p of parts) {
-    if (p.type === "year") year = Number(p.value);
-    else if (p.type === "month") month = Number(p.value);
-    else if (p.type === "day") day = Number(p.value);
+    if (p.type === 'year') year = Number(p.value);
+    else if (p.type === 'month') month = Number(p.value);
+    else if (p.type === 'day') day = Number(p.value);
   }
   return { year, month, day };
 }
@@ -157,18 +157,18 @@ export function getFallbackComment(rank: number, day: number): string {
 
 // 一言コメント候補（Geminiが使えない場合のフォールバック）
 const FALLBACK_COMMENTS = [
-  "最高の一日になりそう！",
-  "直感が冴える一日！",
-  "チャンスが巡ってくる日！",
-  "笑顔が幸運を呼ぶ日！",
-  "新しい出会いに期待！",
-  "行動力が運を引き寄せる！",
-  "やりたいことに挑戦して！",
-  "自分を信じて進もう！",
-  "小さな幸せに気づく日！",
-  "人との絆が深まる日！",
-  "創造力が輝く一日！",
-  "心が穏やかに過ごせる日！",
+  '最高の一日になりそう！',
+  '直感が冴える一日！',
+  'チャンスが巡ってくる日！',
+  '笑顔が幸運を呼ぶ日！',
+  '新しい出会いに期待！',
+  '行動力が運を引き寄せる！',
+  'やりたいことに挑戦して！',
+  '自分を信じて進もう！',
+  '小さな幸せに気づく日！',
+  '人との絆が深まる日！',
+  '創造力が輝く一日！',
+  '心が穏やかに過ごせる日！',
 ];
 
 // X投稿用のテキストを生成（上位3位 + 1位に一言）
@@ -177,7 +177,7 @@ export async function formatRankingForTweet(
 ): Promise<string> {
   const { rankings, month, day } = getDailyRanking();
   const top3 = rankings.slice(0, 3);
-  const medals = ["\u{1F947}", "\u{1F948}", "\u{1F949}"];
+  const medals = ['\u{1F947}', '\u{1F948}', '\u{1F949}'];
   // URLに日付クエリを付与することでXのOGPキャッシュを日次でバスト
   const dateStr = getTodayDateStr();
 

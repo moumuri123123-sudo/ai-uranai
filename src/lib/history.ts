@@ -1,12 +1,12 @@
 export interface HistoryEntry {
   id: string;
-  fortuneType: "tarot" | "zodiac" | "compatibility" | "mbti" | "dream" | "numerology";
+  fortuneType: 'tarot' | 'zodiac' | 'compatibility' | 'mbti' | 'dream' | 'numerology';
   label: string;
   firstResponse: string;
   timestamp: string;
 }
 
-const STORAGE_KEY = "uranai-history";
+const STORAGE_KEY = 'uranai-history';
 const MAX_ENTRIES = 50;
 
 // PII（個人情報）をマスクするヘルパー
@@ -29,38 +29,35 @@ function maskPII(label: string): string {
     (m) => `${Array.from(m)[0]}***`,
   );
   // ASCII英字の連続名もマスク
-  masked = masked.replace(
-    /[A-Za-z]{2,}/g,
-    (m) => `${m[0]}***`,
-  );
+  masked = masked.replace(/[A-Za-z]{2,}/g, (m) => `${m[0]}***`);
 
   return masked;
 }
 
-const VALID_FORTUNE_TYPES: ReadonlySet<HistoryEntry["fortuneType"]> = new Set([
-  "tarot",
-  "zodiac",
-  "compatibility",
-  "mbti",
-  "dream",
-  "numerology",
+const VALID_FORTUNE_TYPES: ReadonlySet<HistoryEntry['fortuneType']> = new Set([
+  'tarot',
+  'zodiac',
+  'compatibility',
+  'mbti',
+  'dream',
+  'numerology',
 ]);
 
 function isValidHistoryEntry(e: unknown): e is HistoryEntry {
-  if (typeof e !== "object" || e === null) return false;
+  if (typeof e !== 'object' || e === null) return false;
   const o = e as Record<string, unknown>;
   return (
-    typeof o.id === "string" &&
-    typeof o.fortuneType === "string" &&
-    VALID_FORTUNE_TYPES.has(o.fortuneType as HistoryEntry["fortuneType"]) &&
-    typeof o.label === "string" &&
-    typeof o.firstResponse === "string" &&
-    typeof o.timestamp === "string"
+    typeof o.id === 'string' &&
+    typeof o.fortuneType === 'string' &&
+    VALID_FORTUNE_TYPES.has(o.fortuneType as HistoryEntry['fortuneType']) &&
+    typeof o.label === 'string' &&
+    typeof o.firstResponse === 'string' &&
+    typeof o.timestamp === 'string'
   );
 }
 
 export function getHistory(): HistoryEntry[] {
-  if (typeof window === "undefined") return [];
+  if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
@@ -72,10 +69,8 @@ export function getHistory(): HistoryEntry[] {
   }
 }
 
-export function addHistory(
-  entry: Omit<HistoryEntry, "id" | "timestamp">
-): void {
-  if (typeof window === "undefined") return;
+export function addHistory(entry: Omit<HistoryEntry, 'id' | 'timestamp'>): void {
+  if (typeof window === 'undefined') return;
   try {
     const history = getHistory();
     const newEntry: HistoryEntry = {
@@ -97,7 +92,7 @@ export function addHistory(
 }
 
 export function deleteHistory(id: string): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
   try {
     const history = getHistory().filter((e) => e.id !== id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
@@ -107,7 +102,7 @@ export function deleteHistory(id: string): void {
 }
 
 export function clearAllHistory(): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem(STORAGE_KEY);
   } catch {

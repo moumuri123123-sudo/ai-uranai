@@ -1,4 +1,4 @@
-import { timingSafeEqual } from "node:crypto";
+import { timingSafeEqual } from 'node:crypto';
 
 /**
  * Cron系エンドポイントのAuthorizationヘッダ検証。
