@@ -7,6 +7,51 @@ const nextConfig: NextConfig = {
     // 大きなパッケージのTree-shakingを改善して初期バンドルを軽く
     optimizePackageImports: ['@google/genai', '@supabase/ssr', '@supabase/supabase-js'],
   },
+  async redirects() {
+    // 削除した旧ブログ記事のリダイレクト先（関連記事 or カテゴリトップ）
+    const blogRedirects: Array<{ from: string; to: string }> = [
+      { from: 'zodiac-2026-horoscope', to: '/zodiac' },
+      { from: 'feng-shui-beginner', to: '/blog' },
+      { from: 'power-stone-guide', to: '/blog' },
+      { from: 'love-luck-tips', to: '/blog/compatibility-improve-tips' },
+      { from: 'palm-reading-basics', to: '/blog' },
+      { from: 'morning-fortune-routine', to: '/blog/seasonal-fortune-spring' },
+      { from: 'tarot-spread-guide', to: '/blog/tarot-minor-arcana-guide' },
+      { from: 'compatibility-blood-type', to: '/blog/compatibility-improve-tips' },
+      { from: 'compatibility-birthday', to: '/blog/compatibility-improve-tips' },
+      { from: 'mbti-work-style', to: '/blog/mbti-basic-guide' },
+      { from: 'mbti-compatibility', to: '/blog/mbti-compatibility-ranking-all' },
+      { from: 'dream-lucid-guide', to: '/blog/dream-interpretation-guide' },
+      { from: 'dream-recurring-meaning', to: '/blog/dream-interpretation-guide' },
+      { from: 'numerology-birthday-number', to: '/blog/numerology-life-path-guide' },
+      { from: 'meditation-fortune', to: '/blog' },
+      { from: 'aura-color-meaning', to: '/blog' },
+      { from: 'tarot-yes-no-reading', to: '/blog/tarot-major-arcana-meanings' },
+      { from: 'zodiac-rising-sign', to: '/blog/zodiac-moon-sign' },
+      { from: 'dream-color-meaning', to: '/blog/dream-interpretation-guide' },
+      { from: 'mbti-stress-coping', to: '/blog/mbti-introvert-strength' },
+      { from: 'tarot-love-feelings', to: '/blog/tarot-love-reading-beginner' },
+      { from: 'zodiac-compatibility-ranking', to: '/blog/zodiac-elements-guide' },
+      { from: 'compatibility-love-signs', to: '/blog/compatibility-improve-tips' },
+      { from: 'numerology-soul-number', to: '/blog/numerology-name-reading' },
+      { from: 'dream-chased-meaning', to: '/blog/dream-interpretation-guide' },
+      { from: 'dream-crush-meaning', to: '/blog/dream-interpretation-guide' },
+      { from: 'dream-cat-meaning', to: '/blog/dream-interpretation-guide' },
+      { from: 'zodiac-2026-april-fortune', to: '/zodiac' },
+      { from: 'dream-water-meaning', to: '/blog/dream-interpretation-guide' },
+      { from: 'numerology-2026-personal-year', to: '/blog/numerology-life-path-guide' },
+      { from: 'compatibility-zodiac-element', to: '/blog/zodiac-elements-guide' },
+      { from: 'zodiac-2026-may-fortune', to: '/zodiac' },
+      { from: 'compatibility-marriage-tips', to: '/blog/compatibility-improve-tips' },
+      { from: 'numerology-master-numbers', to: '/blog/numerology-life-path-guide' },
+      { from: 'tarot-reconciliation-reading', to: '/blog/tarot-love-reading-beginner' },
+    ];
+    return blogRedirects.map(({ from, to }) => ({
+      source: `/blog/${from}`,
+      destination: to,
+      permanent: true,
+    }));
+  },
   async headers() {
     return [
       {
