@@ -1,4 +1,4 @@
-// タロットカード裏面を Imagen 4.0 で生成し、public/images/tarot/back.webp に保存。
+// タロットカード裏面を gemini-3.1-flash-image で生成し、public/images/tarot/back.webp に保存。
 // 使い方: node --env-file=.env.local scripts/gen-tarot-back.mjs
 
 import { GoogleGenAI } from '@google/genai';
@@ -29,22 +29,23 @@ const outPath = path.join(outDir, 'back.webp');
 
 fs.mkdirSync(outDir, { recursive: true });
 
-console.log('Generating with imagen-4.0-generate-001 (9:16)...');
+console.log('Generating with gemini-3.1-flash-image (9:16)...');
 const t0 = Date.now();
-const response = await ai.models.generateImages({
-  model: 'imagen-4.0-generate-001',
-  prompt: PROMPT,
-  config: { numberOfImages: 1, aspectRatio: '9:16' },
+const response = await ai.models.generateContent({
+  model: 'gemini-3.1-flash-image',
+  contents: PROMPT,
+  config: { imageConfig: { aspectRatio: '9:16' } },
 });
 console.log(`Generation done in ${Date.now() - t0}ms`);
 
-const img = response.generatedImages?.[0];
-if (!img?.image?.imageBytes) {
-  console.error('No image returned', img?.raiFilteredReason ?? '');
+const parts = response.candidates?.[0]?.content?.parts ?? [];
+const imgPart = parts.find((p) => p.inlineData?.data);
+if (!imgPart) {
+  console.error('No image returned', response.promptFeedback?.blockReason ?? '');
   process.exit(1);
 }
 
-const pngBuffer = Buffer.from(img.image.imageBytes, 'base64');
+const pngBuffer = Buffer.from(imgPart.inlineData.data, 'base64');
 await sharp(pngBuffer).resize({ width: TARGET_WIDTH }).webp({ quality: QUALITY }).toFile(outPath);
 
 const size = fs.statSync(outPath).size;

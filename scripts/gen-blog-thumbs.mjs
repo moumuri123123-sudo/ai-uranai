@@ -1,4 +1,4 @@
-// ブログ記事のサムネイル画像を Imagen 4.0 で生成し、public/images/blog/{slug}.webp に保存。
+// ブログ記事のサムネイル画像を gemini-3.1-flash-image で生成し、public/images/blog/{slug}.webp に保存。
 //
 // 使い方:
 //   node --env-file=.env.local scripts/gen-blog-thumbs.mjs sample      # tarot/zodiac/dreamの3記事だけ生成
@@ -80,18 +80,18 @@ async function generateOne(article) {
   if (fs.existsSync(pngPath)) {
     pngBuffer = fs.readFileSync(pngPath);
   } else {
-    const response = await ai.models.generateImages({
-      model: 'imagen-4.0-generate-001',
-      prompt: buildPrompt(article),
-      config: { numberOfImages: 1, aspectRatio: '16:9' },
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-image',
+      contents: buildPrompt(article),
+      config: { imageConfig: { aspectRatio: '16:9' } },
     });
-    const img = response.generatedImages?.[0];
-    if (!img?.image?.imageBytes) {
-      throw new Error(
-        `no image returned${img?.raiFilteredReason ? ' (RAI: ' + img.raiFilteredReason + ')' : ''}`,
-      );
+    const parts = response.candidates?.[0]?.content?.parts ?? [];
+    const imgPart = parts.find((p) => p.inlineData?.data);
+    if (!imgPart) {
+      const reason = response.promptFeedback?.blockReason;
+      throw new Error(`no image returned${reason ? ' (blocked: ' + reason + ')' : ''}`);
     }
-    pngBuffer = Buffer.from(img.image.imageBytes, 'base64');
+    pngBuffer = Buffer.from(imgPart.inlineData.data, 'base64');
     fs.writeFileSync(pngPath, pngBuffer);
   }
 
